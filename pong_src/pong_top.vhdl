@@ -244,11 +244,38 @@ begin
 
   -- Port B
   ENBxS     <= '1';
-  RdAddrBxD <= ; -- TODO: Map the X and Y coordinates to the address of the memory
+  RdAddrBxD <= std_logic_vector(YCoordxD(9 DOWNTO 2) & XCoordxD(9 DOWNTO 2)); -- TODO: Map the X and Y coordinates to the address of the memory
 
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
   BGGreenxS <= DOUTBxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
   BGBluexS  <= DOUTBxD(1 * COLOR_BW - 1 downto 0 * COLOR_BW);
+
+  RedxS <= "1110" WHEN (XCoordxD >= BallXxD - to_unsigned(BALL_WIDTH/2, BallXxD'length)
+                    AND XCoordxD <= BallXxD + to_unsigned(BALL_WIDTH/2, BallXxD'length)
+                    AND YCoordxD >= BallYxD - to_unsigned(BALL_HEIGHT/2, BallYxD'length)
+                    AND YCoordxD <= BallYxD + to_unsigned(BALL_HEIGHT/2, BallYxD'length)) ELSE
+           "1110" WHEN (YCoordxD >= to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
+                    AND XCoordxD >= (PlateXxD - to_unsigned(PLATE_WIDTH/2, PlateXxD'length))
+                    AND XCoordxD <= (PlateXxD + to_unsigned(PLATE_WIDTH/2, PlateXxD'length))) 
+                   ELSE BGRedxS;
+                           
+  GreenxS <= "0000" WHEN (XCoordxD >= BallXxD - to_unsigned(BALL_WIDTH/2, BallXxD'length)
+                      AND XCoordxD <= BallXxD + to_unsigned(BALL_WIDTH/2, BallXxD'length)
+                      AND YCoordxD >= BallYxD - to_unsigned(BALL_HEIGHT/2, BallYxD'length)
+                      AND YCoordxD <= BallYxD + to_unsigned(BALL_HEIGHT/2, BallYxD'length)) ELSE
+             "0000" WHEN (YCoordxD >= to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
+                      AND XCoordxD >= PlateXxD - to_unsigned(PLATE_WIDTH/2, PlateXxD'length)
+                      AND XCoordxD <= PlateXxD + to_unsigned(PLATE_WIDTH/2, PlateXxD'length)) 
+                    ELSE BGGreenxS;
+                      
+  BluexS <= "1011" WHEN (XCoordxD >= BallXxD - to_unsigned(BALL_WIDTH/2, BallXxD'length)
+                     AND XCoordxD <= BallXxD + to_unsigned(BALL_WIDTH/2, BallXxD'length)
+                     AND YCoordxD >= BallYxD - to_unsigned(BALL_HEIGHT/2, BallYxD'length)
+                     AND YCoordxD <= BallYxD + to_unsigned(BALL_HEIGHT/2, BallYxD'length)) ELSE
+            "1011" WHEN (YCoordxD >= to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
+                     AND XCoordxD >= PlateXxD - to_unsigned(PLATE_WIDTH/2, PlateXxD'length)
+                     AND XCoordxD <= PlateXxD + to_unsigned(PLATE_WIDTH/2, PlateXxD'length)) 
+                   ELSE BGBluexS;
 
 end rtl;
 --=============================================================================
