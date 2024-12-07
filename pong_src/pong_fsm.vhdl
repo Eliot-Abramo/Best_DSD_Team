@@ -8,7 +8,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 -- Packages
 library work;
-use work.pong_pkg.all;
+use work.dsd_prj_pkg.all;
 
 --=============================================================================
 --
@@ -51,6 +51,21 @@ end pong_fsm;
 architecture rtl of pong_fsm is
 
 -- TODO: Implement your code here
+  CONSTANT BALL_X         : unsigned(COORD_BW - 1 DOWN TO 0) := to_unsigned(HS_DISPLAY/2, COORD_BW);
+  CONSTANT BALL_Y         : unsigned(COORD_BW - 1 DOWN TO 0) := to_unsigned(HS_DISPLAY/2, COORD_BW);
+  CONSTANT PLATE_INIT_X   : unsigned(COORD_BW - 1 DOWN TO 0) := to_unsigned(HS_DISPLAY/2, COORD_BW);
+
+  SIGNAL BumpTop, BumpBottom, BumpLeft, BumpRight, BumpPlate, BumpUpLeft, BumpUpRight : std_vector;
+  
+  -- Current state of objects
+  SIGNAL BallXxDP, BallYxDP, PlateXxDP : unsigned(COORD_BW - 1 DOWNTO 0);
+
+  -- Future state of objects
+  SIGNAL BallXxDN, BallYxDN            : unsigned(COORD_BW - 1 DOWNTO 0);
+
+  -- States of FSM
+  TYPE GameControl IS (GameStart, GameEnd, BallUpLeft, BallUpRight, BallDownLeft, BallDownRight);
+  SIGNAL FsmStatexDP, FsmStatexDN : GameControl;
 
 --=============================================================================
 -- ARCHITECTURE BEGIN

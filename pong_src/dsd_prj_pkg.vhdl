@@ -20,6 +20,10 @@ use ieee.numeric_std.all;
 
 package dsd_prj_pkg is
 
+-------------------------------------------------------------------------------
+-- Lab 5 parameters
+-------------------------------------------------------------------------------
+
   -- Bitwidths for screen coordinate and colors
   constant COLOR_BW : natural := 4;  -- Each colour LED is 4 bits
   constant COORD_BW : natural := 12; -- 12 bits should accommodate any screen size we can consider
@@ -43,6 +47,10 @@ package dsd_prj_pkg is
   constant MEM_ADDR_BW : natural := 16;
   constant MEM_DATA_BW : natural := 12; -- 3 * COLOR_BW
 
+-------------------------------------------------------------------------------
+-- Lab 7 parameters
+-------------------------------------------------------------------------------
+
   -- Pong parameters (in pixels)
   constant BALL_WIDTH   : natural := 10;
   constant BALL_HEIGHT  : natural := 10;
@@ -51,5 +59,6 @@ package dsd_prj_pkg is
   constant PLATE_WIDTH  : natural := 70;
   constant PLATE_HEIGHT : natural := 10;
   constant PLATE_STEP_X : natural := 40;
+
 
 end package dsd_prj_pkg;
