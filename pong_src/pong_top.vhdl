@@ -82,6 +82,7 @@ architecture rtl of pong_top is
   signal BallYxD  : unsigned(COORD_BW - 1 downto 0);
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
 
+  -- TODO:
   signal DrawBallxS  : std_logic; -- If 1, draw the ball
   signal DrawPlatexS : std_logic; -- If 1, draw the plate
 
@@ -244,38 +245,38 @@ begin
 
   -- Port B
   ENBxS     <= '1';
-  RdAddrBxD <= std_logic_vector(YCoordxD(9 DOWNTO 2) & XCoordxD(9 DOWNTO 2)); -- TODO: Map the X and Y coordinates to the address of the memory
+  -- We "divide" by a factor of  4 to account for the bigger size of the screen coordinates and then multiply y for 256 pixels in a row
+  -- TODO: optmize
+  RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, 16));
 
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
   BGGreenxS <= DOUTBxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
   BGBluexS  <= DOUTBxD(1 * COLOR_BW - 1 downto 0 * COLOR_BW);
 
-  RedxS <= "1110" WHEN (XCoordxD >= BallXxD - to_unsigned(BALL_WIDTH/2, BallXxD'length)
-                    AND XCoordxD <= BallXxD + to_unsigned(BALL_WIDTH/2, BallXxD'length)
-                    AND YCoordxD >= BallYxD - to_unsigned(BALL_HEIGHT/2, BallYxD'length)
-                    AND YCoordxD <= BallYxD + to_unsigned(BALL_HEIGHT/2, BallYxD'length)) ELSE
-           "1110" WHEN (YCoordxD >= to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
-                    AND XCoordxD >= (PlateXxD - to_unsigned(PLATE_WIDTH/2, PlateXxD'length))
-                    AND XCoordxD <= (PlateXxD + to_unsigned(PLATE_WIDTH/2, PlateXxD'length))) 
-                   ELSE BGRedxS;
-                           
-  GreenxS <= "0000" WHEN (XCoordxD >= BallXxD - to_unsigned(BALL_WIDTH/2, BallXxD'length)
-                      AND XCoordxD <= BallXxD + to_unsigned(BALL_WIDTH/2, BallXxD'length)
-                      AND YCoordxD >= BallYxD - to_unsigned(BALL_HEIGHT/2, BallYxD'length)
-                      AND YCoordxD <= BallYxD + to_unsigned(BALL_HEIGHT/2, BallYxD'length)) ELSE
-             "0000" WHEN (YCoordxD >= to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
-                      AND XCoordxD >= PlateXxD - to_unsigned(PLATE_WIDTH/2, PlateXxD'length)
-                      AND XCoordxD <= PlateXxD + to_unsigned(PLATE_WIDTH/2, PlateXxD'length)) 
-                    ELSE BGGreenxS;
-                      
-  BluexS <= "1011" WHEN (XCoordxD >= BallXxD - to_unsigned(BALL_WIDTH/2, BallXxD'length)
-                     AND XCoordxD <= BallXxD + to_unsigned(BALL_WIDTH/2, BallXxD'length)
-                     AND YCoordxD >= BallYxD - to_unsigned(BALL_HEIGHT/2, BallYxD'length)
-                     AND YCoordxD <= BallYxD + to_unsigned(BALL_HEIGHT/2, BallYxD'length)) ELSE
-            "1011" WHEN (YCoordxD >= to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
-                     AND XCoordxD >= PlateXxD - to_unsigned(PLATE_WIDTH/2, PlateXxD'length)
-                     AND XCoordxD <= PlateXxD + to_unsigned(PLATE_WIDTH/2, PlateXxD'length)) 
-                   ELSE BGBluexS;
+
+--=============================================================================
+-- Sprite logic
+--=============================================================================
+process(all)
+begin
+  -- Default
+  RedxS <= BGRedxS;
+  GreenxS <= BGGreenxS;
+  BluexS <= BGBluexS;
+  -- Plate
+  if (XCoordxD >= PlateXxD and XCoordxD < PlateXxD + PLATE_WIDTH and YCoordxD >= VS_DISPLAY - PLATE_HEIGHT) then
+    RedxS   <= "1111";
+    GreenxS <= "1111";
+    BluexS  <= "1111";
+  end if;
+
+  -- Ball
+  if (XCoordxD >= BallXxD and XCoordxD < BallXxD + BALL_WIDTH and YCoordxD >= BallYxD and YCoordxD < BallYxD + BALL_HEIGHT) then
+  RedxS   <= "1111";
+  GreenxS <= "1111";
+  BluexS  <= "1111";
+  end if;
+end process;
 
 end rtl;
 --=============================================================================

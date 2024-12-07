@@ -83,7 +83,8 @@ architecture rtl of vga_controller is
   -- signals for coordinate output
   signal XCoordxDP : unsigned(COORD_BW - 1 downto 0);
   signal YCoordxDP : unsigned(COORD_BW - 1 downto 0);
-
+    
+  signal VSEdgexSP, VSEdgexSN : std_logic;
   signal active_area : std_logic := '0'; -- High during the visible area
 
 --=============================================================================
@@ -100,6 +101,8 @@ begin
 
   XCoordxDO <= XCoordxDP;
   YCoordxDO <= YCoordxDP;
+
+  VSEdgexSO <= VSEdgexSP;
 
   -- -- DISPLAY | FRONT PORCH | SYNC PULSE | BACK PORCH
   -- active_area <= '1' when (HCntxDP < HS_DISPLAY and VCntxDP < VS_DISPLAY) else '0';
@@ -142,6 +145,7 @@ begin
       BluexDP   <= BluexDN;
       XCoordxDP <= HCntxDP - HS_PULSE - HS_BACK_PORCH;
       YCoordxDP <= VCntxDP - VS_PULSE - VS_BACK_PORCH;
+      VSEdgexSN <= '0';
     end if;
   end process;
 

@@ -15,7 +15,7 @@ use work.dsd_prj_pkg.all;
 -- pong_fsm
 --
 -- @brief This file specifies a basic circuit for the pong game. Note that coordinates are counted
--- from the upper left corner of the screen.
+-- from the upper left corner of the screen.z
 --
 --=============================================================================
 
@@ -41,7 +41,13 @@ entity pong_fsm is
     -- Ball and plate coordinates
     BallXxDO  : out unsigned(COORD_BW - 1 downto 0);
     BallYxDO  : out unsigned(COORD_BW - 1 downto 0);
-    PlateXxDO : out unsigned(COORD_BW - 1 downto 0)
+    PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
+
+    -- Highscore Values
+    HighscorexDO : out unsigned(5 - 1 downto 0);
+
+    -- State
+    FsmStatexDO  : out std_logic
   );
 end pong_fsm;
 
@@ -51,159 +57,175 @@ end pong_fsm;
 architecture rtl of pong_fsm is
 
 -- TODO: Implement your code here
-  CONSTANT BALL_X_INIT         : unsigned(COORD_BW - 1 DOWN TO 0) := to_unsigned(HS_DISPLAY/2, COORD_BW);
-  CONSTANT BALL_Y_INIT         : unsigned(COORD_BW - 1 DOWN TO 0) := to_unsigned(HS_DISPLAY/2, COORD_BW);
-  CONSTANT PLATE_X_INIT        : unsigned(COORD_BW - 1 DOWN TO 0) := to_unsigned(HS_DISPLAY/2, COORD_BW);
+  CONSTANT BALL_X_INIT         : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(HS_DISPLAY/2 - BALL_WIDTH/2, COORD_BW);
+  CONSTANT BALL_Y_INIT         : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(VS_DISPLAY/2 - BALL_HEIGHT/2, COORD_BW);
+  CONSTANT PLATE_X_INIT        : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(HS_DISPLAY/2 - PLATE_WIDTH/2, COORD_BW);
 
-  SIGNAL BumpTop, BumpBottom, BumpLeft, BumpRight, BumpPlate, BumpUpLeft, BumpUpRight : std_vector;
+  -- Signals
+  -- SIGNAL BumpTop, BumpBottom, BumpLeft, BumpRight, BumpPlate, BumpUpLeft, BumpUpRight : std_logic;
   
-  -- Current state of objects
-  SIGNAL BallXxDP, BallYxDP, PlateXxDP : unsigned(COORD_BW - 1 DOWNTO 0);
-
-  -- Future state of objects
-  SIGNAL BallXxDN, BallYxDN            : unsigned(COORD_BW - 1 DOWNTO 0);
+  -- State of Ball
+  SIGNAL BallXxDP, BallXxDN             : unsigned(COORD_BW - 1 DOWNTO 0) := BALL_X_INIT;
+  SIGNAL BallYxDP, BallYxDN             : unsigned(COORD_BW - 1 DOWNTO 0) := BALL_Y_INIT;
+  SIGNAL BallXSpeedxDN, BallXSpeedxDP   : signed(2 - 1 DOWNTO 0) := to_signed(0,2);
+  SIGNAL BallYSpeedxDN, BallYSpeedxDP   : signed(2 - 1 DOWNTO 0) := to_signed(0,2);
+  
+  -- State of Plate
+  SIGNAL PlateXxDP, PlateXxDN           : unsigned(COORD_BW - 1 DOWNTO 0) := PLATE_X_INIT;
 
   -- States of FSM
-  TYPE GameControl IS (GameStart, GameEnd, BallUpLeft, BallUpRight, BallDownLeft, BallDownRight);
-  SIGNAL FsmStatexDP, FsmStatexDN : GameControl;
+  TYPE GameControl IS (GameStart, GameEnd);
+  SIGNAL FsmStatexDP, FsmStatexDN : GameControl := GameEnd;
+
+  -- For controlling the screen
+  signal VSEdgexSN, VSEdgexSP : std_logic := '0';
+
+  -- Highscore init
+  signal HighscorexDN, HighscorexDP : unsigned(5 - 1 downto 0) := to_unsigned(0, 5);
+
+
+  -- Additional precalculated signals
+  signal PlateBallLeftDeltaXxD  : signed(COORD_BW - 1 downto 0) := resize(signed(resize(BallXxDP, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW); -- Bottom corner left
+  signal PlateBallRightDeltaXxD : signed(COORD_BW - 1 downto 0) := resize(signed(resize(BallXxDP, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW); -- Bottom corner right
 
 --=============================================================================
 -- ARCHITECTURE BEGIN
 --=============================================================================
 begin
 
+  PlateBallLeftDeltaXxD  <= resize(signed(resize(BallXxDP, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
+  PlateBallRightDeltaXxD <= resize(signed(resize(BallXxDP, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
+
   -- TODO: Implement your code here
 
-  -- Calculate constants used to detect collisions
-  constant HalfBallWidth   : unsigned(COORD_BW - 1 downto 0) := to_unsigned(BALL_WIDTH / 2, COORD_BW);
-  constant HalfBallHeight  : unsigned(COORD_BW - 1 downto 0) := to_unsigned(BALL_HEIGHT / 2, COORD_BW);
-
-  constant BallTopLimit    : unsigned(COORD_BW - 1 downto 0) := HalfBallHeight + to_unsigned(BALL_STEP_Y, COORD_BW);
-  constant BallBottomLimit : unsigned(COORD_BW - 1 downto 0) := to_unsigned(VS_DISPLAY, COORD_BW) - HalfBallHeight - to_unsigned(BALL_STEP_Y, COORD_BW);
-  constant BallLeftLimit   : unsigned(COORD_BW - 1 downto 0) := HalfBallWidth + to_unsigned(BALL_STEP_X, COORD_BW);
-  constant BallRightLimit  : unsigned(COORD_BW - 1 downto 0) := to_unsigned(HS_DISPLAY, COORD_BW) - HalfBallWidth - to_unsigned(BALL_STEP_X, COORD_BW);
-  
-  constant PlateYPosition  : unsigned(COORD_BW - 1 downto 0) := to_unsigned(VS_DISPLAY, COORD_BW) - PLATE_HEIGHT - HalfBallHeight - to_unsigned(BALL_STEP_Y, COORD_BW);
-  constant PlateHalfWidth  : unsigned(COORD_BW - 1 downto 0) := to_unsigned(PLATE_WIDTH / 2, COORD_BW);
-
-  -- Bump detection signals
-  BumpTop     <= '1' when (BallYxDP <= BallTopLimit) else '0';
-  BumpBottom  <= '1' when (BallYxDP >= BallBottomLimit) else '0';
-  BumpLeft    <= '1' when (BallXxDP <= BallLeftLimit) else '0';
-  BumpRight   <= '1' when (BallXxDP >= BallRightLimit) else '0';
-  BumpPlate   <= '1' when (BallYxDP >= PlateYPosition and
-                           BallXxDP >= PlateXxDP - PlateHalfWidth and
-                           BallXxDP <= PlateXxDP + PlateHalfWidth) else '0';
-  BumpUpLeft  <= '1' when (BallXxDP = HalfBallWidth and BallYxDP = HalfBallHeight) else '0';
-  BumpUpRight <= '1' when (BallXxDP = to_unsigned(HS_DISPLAY, COORD_BW) - HalfBallWidth and BallYxDP = HalfBallHeight) else '0';
-
-  Pong : PROCESS(CLKxCI, RSTxRI, VSEdgexSI) IS
+  PROCESS(CLKxCI, RSTxRI, VSEdgexSI)
   BEGIN
-    IF RSTxRI = '1' THEN
+    IF (RSTxRI = '1') THEN
+      -- Reset
       FsmStatexDP     <= GameStart;
       BallXxDP        <= BALL_X_INIT;
       BallYxDP        <= BALL_Y_INIT;
       PlateXxDP       <= PLATE_X_INIT;
-    ELSIF rising_edge(CLKxCI) THEN
-      IF VSEdgexSI = '1' THEN
-        FsmStatexDP   <= FsmStatexDN;
-        BallXxDP      <= BallXxDN;
-        BallYxDP      <= BallYxDN;
-        PlateXxDP     <= PlateXxDN;
-      END IF;
-    END IF;
-  END PROCESS Pong; 
+      BallXSpeedxDP   <= to_signed(0,2);
+      BallYSpeedxDP   <= to_signed(0,2);
+      HighscorexDP     <= to_unsigned(0,5);
+      VSEdgexSP       <= '0';
 
-  PongFsm : PROCESS (ALL) IS
+    ELSIF rising_edge(CLKxCI) THEN
+      -- Make game evolve to next state
+      FsmStatexDP   <= FsmStatexDN;
+      BallXxDP      <= BallXxDN;
+      BallYxDP      <= BallYxDN;
+      PlateXxDP     <= PlateXxDN;
+      BallXSpeedxDP <= BallXSpeedxDN;
+      BallYSpeedxDP <= BallYSpeedxDN;  -- Update this line
+      HighscorexDP  <= HighscorexDN;
+      VSEdgexSP     <= VSEdgexSN;
+    END IF;
+
+  END PROCESS; 
+
+  --=============================================================================
+  -- Game Evolution logic
+  --=============================================================================
+  PROCESS (ALL)
   BEGIN
+    -- Default states
     FsmStatexDN       <= FsmStatexDP;
     BallXxDN          <= BallXxDP;
     BallYxDN          <= BallYxDP;
     PlateXxDN         <= PlateXxDP;
-
-    -- Update paddle position
-    IF (LeftxSI = '1' AND PlateXxDP > to_unsigned(PLATE_WIDTH/2, PlateXxDP'length)) THEN
-      PlateXxDN <= PlateXxDP - to_unsigned(PLATE_STEP_X, PlateXxDP'length);
-    ELSIF (RightxSI = '1' AND PlateXxDP < to_unsigned(HS_DISPLAY - (PLATE_WIDTH/2), PlateXxDP'length)) THEN
-      PlateXxDN <= PlateXxDP + to_unsigned(PLATE_STEP_X, PlateXxDP'length);
-    ELSE
-      PlateXxDN <= PlateXxDP;
-    END IF;
+    BallXSpeedxDN     <= BallXSpeedxDP;
+    BallYSpeedxDN     <= BallYSpeedxDP;
+    HighscorexDN      <= HighscorexDP;
+    VSEdgexSN         <= VSEdgexSI;
 
     -- State machine
     CASE FsmStatexDP IS
+
+      WHEN GameEnd =>
+        FsmStatexDN     <= GameEnd;
+        BallXxDN        <= BALL_X_INIT;
+        BallYxDN        <= BALL_Y_INIT;
+        PlateXxDN       <= PLATE_X_INIT;
+        BallXSpeedxDN   <= to_signed(0,2);
+        BallYSpeedxDN   <= to_signed(1,2);
+
+        -- Check if player starts game:
+        if(LeftxSI = '1' and RightxSI = '1') then
+          FsmStatexDN <= GameStart;
+          HighScorexDN <= to_unsigned(0,5);
+
+          -- Initial value of ball
+          BallXxDN <= BALL_X_INIT;
+          BallYxDN <= BALL_Y_INIT;
+        end if;
+
       WHEN GameStart =>
-        BallXxDN  <= BALL_X_INIT;
-        BallYxDN  <= BALL_Y_INIT;
-        PlateXxDN <= PLATE_X_INIT;
-        IF (RightxSI = '1' AND LeftxSI = '1') THEN
-          IF (VgaXxDI(1) XOR VgaYxDI(1)) = '1' THEN
-            FsmStatexDN <= BallDownRight;
-          ELSE
-            FsmStatexDN <= BallDownLeft;
-          END IF;
-        END IF;
+        -- Update frames of game
+        if(VSEdgexSP = '0' and VSEdgexSN = '1') then
+          -- If left button pressed
+          if(LeftxSI = '1') then
+            -- check plate is moving correctly
+            if PlateXxDP <= PLATE_STEP_X then
+              PlateXxDN <= PlateXxDP + HS_DISPLAY - PLATE_STEP_X;
+            else
+              PlateXxDN <= PlateXxDP - PLATE_STEP_X;
+            end if;
+          end if;
+          
+          -- If right button pressed
+          if(RightxSI = '1') then
+            PlateXxDN <= PlateXxDP + PLATE_STEP_X;
+            -- check plate is moving correctly
+            if PlateXxDP >= HS_DISPLAY - PLATE_STEP_X then
+              PlateXxDN <= PlateXxDP - HS_DISPLAY + PLATE_STEP_X;
+            else
+              PlateXxDN <= PlateXxDP + PLATE_STEP_X;
+            end if;
+          end if;
 
-      WHEN GameOver =>
-        FsmStatexDN <= GameStart;
+          -- check if ball hits the sides of the map
+          if(BallXxDP <= 2*BALL_STEP_X and BallXSpeedxDP < 0) or (BallXxDP >= HS_DISPLAY - BALL_WIDTH - BALL_STEP_X and BallXSpeedxDP > 0) then
+            BallXSpeedxDN   <= - BallXSpeedxDP;
+          end if;
 
-      WHEN BallUpLeft =>
-        BallXxDN <= BallXxDP - to_unsigned(BALL_STEP_X, BallXxDP'length);
-        BallYxDN <= BallYxDP - to_unsigned(BALL_STEP_Y, BallYxDP'length);
-        IF (BumpLeft = '1') THEN
-      FsmStatexDN <= BallUpRight;
-        ELSIF (BumpTop = '1') THEN
-      FsmStatexDN <= BallDownLeft;
-        ELSIF (BumpUpLeft = '1') THEN
-      FsmStatexDN <= BallDownRight;
-        ELSIF (BumpBottom = '1') THEN
-      FsmStatexDN <= GameOver;
-        END IF;
+          if(BallYxDP <= 2*BALL_STEP_Y and BallYSpeedxDP < 0) then
+            BallYSpeedxDN   <= - BallYSpeedxDP;
+          end if;
+      
+          -- check collisions with plate
+          if(BallYxDP >= VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT) then
+            if(PlateBallRightDeltaXxD > 0 and PlateBallLeftDeltaXxD < PLATE_WIDTH) then 
+              if(BallYSpeedxDP >= 0) then
+                HighscorexDN <= HighscorexDP + 1;
+                BallYSpeedxDN <= - BallYSpeedxDP;
+                BallXSpeedxDN <= BallXSpeedxDP + (BallXSpeedxDP / 2); -- *1.5 times
+              end if;
+            else
+              FsmStatexDN <= GameEnd;
+            end if;
+          end if;
+          -- TODO if changing to signed coord simplify the expression
+          -- BallXxDN <= resize(unsigned(signed(resize(BallXxDP, COORD_BW + 1)) + resize(BallXSpeedxDP, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
+          -- BallYxDN <= resize(unsigned(signed(resize(BallYxDP, COORD_BW + 1)) + resize(BallYSpeedxDP, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
+          BallXxDN <= BallXxDP + unsigned(BallXSpeedxDP * to_signed(BALL_STEP_X, BallXSpeedxDP'length));
+          BallYxDN <= BallYxDP + unsigned(BallYSpeedxDP * to_signed(BALL_STEP_Y, BallYSpeedxDP'length));
 
-      WHEN BallUpRight =>
-        BallXxDN <= BallXxDP + to_unsigned(BALL_STEP_X, BallXxDP'length);
-        BallYxDN <= BallYxDP - to_unsigned(BALL_STEP_Y, BallYxDP'length);
-        IF (BumpRight = '1') THEN
-      FsmStatexDN <= BallUpLeft;
-        ELSIF (BumpTop = '1') THEN
-      FsmStatexDN <= BallDownRight;
-        ELSIF (BumpUpRight = '1') THEN
-      FsmStatexDN <= BallDownLeft;
-        ELSIF (BumpBottom = '1') THEN
-      FsmStatexDN <= GameOver;
-        END IF;
+          end if;
 
-      WHEN BallDownLeft =>
-        BallXxDN <= BallXxDP - to_unsigned(BALL_STEP_X, BallXxDP'length);
-        BallYxDN <= BallYxDP + to_unsigned(BALL_STEP_Y, BallYxDP'length);
-        IF (BumpLeft = '1') THEN
-      FsmStatexDN <= BallDownRight;
-        ELSIF (BumpPlate = '1') THEN
-      FsmStatexDN <= BallUpLeft;
-        ELSIF (BumpBottom = '1') THEN
-      FsmStatexDN <= GameOver;
-        END IF;
-
-      WHEN BallDownRight =>
-        BallXxDN <= BallXxDP + to_unsigned(BALL_STEP_X, BallXxDP'length);
-        BallYxDN <= BallYxDP + to_unsigned(BALL_STEP_Y, BallYxDP'length);
-        IF (BumpRight = '1') THEN
-      FsmStatexDN <= BallDownLeft;
-        ELSIF (BumpPlate = '1') THEN
-      FsmStatexDN <= BallUpRight;
-        ELSIF (BumpBottom = '1') THEN
-      FsmStatexDN <= GameOver;
-        END IF;
-
-      WHEN OTHERS =>
-        NULL;
+--     WHEN OTHERS =>
+--       NULL;
+    
     END CASE;
 
-  END PROCESS PongFsm;
+  END PROCESS;
 
   BallXxDO <= BallXxDP;
   BallYxDO <= BallYxDP;
   PlateXxDO <= PlateXxDP;
+  FsmStatexDO <= '0' when FsmStatexDP = GameEnd else '1';
+  HighscorexDO <= HighscorexDP;
 
 end rtl;
 --=============================================================================
