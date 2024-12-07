@@ -88,6 +88,12 @@ architecture rtl of pong_fsm is
   signal PlateBallLeftDeltaXxD  : signed(COORD_BW - 1 downto 0) := resize(signed(resize(BallXxDP, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW); -- Bottom corner left
   signal PlateBallRightDeltaXxD : signed(COORD_BW - 1 downto 0) := resize(signed(resize(BallXxDP, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW); -- Bottom corner right
 
+  -- Number of balls
+  SIGNAL NumBalls : unsigned(3-1 downto 0) := to_unsigned(1,3);
+  TYPE BallArray IS ARRAY (4-1 downto 0) of unsigned;
+
+
+
 --=============================================================================
 -- ARCHITECTURE BEGIN
 --=============================================================================
@@ -207,10 +213,8 @@ begin
             end if;
           end if;
           -- TODO if changing to signed coord simplify the expression
-          -- BallXxDN <= resize(unsigned(signed(resize(BallXxDP, COORD_BW + 1)) + resize(BallXSpeedxDP, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
-          -- BallYxDN <= resize(unsigned(signed(resize(BallYxDP, COORD_BW + 1)) + resize(BallYSpeedxDP, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
-          BallXxDN <= BallXxDP + unsigned(BallXSpeedxDP * to_signed(BALL_STEP_X, BallXSpeedxDP'length));
-          BallYxDN <= BallYxDP + unsigned(BallYSpeedxDP * to_signed(BALL_STEP_Y, BallYSpeedxDP'length));
+          BallXxDN <= resize(unsigned(signed(resize(BallXxDP, COORD_BW + 1)) + resize(BallXSpeedxDP, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
+          BallYxDN <= resize(unsigned(signed(resize(BallYxDP, COORD_BW + 1)) + resize(BallYSpeedxDP, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
 
           end if;
 

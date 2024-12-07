@@ -84,7 +84,8 @@ architecture rtl of vga_controller is
   signal XCoordxDP : unsigned(COORD_BW - 1 downto 0);
   signal YCoordxDP : unsigned(COORD_BW - 1 downto 0);
     
-  signal VSEdgexSP, VSEdgexSN : std_logic;
+  signal VSEdgexSP : std_logic := '0';
+  signal VSEdgexSN : std_logic;
   signal active_area : std_logic := '0'; -- High during the visible area
 
 --=============================================================================
@@ -137,6 +138,7 @@ begin
       BluexDP   <= (others => '0');
       XCoordxDP <= (others => '0');
       YCoordxDP <= (others => '0');
+      VSEdgexSP <= '0';
     elsif rising_edge(CLKxCI) then
       HSyncxDP  <= HSyncxDN;
       VSyncxDP  <= VSyncxDN; 
@@ -144,8 +146,8 @@ begin
       GreenxDP  <= GreenxDN;
       BluexDP   <= BluexDN;
       XCoordxDP <= HCntxDP - HS_PULSE - HS_BACK_PORCH;
-      YCoordxDP <= VCntxDP - VS_PULSE - VS_BACK_PORCH;
-      VSEdgexSN <= '0';
+      YCoordxDP <= VCntxDP - VS_PULSE - VS_BACK_PORCH;      
+      VSEdgexSP <= VSEdgexSN;
     end if;
   end process;
 
@@ -174,6 +176,14 @@ begin
   -- RGB output
   process(all) 
   begin
+    VSEdgexSN <= '0';
+
+    if rising_edge(CLKxCI) then
+      if VCntxDP = 0 then
+        VSEdgexSN <= '1';
+      end if;
+    end if;
+    
     if active_area = '1' then
       -- Load the input colors during the active area
       RedxDN   <= RedxSI;
