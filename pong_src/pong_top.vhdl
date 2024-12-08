@@ -9,7 +9,7 @@ use ieee.numeric_std.all;
 -- Packages
 library work;
 use work.dsd_prj_pkg.all;
-
+use work.pong_types_pkg.all;
 --=============================================================================
 --
 -- pong_top
@@ -78,8 +78,10 @@ architecture rtl of pong_top is
   signal VSEdgexS : std_logic; -- If 1, row counter resets (new frame). HIGH for 1 CC, when vertical sync starts)
 
   -- pong_fsm
-  signal BallXxD  : unsigned(COORD_BW - 1 downto 0); -- Coordinates of ball and plate
-  signal BallYxD  : unsigned(COORD_BW - 1 downto 0);
+--  signal BallXxD  : unsigned(COORD_BW - 1 downto 0); -- Coordinates of ball and plate
+--  signal BallYxD  : unsigned(COORD_BW - 1 downto 0);
+  signal BallsxD : BallArrayType;
+  signal ActiveBallCountxD : natural;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
 
   -- TODO:
@@ -157,8 +159,10 @@ architecture rtl of pong_top is
       VSEdgexSI : in std_logic;
 
       -- Ball and plate coordinates
-      BallXxDO  : out unsigned(COORD_BW - 1 downto 0);
-      BallYxDO  : out unsigned(COORD_BW - 1 downto 0);
+--      BallXxDO  : out unsigned(COORD_BW - 1 downto 0);
+--      BallYxDO  : out unsigned(COORD_BW - 1 downto 0);
+      BallsxDO : out BallArrayType;
+      ActiveBallCountxDO : out natural;
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0)
     );
   end component pong_fsm;
@@ -228,8 +232,11 @@ begin
 
       VSEdgexSI => VSEdgexS,
 
-      BallXxDO  => BallXxD,
-      BallYxDO  => BallYxD,
+--      BallXxDO  => BallXxD,
+--      BallYxDO  => BallYxD,
+      BallsxDO => BallsxD,
+      ActiveBallCountxDO => ActiveBallCountxD,
+
       PlateXxDO => PlateXxD
     );
 
@@ -271,11 +278,15 @@ begin
   end if;
 
   -- Ball
-  if (XCoordxD >= BallXxD and XCoordxD < BallXxD + BALL_WIDTH and YCoordxD >= BallYxD and YCoordxD < BallYxD + BALL_HEIGHT) then
-  RedxS   <= "1111";
-  GreenxS <= "1111";
-  BluexS  <= "1111";
-  end if;
+  FOR i IN 0 TO (MaxBallCount)-1 LOOP
+    if(i<ActiveBallCountxD) then
+        if (XCoordxD >= BallsxD(i).BallX and XCoordxD < BallsxD(i).BallX + BALL_WIDTH and YCoordxD >= BallsxD(i).BallY and YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) then
+            RedxS   <= "1111";
+            GreenxS <= "1111";
+            BluexS  <= "1111";
+        end if;
+     end if;
+  end loop;
 end process;
 
 end rtl;
