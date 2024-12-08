@@ -81,7 +81,7 @@ architecture rtl of pong_top is
 --  signal BallXxD  : unsigned(COORD_BW - 1 downto 0); -- Coordinates of ball and plate
 --  signal BallYxD  : unsigned(COORD_BW - 1 downto 0);
   signal BallsxD : BallArrayType;
-  signal ActiveBallCountxD : natural;
+  signal ActiveBallsxD : natural;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
 
   -- TODO:
@@ -162,7 +162,7 @@ architecture rtl of pong_top is
 --      BallXxDO  : out unsigned(COORD_BW - 1 downto 0);
 --      BallYxDO  : out unsigned(COORD_BW - 1 downto 0);
       BallsxDO : out BallArrayType;
-      ActiveBallCountxDO : out natural;
+      ActiveBallsxDO : out natural;
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0)
     );
   end component pong_fsm;
@@ -235,7 +235,7 @@ begin
 --      BallXxDO  => BallXxD,
 --      BallYxDO  => BallYxD,
       BallsxDO => BallsxD,
-      ActiveBallCountxDO => ActiveBallCountxD,
+      ActiveBallsxDO => ActiveBallsxD,
 
       PlateXxDO => PlateXxD
     );
@@ -279,7 +279,7 @@ begin
 
   -- Ball
   FOR i IN 0 TO (MaxBallCount)-1 LOOP
-    if(i<ActiveBallCountxD) then
+    if(i<ActiveBallsxD) then
         if (XCoordxD >= BallsxD(i).BallX and XCoordxD < BallsxD(i).BallX + BALL_WIDTH and YCoordxD >= BallsxD(i).BallY and YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) then
             RedxS   <= "1111";
             GreenxS <= "1111";
