@@ -77,8 +77,8 @@ architecture rtl of pong_fsm is
   SIGNAL BallsxDN, BallsxDP : BallArrayType := (OTHERS => (
     BallX      => BALL_X_INIT,
     BallY      => BALL_Y_INIT,
-    BallXSpeed => to_signed(0, 4),
-    BallYSpeed => to_signed(0, 4)
+    BallXSpeed => to_signed(0, 2),
+    BallYSpeed => to_signed(0, 2)
 
     -- PlateLeftxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
     -- PlateRightxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
@@ -112,16 +112,13 @@ begin
 
       PlateXxDP          <= PLATE_X_INIT;
       HighscorexDP       <= 0;
-      ActiveBallsxDP <= 1;
+      ActiveBallsxDP     <= 1;
 
       BallsxDP <= (OTHERS => (
         BallX      => BALL_X_INIT,
         BallY      => BALL_Y_INIT,
-        BallXSpeed => to_signed(0, 4),
-        BallYSpeed => to_signed(0, 4)
-
-        -- PlateLeftxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
-        -- PlateRightxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
+        BallXSpeed => to_signed(0, 2),
+        BallYSpeed => to_signed(0, 2)
       ));
 
     ELSIF rising_edge(CLKxCI) THEN
@@ -161,6 +158,11 @@ begin
     BallsxDN          <= BallsxDP;
     ActiveBallsxDN    <= ActiveBallsxDP;
 
+    -- if HighscorexDP >= (ActiveBallsxDP * 2) then
+    --   if (ActiveBallsxDP < MaxBallCount) then
+    --     ActiveBallsxDN <= ActiveBallsxDP + 1;
+    --   end if;
+    -- end if;
     
     -- State machine
     CASE FsmStatexDP IS
@@ -171,15 +173,12 @@ begin
         FsmStatexDN     <= GameEnd;
         PlateXxDN       <= PLATE_X_INIT;
         ActiveBallsxDN  <= 1;
-
+        
         BallsxDN <= (OTHERS => (
           BallX      => BALL_X_INIT,
           BallY      => BALL_Y_INIT,
-          BallXSpeed => to_signed(0, 4),
-          BallYSpeed => to_signed(0, 4)
-
-          -- PlateLeftxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
-          -- PlateRightxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
+          BallXSpeed => to_signed(0, 2),
+          BallYSpeed => to_signed(0, 2)
         ));
 
         -- Check if player starts game:
@@ -190,11 +189,8 @@ begin
           BallsxDN <= (OTHERS => (
             BallX      => BALL_X_INIT,
             BallY      => BALL_Y_INIT,
-            BallXSpeed => to_signed(0, 4),
-            BallYSpeed => to_signed(1, 4)
-
-            -- PlateLeftxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
-            -- PlateRightxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
+            BallXSpeed => to_signed(0, 2),
+            BallYSpeed => to_signed(1, 2)
             ));
 
         end if;
@@ -205,7 +201,7 @@ begin
       WHEN GameStart =>
         -- Update frames of game
         if(VSEdgexSP = '0' and VSEdgexSN = '1') then
-
+          FOR i IN 0 TO (MaxBallCount)-1 LOOP
             if(LeftxSI = '1') then
               -- check plate is moving correctly
               if PlateXxDP <= PLATE_STEP_X then
@@ -225,27 +221,25 @@ begin
               end if;
             end if;
 
-          FOR i IN 0 TO (MaxBallCount)-1 LOOP
             IF(i < ActiveBallsxDP) THEN          
               -- check if ball hits the sides of the map
-              if(BallsxDP(i).BallX <= 2*BALL_STEP_X and BallsxDP(i).BallXSpeed < 0) or (BallsxDP(i).BallX >= HS_DISPLAY - BALL_WIDTH - BALL_STEP_X and BallsxDP(i).BallXSpeed  > 0) then
+              if((BallsxDP(i).BallX <= 2*BALL_STEP_X) and (BallsxDP(i).BallXSpeed < 0)) or ((BallsxDP(i).BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X)) and (BallsxDP(i).BallXSpeed  > 0)) then
                 BallsxDN(i).BallXSpeed <= - BallsxDP(i).BallXSpeed;
               end if;
 
-              if(BallsxDP(i).BallY <= 2*BALL_STEP_Y and BallsxDP(i).BallYSpeed  < 0) then
+              if((BallsxDP(i).BallY <= 2*BALL_STEP_Y) and (BallsxDP(i).BallYSpeed < 0)) then
                 BallsxDN(i).BallYSpeed <= - BallsxDP(i).BallYSpeed;
               end if;
       
               -- check collisions with plate
-              if(BallsxDP(i).BallY >= VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT) then
-                if(PlateRightxD > 0 and PlateLeftxD < PLATE_WIDTH) then 
+              if(BallsxDP(i).BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT)) then
+                if((PlateRightxD > 0) and (PlateLeftxD < PLATE_WIDTH)) then 
                   if(BallsxDP(i).BallYSpeed >= 0) then
                     HighscorexDN <= HighscorexDP + 1;
                     BallsxDN(i).BallYSpeed <= - BallsxDP(i).BallYSpeed;
-                    BallsxDN(i).BallXSpeed <= to_signed(-1, 4) when PlateRightxD < PLATE_WIDTH / 3 
-                                                               else to_signed(0, 4) when PlateRightxD < PLATE_WIDTH / 3 * 2 
-                                                               else to_signed(1, 4);
-                    
+                    BallsxDN(i).BallXSpeed <= to_signed(-1, 2) when PlateRightxD < (PLATE_WIDTH / 3)
+                                                               else to_signed(0, 2) when PlateRightxD < ((2*PLATE_WIDTH)/ 3) 
+                                                               else to_signed(1, 2);                    
                   end if;
                 else
                   FsmStatexDN <= GameEnd;
@@ -272,9 +266,6 @@ begin
           BallY      => BALL_Y_INIT,
           BallXSpeed => to_signed(0, 4),
           BallYSpeed => to_signed(0, 4)
-
---          PlateLeftxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
---          PlateRightxD => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
         ));
     
     END CASE;

@@ -1,0 +1,18 @@
+-- Check if HighscorexDN reaches thresholds to increase ball count
+              if HighscorexDN >= ActiveBallsxDP * 2 then
+                if (ActiveBallsxDP < MaxBallCount) then
+                  ActiveBallsxDN <= ActiveBallsxDP + 1;
+        
+                  -- Initialize new ball
+                  -- Inverse X and Y at initialization to make things fun and prevent overlaping balls
+                  BallsxDN(ActiveBallsxDN).BallY <= resize(unsigned(signed(resize(BallsxDP(ActiveBallsxDP).BallX, COORD_BW + 1)) + resize(BallsxDP(ActiveBallsxDP).BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X*2, COORD_BW + 1)), COORD_BW);
+                  BallsxDN(ActiveBallsxDN).BallX <= resize(unsigned(signed(resize(BallsxDP(ActiveBallsxDP).BallY, COORD_BW + 1)) + resize(BallsxDP(ActiveBallsxDP).BallYSPeed, COORD_BW + 1) * to_signed(BALL_STEP_Y*2, COORD_BW + 1)), COORD_BW);
+
+                  -- Change speed of new ball
+                  BallsxDN(ActiveBallsxDN).BallYSpeed <= BallsxDP(ActiveBallsxDP).BallYSpeed + BallsxDP(ActiveBallsxDP).BallYSpeed;
+                  BallsxDN(ActiveBallsxDN).BallXSpeed <= to_signed(-2, 4) when ActiveBallsxDP <= 1
+                                                               else to_signed(2, 4) when ActiveBallsxDP <= 2 
+                                                               else to_signed(1, 4);
+                end if;
+              end if;
+              
