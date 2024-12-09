@@ -78,10 +78,8 @@ architecture rtl of pong_top is
   signal VSEdgexS : std_logic; -- If 1, row counter resets (new frame). HIGH for 1 CC, when vertical sync starts)
 
   -- pong_fsm
---  signal BallXxD  : unsigned(COORD_BW - 1 downto 0); -- Coordinates of ball and plate
---  signal BallYxD  : unsigned(COORD_BW - 1 downto 0);
+  signal FsmStatexD : GameControl;
   signal BallsxD : BallArrayType;
-  signal ActiveBallsxD : natural;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
 
   -- TODO:
@@ -159,8 +157,8 @@ architecture rtl of pong_top is
       VSEdgexSI : in std_logic;
 
       -- Ball and plate coordinates
+      FsmStatexDO: out GameControl;
       BallsxDO : out BallArrayType;
-      ActiveBallsxDO : out natural;
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0)
     );
   end component pong_fsm;
@@ -230,9 +228,8 @@ begin
 
       VSEdgexSI => VSEdgexS,
 
+      FsmStatexDO => FsmStatexD,
       BallsxDO => BallsxD,
-      ActiveBallsxDO => ActiveBallsxD,
-
       PlateXxDO => PlateXxD
     );
 
@@ -274,16 +271,56 @@ begin
   end if;
 
   -- Ball
-  FOR i IN 0 TO (MaxBallCount)-1 LOOP
-    if(i<ActiveBallsxD) then
-        if (XCoordxD >= BallsxD(i).BallX and XCoordxD < BallsxD(i).BallX + BALL_WIDTH and YCoordxD >= BallsxD(i).BallY and YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) then
-            RedxS   <= "1111";
-            GreenxS <= "1111";
-            BluexS  <= "1111";
-        end if;
-     end if;
-  end loop;
-end process;
+  CASE FsmStatexD IS
+  
+  WHEN GameEnd =>
+    if (XCoordxD >= BallsxD(0).BallX and XCoordxD < BallsxD(0).BallX + BALL_WIDTH and YCoordxD >= BallsxD(0).BallY and YCoordxD < BallsxD(0).BallY + BALL_HEIGHT) then
+      RedxS   <= "1111";
+      GreenxS <= "1111";
+      BluexS  <= "1111";
+    end if;
+
+  WHEN Game1Ball =>
+    if (XCoordxD >= BallsxD(0).BallX and XCoordxD < BallsxD(0).BallX + BALL_WIDTH and YCoordxD >= BallsxD(0).BallY and YCoordxD < BallsxD(0).BallY + BALL_HEIGHT) then
+      RedxS   <= "1111";
+      GreenxS <= "1111";
+      BluexS  <= "1111";
+    end if;
+
+  WHEN Game2Ball =>
+    if (XCoordxD >= BallsxD(0).BallX and XCoordxD < BallsxD(0).BallX + BALL_WIDTH and YCoordxD >= BallsxD(0).BallY and YCoordxD < BallsxD(0).BallY + BALL_HEIGHT) then
+      RedxS   <= "1111";
+      GreenxS <= "1111";
+      BluexS  <= "1111";
+    end if;
+
+    if (XCoordxD >= BallsxD(1).BallX and XCoordxD < BallsxD(1).BallX + BALL_WIDTH and YCoordxD >= BallsxD(1).BallY and YCoordxD < BallsxD(1).BallY + BALL_HEIGHT) then
+      RedxS   <= "1111";
+      GreenxS <= "1111";
+      BluexS  <= "1111";
+    end if;
+
+  WHEN Game3Ball =>
+    if (XCoordxD >= BallsxD(0).BallX and XCoordxD < BallsxD(0).BallX + BALL_WIDTH and YCoordxD >= BallsxD(0).BallY and YCoordxD < BallsxD(0).BallY + BALL_HEIGHT) then
+      RedxS   <= "1111";
+      GreenxS <= "1111";
+      BluexS  <= "1111";
+    end if;
+
+    if (XCoordxD >= BallsxD(1).BallX and XCoordxD < BallsxD(1).BallX + BALL_WIDTH and YCoordxD >= BallsxD(1).BallY and YCoordxD < BallsxD(1).BallY + BALL_HEIGHT) then
+      RedxS   <= "1111";
+      GreenxS <= "1111";
+      BluexS  <= "1111";
+    end if;
+
+    if (XCoordxD >= BallsxD(2).BallX and XCoordxD < BallsxD(2).BallX + BALL_WIDTH and YCoordxD >= BallsxD(2).BallY and YCoordxD < BallsxD(2).BallY + BALL_HEIGHT) then
+      RedxS   <= "1111";
+      GreenxS <= "1111";
+      BluexS  <= "1111";
+    end if;
+
+  END CASE;
+  end process;
 
 end rtl;
 --=============================================================================

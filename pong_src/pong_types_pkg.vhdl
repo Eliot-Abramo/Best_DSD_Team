@@ -9,6 +9,8 @@ PACKAGE pong_types_pkg IS
   
   CONSTANT MaxBallCount : natural := 3;
 
+  TYPE GameControl IS (Game1Ball, Game2Ball, Game3Ball, GameEnd);
+  
   TYPE BallType IS RECORD
     BallX     : unsigned(COORD_BW - 1 DOWNTO 0);
     BallY     : unsigned(COORD_BW - 1 DOWNTO 0);
