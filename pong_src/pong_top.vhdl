@@ -159,8 +159,6 @@ architecture rtl of pong_top is
       VSEdgexSI : in std_logic;
 
       -- Ball and plate coordinates
---      BallXxDO  : out unsigned(COORD_BW - 1 downto 0);
---      BallYxDO  : out unsigned(COORD_BW - 1 downto 0);
       BallsxDO : out BallArrayType;
       ActiveBallsxDO : out natural;
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0)
@@ -232,8 +230,6 @@ begin
 
       VSEdgexSI => VSEdgexS,
 
---      BallXxDO  => BallXxD,
---      BallYxDO  => BallYxD,
       BallsxDO => BallsxD,
       ActiveBallsxDO => ActiveBallsxD,
 

@@ -13,10 +13,7 @@ PACKAGE pong_types_pkg IS
     BallX     : unsigned(COORD_BW - 1 DOWNTO 0);
     BallY     : unsigned(COORD_BW - 1 DOWNTO 0);
     BallXSpeed: signed(2-1 DOWNTO 0);
-    BallYSpeed: signed(2-1 DOWNTO 0);
-    
-    -- PlateLeftxD : signed(COORD_BW - 1 DOWNTO 0);
-    -- PlateRightxD : signed(COORD_BW - 1 DOWNTO 0);
+    BallYSpeed: signed(2-1 DOWNTO 0);    
   END RECORD;
 
   TYPE BallArrayType IS ARRAY (0 TO 3-1) OF BallType;
