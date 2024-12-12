@@ -18,5 +18,6 @@ PACKAGE pong_types_pkg IS
     BallYSpeed: signed(2-1 DOWNTO 0);    
   END RECORD;
 
-  TYPE BallArrayType IS ARRAY (0 TO 3-1) OF BallType;
+  TYPE BallArrayType IS ARRAY (0 TO MaxBallCount-1) OF BallType;
+  
 END PACKAGE;

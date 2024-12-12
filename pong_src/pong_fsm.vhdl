@@ -16,7 +16,7 @@ use work.pong_types_pkg.all;
 -- pong_fsm
 --
 -- @brief This file specifies a basic circuit for the pong game. Note that coordinates are counted
--- from the upper left corner of the screen.z
+-- from the upper left corner of the screen.
 --
 --=============================================================================
 
@@ -58,12 +58,12 @@ end pong_fsm;
 --=============================================================================
 architecture rtl of pong_fsm is
   -- Init variables to start game  
-  CONSTANT BALL_X_INIT                : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(HS_DISPLAY/2 - BALL_WIDTH/2, COORD_BW);
-  CONSTANT BALL_Y_INIT                : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(VS_DISPLAY/2 - BALL_HEIGHT/2, COORD_BW);
-  CONSTANT PLATE_X_INIT               : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(HS_DISPLAY/2 - PLATE_WIDTH/2, COORD_BW);
+  CONSTANT BALL_X_INIT  : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(HS_DISPLAY/2 - BALL_WIDTH/2, COORD_BW);
+  CONSTANT BALL_Y_INIT  : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(VS_DISPLAY/2 - BALL_HEIGHT/2, COORD_BW);
+  CONSTANT PLATE_X_INIT : unsigned(COORD_BW - 1 DOWNTO 0) := to_unsigned(HS_DISPLAY/2 - PLATE_WIDTH/2, COORD_BW);
   
   -- State of Plate
-  SIGNAL PlateXxDP, PlateXxDN         : unsigned(COORD_BW - 1 DOWNTO 0) := PLATE_X_INIT;
+  SIGNAL PlateXxDP, PlateXxDN : unsigned(COORD_BW - 1 DOWNTO 0) := PLATE_X_INIT;
   -- Bottom left corner
   SIGNAL PlateLeft0xDP, PlateLeft0xDN   : signed(COORD_BW-1 downto 0) := resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
   -- Bottom right corner 
@@ -98,6 +98,44 @@ architecture rtl of pong_fsm is
 
   -- Highscore init
   SIGNAL HighscorexDN, HighscorexDP : unsigned(4-1 DOWNTO 0) := to_unsigned(1,4);
+
+--=============================================================================
+-- PROCEDURE DECLARATION
+--=============================================================================
+  -- Procedure to handle ball updates and collisions
+  PROCEDURE UpdateBall (
+    SIGNAL Ball : INOUT BallType;
+    SIGNAL PlateX : IN unsigned(COORD_BW - 1 DOWNTO 0);
+    SIGNAL Highscore : INOUT unsigned(3 DOWNTO 0)
+  ) IS
+  BEGIN
+    -- Check for horizontal wall collisions
+    IF (Ball.BallX <= 2 * BALL_STEP_X AND Ball.BallXSpeed < 0) OR
+       (Ball.BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X) AND Ball.BallXSpeed > 0) THEN
+      Ball.BallXSpeed <= -Ball.BallXSpeed;
+    END IF;
+
+    -- Check for vertical wall collisions
+    IF (Ball.BallY <= 2 * BALL_STEP_Y AND Ball.BallYSpeed < 0) THEN
+      Ball.BallYSpeed <= -Ball.BallYSpeed;
+    END IF;
+
+    -- Check for collisions with the plate
+    IF Ball.BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT) THEN
+      IF (Ball.BallX >= PlateX AND Ball.BallX <= PlateX + PLATE_WIDTH) THEN
+        IF Ball.BallYSpeed >= 0 THEN
+          Ball.BallYSpeed <= -Ball.BallYSpeed;
+          Highscore <= Highscore + 1;
+        END IF;
+      ELSE
+        FsmStatexDN <= GameEnd;
+      END IF;
+    END IF;
+
+    -- Update ball position
+    Ball.BallX <= resize(unsigned(signed(Ball.BallX) + Ball.BallXSpeed * to_signed(BALL_STEP_X, COORD_BW)), COORD_BW);
+    Ball.BallY <= resize(unsigned(signed(Ball.BallY) + Ball.BallYSpeed * to_signed(BALL_STEP_Y, COORD_BW)), COORD_BW);
+  END PROCEDURE;
 
 --=============================================================================
 -- ARCHITECTURE BEGIN
@@ -153,7 +191,6 @@ begin
       PlateLeft2xDP  <= PlateLeft2xDN;
       PlateRight2xDP <= PlateRight2xDN;
 
-      
     END IF;
 
   END PROCESS; 
@@ -211,7 +248,7 @@ begin
 
         -- Check if player starts game:
         if(LeftxSI = '1' and RightxSI = '1') then
-          FsmStatexDN  <= Game2Ball;
+          FsmStatexDN  <= Game2Ball;  -- TODO why Game2Ball?
           VSEdgexSN <= '0';
           HighScorexDN <= to_unsigned(1,4);
 
@@ -221,9 +258,53 @@ begin
             BallY      => BALL_Y_INIT,
             BallXSpeed => to_signed(0, 2),
             BallYSpeed => to_signed(1, 2)
-            ));
+          ));
 
         end if;
+
+
+
+      -- TODO NEW 
+      -- Handle plate movement
+    IF LeftxSI = '1' THEN
+      IF PlateXxDP <= PLATE_STEP_X THEN
+        PlateXxDN <= PlateXxDP + HS_DISPLAY - PLATE_STEP_X;
+      ELSE
+        PlateXxDN <= PlateXxDP - PLATE_STEP_X;
+      END IF;
+    ELSIF RightxSI = '1' THEN
+      IF PlateXxDP >= HS_DISPLAY - PLATE_STEP_X THEN
+        PlateXxDN <= PlateXxDP - HS_DISPLAY + PLATE_STEP_X;
+      ELSE
+        PlateXxDN <= PlateXxDP + PLATE_STEP_X;
+      END IF;
+    END IF;
+
+    -- State machine
+    CASE FsmStatexDP IS
+      WHEN Game1Ball =>
+        UpdateBall(BallsxDN(0), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
+        
+        IF HighscorexDP > to_unsigned(3, 4) THEN
+          FsmStatexDN <= Game2Ball;
+        END IF;
+
+      WHEN Game2Ball =>
+        UpdateBall(BallsxDN(0), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
+        UpdateBall(BallsxDN(1), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
+        
+        IF HighscorexDP > to_unsigned(5, 4) THEN
+          FsmStatexDN <= Game3Ball;
+        END IF;
+
+      WHEN Game3Ball =>
+        UpdateBall(BallsxDN(0), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
+        UpdateBall(BallsxDN(1), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
+        UpdateBall(BallsxDN(2), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
+
+      WHEN OTHERS =>
+        FsmStatexDN <= GameEnd;
+    END CASE;
 
       --=========================================================================
       -- Game One Ball Logic
@@ -286,7 +367,7 @@ begin
           BallsxDN(0).BallX <= resize(unsigned(signed(resize(BallsxDP(0).BallX, COORD_BW + 1)) + resize(BallsxDP(0).BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
           BallsxDN(0).BallY <= resize(unsigned(signed(resize(BallsxDP(0).BallY, COORD_BW + 1)) + resize(BallsxDP(0).BallYSPeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
               
-          PlateLeft0xDN <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
+          PlateLeft0xDN  <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
           PlateRight0xDN <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);  
         end if;
 

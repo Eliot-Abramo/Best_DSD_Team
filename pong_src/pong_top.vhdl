@@ -86,6 +86,13 @@ architecture rtl of pong_top is
   signal DrawBallxS  : std_logic; -- If 1, draw the ball
   signal DrawPlatexS : std_logic; -- If 1, draw the plate
 
+  -- Obstacle coordinates
+  signal Obstacle1XxD : unsigned(COORD_BW - 1 downto 0) := to_unsigned(200, COORD_BW);
+  signal Obstacle1YxD : unsigned(COORD_BW - 1 downto 0) := to_unsigned(100, COORD_BW);
+
+  signal Obstacle2XxD : unsigned(COORD_BW - 1 downto 0) := to_unsigned(400, COORD_BW);
+  signal Obstacle2YxD : unsigned(COORD_BW - 1 downto 0) := to_unsigned(150, COORD_BW);
+
 --=============================================================================
 -- COMPONENT DECLARATIONS
 --=============================================================================
@@ -245,7 +252,8 @@ begin
 
   -- Port B
   ENBxS     <= '1';
-  -- We "divide" by a factor of  4 to account for the bigger size of the screen coordinates and then multiply y for 256 pixels in a row
+  -- We "divide" by a factor of  4 to account for the bigger size of the screen 
+  -- coordinates and then multiply y for 256 pixels in a row
   -- TODO: optmize
   RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, 16));
 
@@ -257,70 +265,63 @@ begin
 --=============================================================================
 -- Sprite logic
 --=============================================================================
-process(all)
-begin
-  -- Default
-  RedxS <= BGRedxS;
-  GreenxS <= BGGreenxS;
-  BluexS <= BGBluexS;
-  -- Plate
-  if (XCoordxD >= PlateXxD and XCoordxD < PlateXxD + PLATE_WIDTH and YCoordxD >= VS_DISPLAY - PLATE_HEIGHT) then
-    RedxS   <= "1111";
-    GreenxS <= "1111";
-    BluexS  <= "1111";
-  end if;
+  PROCESS (all)
+    -- Function to map FSM states to the number of balls
+    FUNCTION BallCount (state : GameControl) RETURN natural IS
+    BEGIN
+      CASE state IS
+        WHEN Game1Ball => RETURN 1;
+        WHEN Game2Ball => RETURN 2;
+        WHEN Game3Ball => RETURN 3;
+        WHEN GameEnd   => RETURN 1;
+      END CASE;
+    END FUNCTION;
 
-  -- Ball
-  CASE FsmStatexD IS
-  
-  WHEN GameEnd =>
-    if (XCoordxD >= BallsxD(0).BallX and XCoordxD < BallsxD(0).BallX + BALL_WIDTH and YCoordxD >= BallsxD(0).BallY and YCoordxD < BallsxD(0).BallY + BALL_HEIGHT) then
+  BEGIN
+    -- Default background color
+    RedxS   <= BGRedxS;
+    GreenxS <= BGGreenxS;
+    BluexS  <= BGBluexS;
+
+    -- Plate logic
+    IF (XCoordxD >= PlateXxD AND XCoordxD < PlateXxD + PLATE_WIDTH AND YCoordxD >= VS_DISPLAY - PLATE_HEIGHT) THEN
       RedxS   <= "1111";
       GreenxS <= "1111";
       BluexS  <= "1111";
-    end if;
+    END IF;
 
-  WHEN Game1Ball =>
-    if (XCoordxD >= BallsxD(0).BallX and XCoordxD < BallsxD(0).BallX + BALL_WIDTH and YCoordxD >= BallsxD(0).BallY and YCoordxD < BallsxD(0).BallY + BALL_HEIGHT) then
-      RedxS   <= "1111";
-      GreenxS <= "1111";
-      BluexS  <= "1111";
-    end if;
+    -- Ball logic 
+    FOR i IN 0 TO BallCount(FsmStatexD) - 1 LOOP
+      IF (XCoordxD >= BallsxD(i).BallX AND XCoordxD < BallsxD(i).BallX + BALL_WIDTH AND
+          YCoordxD >= BallsxD(i).BallY AND YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) THEN
+        RedxS   <= "1111";
+        GreenxS <= "1111";
+        BluexS  <= "1111";
+      END IF;
+    END LOOP;
 
-  WHEN Game2Ball =>
-    if (XCoordxD >= BallsxD(0).BallX and XCoordxD < BallsxD(0).BallX + BALL_WIDTH and YCoordxD >= BallsxD(0).BallY and YCoordxD < BallsxD(0).BallY + BALL_HEIGHT) then
-      RedxS   <= "1111";
-      GreenxS <= "1111";
-      BluexS  <= "1111";
-    end if;
+    -- Obstacle logic for Game2Ball and Game3Ball states
+    IF (FsmStatexD = Game2Ball OR FsmStatexD = Game3Ball) THEN
+      -- Draw the first obstacle
+      IF (XCoordxD >= Obstacle1XxD AND XCoordxD < Obstacle1XxD + OBSTACLE_WIDTH AND
+          YCoordxD >= Obstacle1YxD AND YCoordxD < Obstacle1YxD + OBSTACLE_HEIGHT) THEN
+        RedxS   <= "1111";
+        GreenxS <= "0000";
+        BluexS  <= "0000";
+      END IF;
+    END IF;
 
-    if (XCoordxD >= BallsxD(1).BallX and XCoordxD < BallsxD(1).BallX + BALL_WIDTH and YCoordxD >= BallsxD(1).BallY and YCoordxD < BallsxD(1).BallY + BALL_HEIGHT) then
-      RedxS   <= "1111";
-      GreenxS <= "1111";
-      BluexS  <= "1111";
-    end if;
+    IF (FsmStatexD = Game3Ball) THEN
+      -- Draw the second obstacle
+      IF (XCoordxD >= Obstacle2XxD AND XCoordxD < Obstacle2XxD + OBSTACLE_WIDTH AND
+          YCoordxD >= Obstacle2YxD AND YCoordxD < Obstacle2YxD + OBSTACLE_HEIGHT) THEN
+        RedxS   <= "1111";
+        GreenxS <= "0000";
+        BluexS  <= "0000";
+      END IF;
+    END IF;
 
-  WHEN Game3Ball =>
-    if (XCoordxD >= BallsxD(0).BallX and XCoordxD < BallsxD(0).BallX + BALL_WIDTH and YCoordxD >= BallsxD(0).BallY and YCoordxD < BallsxD(0).BallY + BALL_HEIGHT) then
-      RedxS   <= "1111";
-      GreenxS <= "1111";
-      BluexS  <= "1111";
-    end if;
-
-    if (XCoordxD >= BallsxD(1).BallX and XCoordxD < BallsxD(1).BallX + BALL_WIDTH and YCoordxD >= BallsxD(1).BallY and YCoordxD < BallsxD(1).BallY + BALL_HEIGHT) then
-      RedxS   <= "1111";
-      GreenxS <= "1111";
-      BluexS  <= "1111";
-    end if;
-
-    if (XCoordxD >= BallsxD(2).BallX and XCoordxD < BallsxD(2).BallX + BALL_WIDTH and YCoordxD >= BallsxD(2).BallY and YCoordxD < BallsxD(2).BallY + BALL_HEIGHT) then
-      RedxS   <= "1111";
-      GreenxS <= "1111";
-      BluexS  <= "1111";
-    end if;
-
-  END CASE;
-  end process;
+  END PROCESS;
 
 end rtl;
 --=============================================================================
