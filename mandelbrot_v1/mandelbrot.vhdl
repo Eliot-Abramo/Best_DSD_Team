@@ -72,14 +72,13 @@ architecture rtl of mandelbrot is
   -- signals for the next iteration in the mandelbrot algorithm
   signal Zr_next : signed(N_BITS - 1 downto 0);
   signal Zi_next : signed(N_BITS - 1 downto 0);
-  
-  -- constants
-  constant FOUR_FIXED : signed(2*N_BITS-1 downto 0) := to_signed(4 * 2**15, 2*N_BITS);
-  signal temp_real_sq : signed(2*N_BITS-1 downto 0);
-  signal temp_imag_sq : signed(2*N_BITS-1 downto 0);
-  signal magnitude_sq : signed(2*N_BITS-1 downto 0);
-  signal Zr_sq : signed(2*N_BITS-1 downto 0);
-  signal Zi_sq : signed(2*N_BITS-1 downto 0);
+
+  signal Z_rxDN, Z_rxDP : signed(N_BITS - 1 downto 0):= (others => '0');
+  signal Z_ixDN, Z_ixDP : signed(N_BITS - 1 downto 0):= (others => '0');
+  signal XComplex_FULLxD, YComplex_FULLxD, Complex_NORMxD  : unsigned(N_BITS + N_BITS - 1 downto 0);
+  signal X_SQxD, Y_SQxD : signed(N_BITS - 1 downto 0);
+  signal Complex_XY_FULLxD  : signed(N_BITS + N_BITS - 1 downto 0):= (others => '0');
+  signal Complex_XYxD  : signed(N_BITS - 1 downto 0);
 
 --=============================================================================
 -- ARCHITECTURE BEGIN
@@ -207,22 +206,35 @@ begin
         ZixDN <= (others => '0');
     
     elsif rising_edge(CLKxCI) then
-      temp_real_sq <= resize(XComplexCompxDP, temp_real_sq'length) * resize(XComplexCompxDP, temp_real_sq'length);
-      temp_imag_sq <= resize(YComplexCompxDP, temp_imag_sq'length) * resize(YComplexCompxDP, temp_imag_sq'length);
+      XComplex_FULLxD <= unsigned(Z_rxDP * Z_rxDP);
+      X_SQxD <= signed(XComplex_FULLxD(N_BITS + N_FRAC - 1 downto N_FRAC));
+      
+      YComplex_FULLxD <= unsigned(Z_ixDP * Z_ixDP);
+      Y_SQxD <= signed(YComplex_FULLxD(N_BITS + N_FRAC - 1 downto N_FRAC));
+  
+      Complex_NORMxD <= YComplex_FULLxD + XComplex_FULLxD;
 
-      magnitude_sq <= temp_real_sq + temp_imag_sq;
-
-      if iterxDP = MAX_ITER or magnitude_sq > FOUR_FIXED then
+      if iterxDP = MAX_ITER or Complex_NORMxD > ITER_LIM then
         iterxDN <= (others => '0');
         WExSO <= '1';
         EnableCompXxS <= '1';
+
+        Complex_XY_FULLxD <= resize(2 * Z_rxDP * Z_ixDP, 2*N_BITS);
+        Complex_XYxD <= Complex_XY_FULLxD(N_BITS + N_FRAC - 1 downto N_FRAC);
+
+        Zr_next <=  X_SQxD - Y_SQxD + XComplexCompxDP;
+        Zi_next <=  Complex_XYxD + YComplexCompxDP;
+
+        ZrxDN <= Zr_next;
+        ZixDN <= Zi_next;
+
       else
         WExSO <= '0';
         EnableCompXxS <= '0';
         iterxDN <= iterxDP + 1;
 
-        Zr_next <= ZrxDP * ZrxDP - ZixDP * ZixDP + XComplexCompxDP;
-        Zi_next <= 2 * ZrxDP * ZixDP + YComplexCompxDP;
+        Zr_next <= XComplexCompxDP;
+        Zi_next <= YComplexCompxDP;
 
         ZrxDN <= Zr_next;
         ZixDN <= Zi_next;
