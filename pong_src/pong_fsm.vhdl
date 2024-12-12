@@ -49,7 +49,7 @@ ENTITY pong_fsm is
 
     -- Plate
     PlateXxDO : out unsigned(COORD_BW - 1 downto 0)
-
+    
   );
 end pong_fsm;
 
@@ -64,31 +64,23 @@ architecture rtl of pong_fsm is
   
   -- State of Plate
   SIGNAL PlateXxDP, PlateXxDN : unsigned(COORD_BW - 1 DOWNTO 0) := PLATE_X_INIT;
-  -- Bottom left corner
-  SIGNAL PlateLeft0xDP, PlateLeft0xDN   : signed(COORD_BW-1 downto 0) := resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-  -- Bottom right corner 
-  SIGNAL PlateRight0xDP, PlateRight0xDN : signed(COORD_BW - 1 downto 0) := resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW); 
 
-  -- Bottom left corner
-  SIGNAL PlateLeft1xDP, PlateLeft1xDN   : signed(COORD_BW-1 downto 0) := resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-  -- Bottom right corner 
-  SIGNAL PlateRight1xDP, PlateRight1xDN : signed(COORD_BW - 1 downto 0) := resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW); 
-
-  -- Bottom left corner
-  SIGNAL PlateLeft2xDP, PlateLeft2xDN   : signed(COORD_BW-1 downto 0) := resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-  -- Bottom right corner 
-  SIGNAL PlateRight2xDP, PlateRight2xDN : signed(COORD_BW - 1 downto 0) := resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW); 
-
+  -- Signal containing the bump of balls with plate to control angle reaction
+  SIGNAL PlateBumpxDP, PlateBumpxDN : PlateBumpArrayType := (OTHERS => (
+    Left => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) -
+                   signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
+    Right => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - 
+                    signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
+   ));    
+  
   -- Signal containing all of the balls
   SIGNAL BallsxDN, BallsxDP : BallArrayType := (OTHERS => (
     BallX      => BALL_X_INIT,
     BallY      => BALL_Y_INIT,
     BallXSpeed => to_signed(0, 2),
-    BallYSpeed => to_signed(0, 2)
+    BallYSpeed => to_signed(0, 2),
+    IsActive   => to_unsigned(0, 2)
   ));
-
-  -- Number of active balls
-  SIGNAL ActiveBallsxDP, ActiveBallsxDN : unsigned(4-1 DOWNTO 0) := to_unsigned(1,4);
 
   -- States of FSM
   SIGNAL FsmStatexDP, FsmStatexDN : GameControl := GameEnd;
@@ -103,39 +95,79 @@ architecture rtl of pong_fsm is
 -- PROCEDURE DECLARATION
 --=============================================================================
   -- Procedure to handle ball updates and collisions
-  PROCEDURE UpdateBall (
-    SIGNAL Ball : INOUT BallType;
-    SIGNAL PlateX : IN unsigned(COORD_BW - 1 DOWNTO 0);
-    SIGNAL Highscore : INOUT unsigned(3 DOWNTO 0)
+ PROCEDURE UpdateBall (
+    -- TODO: An InOut statement could work instead of having 2 statements, but I'm afraid of VHDL
+    -- inferring Latches which the prof. doesn't want.
+    SIGNAL BallIn : IN BallType;
+    SIGNAL BallOut : OUT BAllType;
+    
+    SIGNAL PlateBumpIn : IN PlateBumpType;
+    SIGNAL PlateBumpOut : OUT PlateBumpType;
+    
+    SIGNAL HighscoreOut : OUT unsigned(4-1 DOWNTO 0);
+    
+    SIGNAL FsmState : INOUT GameControl
   ) IS
   BEGIN
     -- Check for horizontal wall collisions
-    IF (Ball.BallX <= 2 * BALL_STEP_X AND Ball.BallXSpeed < 0) OR
-       (Ball.BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X) AND Ball.BallXSpeed > 0) THEN
-      Ball.BallXSpeed <= -Ball.BallXSpeed;
+    IF (BallIn.BallX <= 2 * BALL_STEP_X AND BallIn.BallXSpeed < 0) OR
+       (BallIn.BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X) AND BallIn.BallXSpeed > 0) THEN
+      BallOut.BallXSpeed <= -BallIn.BallXSpeed;
     END IF;
 
     -- Check for vertical wall collisions
-    IF (Ball.BallY <= 2 * BALL_STEP_Y AND Ball.BallYSpeed < 0) THEN
-      Ball.BallYSpeed <= -Ball.BallYSpeed;
+    IF (BallIn.BallY <= 2 * BALL_STEP_Y AND BallIn.BallYSpeed < 0) THEN
+      BallOut.BallYSpeed <= -BallIn.BallYSpeed;
     END IF;
 
     -- Check for collisions with the plate
-    IF Ball.BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT) THEN
-      IF (Ball.BallX >= PlateX AND Ball.BallX <= PlateX + PLATE_WIDTH) THEN
-        IF Ball.BallYSpeed >= 0 THEN
-          Ball.BallYSpeed <= -Ball.BallYSpeed;
-          Highscore <= Highscore + 1;
+    IF BallIn.BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT) THEN
+      IF (PlateBumpIn.Right > 0 AND PlateBumpIn.Left < PLATE_WIDTH) THEN
+        IF BallIn.BallYSpeed >= 0 THEN
+          HighscoreOut <= HighscorexDP + 1;
+          BallOut.BallYSpeed <= -BallIn.BallYSpeed;
+          BallOut.BallXSpeed <= to_signed(-1, 2) when PlateBumpIn.Right < (PLATE_WIDTH / 3)
+                                                  else to_signed(0, 2) when PlateBumpIn.Right < ((2*PLATE_WIDTH)/ 3) 
+                                                  else to_signed(1, 2); 
         END IF;
       ELSE
-        FsmStatexDN <= GameEnd;
+        FsmState <= GameEnd;
       END IF;
     END IF;
 
     -- Update ball position
-    Ball.BallX <= resize(unsigned(signed(Ball.BallX) + Ball.BallXSpeed * to_signed(BALL_STEP_X, COORD_BW)), COORD_BW);
-    Ball.BallY <= resize(unsigned(signed(Ball.BallY) + Ball.BallYSpeed * to_signed(BALL_STEP_Y, COORD_BW)), COORD_BW);
-  END PROCEDURE;
+    BallOut.BallX <= resize(unsigned(signed(resize(BallIn.BallX, COORD_BW + 1)) + resize(BallIn.BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
+    BallOut.BallY <= resize(unsigned(signed(resize(BallIn.BallY, COORD_BW + 1)) + resize(BallIn.BallYSpeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
+
+    PlateBumpOut.Left  <= resize(signed(resize(BallOut.BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
+    PlateBumpOut.Right <= resize(signed(resize(BallOut.BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
+
+END PROCEDURE;
+
+PROCEDURE MovePlate(
+    SIGNAL PlateIn : IN unsigned(COORD_BW - 1 DOWNTO 0);
+    SIGNAL PlateOut : OUT unsigned(COORD_BW - 1 DOWNTO 0)
+) IS 
+BEGIN
+  -- Check motion of plate
+  if(LeftxSI = '1') then
+      if PlateIn <= PLATE_STEP_X then
+          PlateOut <= PlateIn + HS_DISPLAY - PLATE_STEP_X;
+      else
+      PlateOut <= PlateIn - PLATE_STEP_X;
+      end if;
+  end if;
+        
+  if(RightxSI = '1') then
+    PlateOut <= PlateIn + PLATE_STEP_X;
+    if PlateIn >= HS_DISPLAY - PLATE_STEP_X then
+      PlateOut <= PlateIn - HS_DISPLAY + PLATE_STEP_X;
+    else
+    PlateOut <= PlateIn + PLATE_STEP_X;
+    end if;
+  end if;
+
+END PROCEDURE;
 
 --=============================================================================
 -- ARCHITECTURE BEGIN
@@ -152,22 +184,20 @@ begin
 
       PlateXxDP          <= PLATE_X_INIT;
       HighscorexDP       <= to_unsigned(1,4);
-      ActiveBallsxDP     <= to_unsigned(1,4);
 
-      PlateLeft0xDP       <= resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-      PlateRight0xDP      <= resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-
-      PlateLeft1xDP       <= resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-      PlateRight1xDP      <= resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-
-      PlateLeft2xDP       <= resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-      PlateRight2xDP      <= resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
+      PlateBumpxDP <=(OTHERS => (
+       Left => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) -
+                        signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
+       Right => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - 
+                        signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
+      ));    
 
       BallsxDP <= (OTHERS => (
         BallX      => BALL_X_INIT,
         BallY      => BALL_Y_INIT,
         BallXSpeed => to_signed(0, 2),
-        BallYSpeed => to_signed(0, 2)
+        BallYSpeed => to_signed(0, 2),
+        IsActive   => to_unsigned(0,2)
       ));
 
     ELSIF rising_edge(CLKxCI) THEN
@@ -177,20 +207,11 @@ begin
 
       -- Update Balls
       BallsxDP      <= BallsxDN;
-      ActiveBallsxDP <= ActiveBallsxDN;
 
       -- Update plate
       PlateXxDP     <= PlateXxDN;
-
-      PlateLeft0xDP  <= PlateLeft0xDN;
-      PlateRight0xDP <= PlateRight0xDN;
-
-      PlateLeft1xDP  <= PlateLeft1xDN;
-      PlateRight1xDP <= PlateRight1xDN;
-
-      PlateLeft2xDP  <= PlateLeft2xDN;
-      PlateRight2xDP <= PlateRight2xDN;
-
+      PlateBumpxDP  <= PlateBumpxDN;
+        
     END IF;
 
   END PROCESS; 
@@ -209,21 +230,11 @@ begin
 
     -- Update Balls
     BallsxDN          <= BallsxDP;
-    ActiveBallsxDN    <= ActiveBallsxDP;
 
     -- Update Plate
     PlateXxDN         <= PlateXxDP;
+    PlateBumpxDN      <= PlateBumpxDP;
 
-    PlateLeft0xDN      <= PlateLeft0xDP;
-    PlateRight0xDN     <= PlateRight0xDP;
-
-    PlateLeft1xDN      <= PlateLeft1xDP;
-    PlateRight1xDN     <= PlateRight1xDP;
-
-    PlateLeft2xDN      <= PlateLeft2xDP;
-    PlateRight2xDN     <= PlateRight2xDP;
-
-    
     -- State machine
     CASE FsmStatexDP IS
       --=========================================================================
@@ -239,384 +250,76 @@ begin
           BallX      => BALL_X_INIT,
           BallY      => BALL_Y_INIT,
           BallXSpeed => to_signed(0, 2),
-          BallYSpeed => to_signed(0, 2)
+          BallYSpeed => to_signed(0, 2),
+          IsActive   => to_unsigned(0,2)
         ));
-        ActiveBallsxDN     <= to_unsigned(1,4);
-
+        
         -- Update Plate
         PlateXxDN          <= PLATE_X_INIT;
 
-        -- Check if player starts game:
+        -- Check if player starts game
         if(LeftxSI = '1' and RightxSI = '1') then
-          FsmStatexDN  <= Game2Ball;  -- TODO why Game2Ball?
+          FsmStatexDN  <= Game1Ball;
           VSEdgexSN <= '0';
           HighScorexDN <= to_unsigned(1,4);
 
-          ActiveBallsxDN <= to_unsigned(1,4);          
-          BallsxDN <= (OTHERS => (
-            BallX      => BALL_X_INIT,
-            BallY      => BALL_Y_INIT,
-            BallXSpeed => to_signed(0, 2),
-            BallYSpeed => to_signed(1, 2)
-          ));
-
+--           BallsxDN <= (OTHERS => (
+--             BallX      => BALL_X_INIT,
+--             BallY      => BALL_Y_INIT,
+--             BallXSpeed => to_signed(0, 2),
+--             BallYSpeed => to_signed(1, 2),
+--             IsActive   => to_unsigned(0,2)
+--           ));
+         BallsxDN(0).BallYSpeed <= to_signed(1,2);
+         BallsxDN(0).IsActive <= to_unsigned(1,2);
         end if;
 
-
-
-      -- TODO NEW 
-      -- Handle plate movement
-    IF LeftxSI = '1' THEN
-      IF PlateXxDP <= PLATE_STEP_X THEN
-        PlateXxDN <= PlateXxDP + HS_DISPLAY - PLATE_STEP_X;
-      ELSE
-        PlateXxDN <= PlateXxDP - PLATE_STEP_X;
-      END IF;
-    ELSIF RightxSI = '1' THEN
-      IF PlateXxDP >= HS_DISPLAY - PLATE_STEP_X THEN
-        PlateXxDN <= PlateXxDP - HS_DISPLAY + PLATE_STEP_X;
-      ELSE
-        PlateXxDN <= PlateXxDP + PLATE_STEP_X;
-      END IF;
-    END IF;
-
-    -- State machine
-    CASE FsmStatexDP IS
       WHEN Game1Ball =>
-        UpdateBall(BallsxDN(0), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
-        
-        IF HighscorexDP > to_unsigned(3, 4) THEN
-          FsmStatexDN <= Game2Ball;
+        IF(VSEdgexSP = '0' and VSEdgexSN = '1') then
+          -- Check switching condition
+          IF HighscorexDP > to_unsigned(3, 4) THEN
+            BallsxDN(1).IsActive <= to_unsigned(1,2);
+            BallsxDN(1).BallYSpeed <= to_signed(1,2);
+            FsmStatexDN <= Game2Ball;
+          END IF;
+          
+         MovePlate(PlateXxDP, PlateXxDN);
+         UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), HighscorexDN, FsmStatexDN);
+
         END IF;
 
       WHEN Game2Ball =>
-        UpdateBall(BallsxDN(0), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
-        UpdateBall(BallsxDN(1), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
+        IF(VSEdgexSP = '0' and VSEdgexSN = '1') then
+          -- Check switching condition
+          IF HighscorexDP > to_unsigned(5, 4) THEN
+            BallsxDN(2).IsActive <= to_unsigned(1,2);
+            BallsxDN(2).BallYSpeed <= to_signed(1,2);
+            FsmStatexDN <= Game3Ball;
+          END IF;
         
-        IF HighscorexDP > to_unsigned(5, 4) THEN
-          FsmStatexDN <= Game3Ball;
+          MovePlate(PlateXxDP, PlateXxDN);       
+          UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), HighscorexDN, FsmStatexDN);    
+          UpdateBall(BallsxDP(1), BallsxDN(1), PlateBumpxDP(1), PlateBumpxDN(1), HighscorexDN, FsmStatexDN);
+
         END IF;
 
       WHEN Game3Ball =>
-        UpdateBall(BallsxDN(0), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
-        UpdateBall(BallsxDN(1), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
-        UpdateBall(BallsxDN(2), PlateXxDP, PlateLeftxDP, PlateRightxDP, HighscorexDN);
-
+      IF(VSEdgexSP = '0' and VSEdgexSN = '1') then
+       MovePlate(PlateXxDP, PlateXxDN);       UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), HighscorexDN, FsmStatexDN);  
+       UpdateBall(BallsxDP(1), BallsxDN(1), PlateBumpxDP(1), PlateBumpxDN(1), HighscorexDN, FsmStatexDN);
+       UpdateBall(BallsxDP(2), BallsxDN(2), PlateBumpxDP(2), PlateBumpxDN(2), HighscorexDN, FsmStatexDN);
+      END IF;
+      
       WHEN OTHERS =>
         FsmStatexDN <= GameEnd;
-    END CASE;
 
-      --=========================================================================
-      -- Game One Ball Logic
-      --=========================================================================
-      WHEN Game1Ball =>
-        -- Update frames of game
-        if(VSEdgexSP = '0' and VSEdgexSN = '1') then
-          -- Conditions to make FSM evolve to future states
-          if((HighscorexDP > to_unsigned(3,4))) then
-            FsmStatexDN    <= Game2Ball;
-            ActiveBallsxDN <= to_unsigned(2,4);
-          end if;
-          
-          -- Check motion of plate
-          if(LeftxSI = '1') then
-            if PlateXxDP <= PLATE_STEP_X then
-              PlateXxDN <= PlateXxDP + HS_DISPLAY - PLATE_STEP_X;
-            else
-              PlateXxDN <= PlateXxDP - PLATE_STEP_X;
-            end if;
-          end if;
-        
-          if(RightxSI = '1') then
-            PlateXxDN <= PlateXxDP + PLATE_STEP_X;
-            if PlateXxDP >= HS_DISPLAY - PLATE_STEP_X then
-              PlateXxDN <= PlateXxDP - HS_DISPLAY + PLATE_STEP_X;
-            else
-              PlateXxDN <= PlateXxDP + PLATE_STEP_X;
-            end if;
-          end if;
-
-          --=====================================================================
-          -- Make Ball One Evolve
-          --=====================================================================
-          -- check if ball hits the sides of the map
-          if((BallsxDP(0).BallX <= 2*BALL_STEP_X) and (BallsxDP(0).BallXSpeed < 0)) or ((BallsxDP(0).BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X)) and (BallsxDP(0).BallXSpeed  > 0)) then
-            BallsxDN(0).BallXSpeed <= - BallsxDP(0).BallXSpeed;
-            end if;
-
-            if((BallsxDP(0).BallY <= 2*BALL_STEP_Y) and (BallsxDP(0).BallYSpeed < 0)) then
-              BallsxDN(0).BallYSpeed <= - BallsxDP(0).BallYSpeed;
-            end if;
-      
-            -- check collisions with plate
-            if(BallsxDP(0).BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT)) then
-              if((PlateRight0xDP > 0) and (PlateLeft0xDP < PLATE_WIDTH)) then 
-                if(BallsxDP(0).BallYSpeed >= 0) then
-                  HighscorexDN <= HighscorexDP + 1;
-                  
-                  BallsxDN(0).BallYSpeed <= - BallsxDP(0).BallYSpeed;
-                  BallsxDN(0).BallXSpeed <= to_signed(-1, 2) when PlateRight0xDP < (PLATE_WIDTH / 3)
-                                                             else to_signed(0, 2) when PlateRight0xDP < ((2*PLATE_WIDTH)/ 3) 
-                                                             else to_signed(1, 2);                    
-                end if;
-              else
-                FsmStatexDN <= GameEnd;
-              end if;
-          end if;
-
-          BallsxDN(0).BallX <= resize(unsigned(signed(resize(BallsxDP(0).BallX, COORD_BW + 1)) + resize(BallsxDP(0).BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
-          BallsxDN(0).BallY <= resize(unsigned(signed(resize(BallsxDP(0).BallY, COORD_BW + 1)) + resize(BallsxDP(0).BallYSPeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
-              
-          PlateLeft0xDN  <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          PlateRight0xDN <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);  
-        end if;
-
-
-
-      --=========================================================================
-      -- Game Two Ball Logic
-      --=========================================================================
-      WHEN Game2Ball =>
-        -- Update frames of game
-        if(VSEdgexSP = '0' and VSEdgexSN = '1') then
-          if ((HighscorexDP > to_unsigned(5,4))) then
-            FsmStatexDN <= Game3Ball;
-            ActiveBallsxDN <= to_unsigned(3,4);
-          end if;
-          
-          -- Check motion of plate
-          if(LeftxSI = '1') then
-            if PlateXxDP <= PLATE_STEP_X then
-              PlateXxDN <= PlateXxDP + HS_DISPLAY - PLATE_STEP_X;
-            else
-              PlateXxDN <= PlateXxDP - PLATE_STEP_X;
-            end if;
-          end if;
-        
-          if(RightxSI = '1') then
-            PlateXxDN <= PlateXxDP + PLATE_STEP_X;
-            if PlateXxDP >= HS_DISPLAY - PLATE_STEP_X then
-              PlateXxDN <= PlateXxDP - HS_DISPLAY + PLATE_STEP_X;
-            else
-              PlateXxDN <= PlateXxDP + PLATE_STEP_X;
-            end if;
-          end if;
-
-          --=====================================================================
-          -- Make Ball One Evolve
-          --=====================================================================
-          -- check if ball hits the sides of the map
-          if((BallsxDP(0).BallX <= 2*BALL_STEP_X) and (BallsxDP(0).BallXSpeed < 0)) or ((BallsxDP(0).BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X)) and (BallsxDP(0).BallXSpeed  > 0)) then
-            BallsxDN(0).BallXSpeed <= - BallsxDP(0).BallXSpeed;
-            end if;
-
-            if((BallsxDP(0).BallY <= 2*BALL_STEP_Y) and (BallsxDP(0).BallYSpeed < 0)) then
-              BallsxDN(0).BallYSpeed <= - BallsxDP(0).BallYSpeed;
-            end if;
-      
-            -- check collisions with plate
-            if(BallsxDP(0).BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT)) then
-              if((PlateRight0xDP > 0) and (PlateLeft0xDP < PLATE_WIDTH)) then 
-                if(BallsxDP(0).BallYSpeed >= 0) then
-                  HighscorexDN <= HighscorexDP + 1;
-                  
-                  BallsxDN(0).BallYSpeed <= - BallsxDP(0).BallYSpeed;
-                  BallsxDN(0).BallXSpeed <= to_signed(-1, 2) when PlateRight0xDP < (PLATE_WIDTH / 3)
-                                                             else to_signed(0, 2) when PlateRight0xDP < ((2*PLATE_WIDTH)/ 3) 
-                                                             else to_signed(1, 2);                    
-                end if;
-              else
-                FsmStatexDN <= GameEnd;
-              end if;
-          end if;
-
-          BallsxDN(0).BallX <= resize(unsigned(signed(resize(BallsxDP(0).BallX, COORD_BW + 1)) + resize(BallsxDP(0).BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
-          BallsxDN(0).BallY <= resize(unsigned(signed(resize(BallsxDP(0).BallY, COORD_BW + 1)) + resize(BallsxDP(0).BallYSPeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
-              
-          PlateLeft0xDN <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          PlateRight0xDN <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          
-          --=====================================================================
-          -- Make Ball Two Evolve
-          --=====================================================================
-          -- check if ball hits the sides of the map
-          if((BallsxDP(1).BallX <= 2*BALL_STEP_X) and (BallsxDP(1).BallXSpeed < 1)) or ((BallsxDP(1).BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X)) and (BallsxDP(1).BallXSpeed  > 0)) then
-            BallsxDN(1).BallXSpeed <= - BallsxDP(1).BallXSpeed;
-            end if;
-
-            if((BallsxDP(1).BallY <= 2*BALL_STEP_Y) and (BallsxDP(1).BallYSpeed < 0)) then
-              BallsxDN(1).BallYSpeed <= - BallsxDP(1).BallYSpeed;
-            end if;
-      
-            -- check collisions with plate
-            if(BallsxDP(1).BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT)) then
-              if((PlateRight1xDP > 0) and (PlateLeft1xDP < PLATE_WIDTH)) then 
-                if(BallsxDP(1).BallYSpeed >= 0) then
-                  HighscorexDN <= HighscorexDP + 1;
-                  
-                  BallsxDN(1).BallYSpeed <= - BallsxDP(0).BallYSpeed;
-                  BallsxDN(1).BallXSpeed <= to_signed(-1, 2) when PlateRight1xDP < (PLATE_WIDTH / 3)
-                                                             else to_signed(0, 2) when PlateRight1xDP < ((2*PLATE_WIDTH)/ 3) 
-                                                             else to_signed(1, 2);                    
-                end if;
-              else
-                FsmStatexDN <= GameEnd;
-              end if;
-          end if;
-
-          BallsxDN(1).BallX <= resize(unsigned(signed(resize(BallsxDP(0).BallX, COORD_BW + 1)) + resize(BallsxDP(0).BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
-          BallsxDN(1).BallY <= resize(unsigned(signed(resize(BallsxDP(0).BallY, COORD_BW + 1)) + resize(BallsxDP(0).BallYSPeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
-              
-          PlateLeft1xDN <= resize(signed(resize(BallsxDN(1).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          PlateRight1xDN <= resize(signed(resize(BallsxDN(1).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-        end if;
-    
-      --=========================================================================
-      -- Game Three Ball Logic
-      --=========================================================================
-      WHEN Game3Ball =>
-        -- Update frames of game
-        if(VSEdgexSP = '0' and VSEdgexSN = '1') then
-          -- Check motion of plate
-          if(LeftxSI = '1') then
-            if PlateXxDP <= PLATE_STEP_X then
-              PlateXxDN <= PlateXxDP + HS_DISPLAY - PLATE_STEP_X;
-            else
-              PlateXxDN <= PlateXxDP - PLATE_STEP_X;
-            end if;
-          end if;
-        
-          if(RightxSI = '1') then
-            PlateXxDN <= PlateXxDP + PLATE_STEP_X;
-            if PlateXxDP >= HS_DISPLAY - PLATE_STEP_X then
-              PlateXxDN <= PlateXxDP - HS_DISPLAY + PLATE_STEP_X;
-            else
-              PlateXxDN <= PlateXxDP + PLATE_STEP_X;
-            end if;
-          end if;
-
-          --=====================================================================
-          -- Make Ball One Evolve
-          --=====================================================================
-          -- check if ball hits the sides of the map
-          if((BallsxDP(0).BallX <= 2*BALL_STEP_X) and (BallsxDP(0).BallXSpeed < 0)) or ((BallsxDP(0).BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X)) and (BallsxDP(0).BallXSpeed  > 0)) then
-            BallsxDN(0).BallXSpeed <= - BallsxDP(0).BallXSpeed;
-            end if;
-
-            if((BallsxDP(0).BallY <= 2*BALL_STEP_Y) and (BallsxDP(0).BallYSpeed < 0)) then
-              BallsxDN(0).BallYSpeed <= - BallsxDP(0).BallYSpeed;
-            end if;
-      
-            -- check collisions with plate
-            if(BallsxDP(0).BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT)) then
-              if((PlateRight0xDP > 0) and (PlateLeft0xDP < PLATE_WIDTH)) then 
-                if(BallsxDP(0).BallYSpeed >= 0) then
-                  
-                  BallsxDN(0).BallYSpeed <= - BallsxDP(0).BallYSpeed;
-                  BallsxDN(0).BallXSpeed <= to_signed(-1, 2) when PlateRight0xDP < (PLATE_WIDTH / 3)
-                                                             else to_signed(0, 2) when PlateRight0xDP < ((2*PLATE_WIDTH)/ 3) 
-                                                             else to_signed(1, 2);                    
-                end if;
-              else
-                FsmStatexDN <= GameEnd;
-              end if;
-          end if;
-
-          BallsxDN(0).BallX <= resize(unsigned(signed(resize(BallsxDP(0).BallX, COORD_BW + 1)) + resize(BallsxDP(0).BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
-          BallsxDN(0).BallY <= resize(unsigned(signed(resize(BallsxDP(0).BallY, COORD_BW + 1)) + resize(BallsxDP(0).BallYSPeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
-              
-          PlateLeft0xDN <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          PlateRight0xDN <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          
-          --=====================================================================
-          -- Make Ball Two Evolve
-          --=====================================================================
-          -- check if ball hits the sides of the map
-          if((BallsxDP(1).BallX <= 2*BALL_STEP_X) and (BallsxDP(1).BallXSpeed < 1)) or ((BallsxDP(1).BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X)) and (BallsxDP(1).BallXSpeed  > 0)) then
-            BallsxDN(1).BallXSpeed <= - BallsxDP(1).BallXSpeed;
-            end if;
-
-            if((BallsxDP(1).BallY <= 2*BALL_STEP_Y) and (BallsxDP(1).BallYSpeed < 0)) then
-              BallsxDN(1).BallYSpeed <= - BallsxDP(1).BallYSpeed;
-            end if;
-      
-            -- check collisions with plate
-            if(BallsxDP(1).BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT)) then
-              if((PlateRight1xDP > 0) and (PlateLeft1xDP < PLATE_WIDTH)) then 
-                if(BallsxDP(1).BallYSpeed >= 0) then
-                  
-                  BallsxDN(1).BallYSpeed <= - BallsxDP(1).BallYSpeed;
-                  BallsxDN(1).BallXSpeed <= to_signed(-1, 2) when PlateRight1xDP < (PLATE_WIDTH / 3)
-                                                             else to_signed(0, 2) when PlateRight1xDP < ((2*PLATE_WIDTH)/ 3) 
-                                                             else to_signed(1, 2);                    
-                end if;
-              else
-                FsmStatexDN <= GameEnd;
-              end if;
-          end if;
-
-          BallsxDN(1).BallX <= resize(unsigned(signed(resize(BallsxDP(1).BallX, COORD_BW + 1)) + resize(BallsxDP(1).BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
-          BallsxDN(1).BallY <= resize(unsigned(signed(resize(BallsxDP(1).BallY, COORD_BW + 1)) + resize(BallsxDP(1).BallYSPeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
-              
-          PlateLeft1xDN <= resize(signed(resize(BallsxDN(1).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          PlateRight1xDN <= resize(signed(resize(BallsxDN(1).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-
-          --=====================================================================
-          -- Make Ball Three Evolve
-          --=====================================================================
-          -- check if ball hits the sides of the map
-          if((BallsxDP(2).BallX <= 2*BALL_STEP_X) and (BallsxDP(2).BallXSpeed < 1)) or ((BallsxDP(2).BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X)) and (BallsxDP(2).BallXSpeed  > 0)) then
-            BallsxDN(2).BallXSpeed <= - BallsxDP(2).BallXSpeed;
-            end if;
-
-            if((BallsxDP(2).BallY <= 2*BALL_STEP_Y) and (BallsxDP(2).BallYSpeed < 0)) then
-              BallsxDN(2).BallYSpeed <= - BallsxDP(2).BallYSpeed;
-            end if;
-      
-            -- check collisions with plate
-            if(BallsxDP(2).BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT)) then
-              if((PlateRight2xDP > 0) and (PlateLeft2xDP < PLATE_WIDTH)) then 
-                if(BallsxDP(2).BallYSpeed >= 0) then
-                  HighscorexDN <= HighscorexDP + 1;
-                  
-                  BallsxDN(2).BallYSpeed <= - BallsxDP(2).BallYSpeed;
-                  BallsxDN(2).BallXSpeed <= to_signed(-1, 2) when PlateRight2xDP < (PLATE_WIDTH / 3)
-                                                             else to_signed(0, 2) when PlateRight2xDP < ((2*PLATE_WIDTH)/ 3) 
-                                                             else to_signed(1, 2);                    
-                end if;
-              else
-                FsmStatexDN <= GameEnd;
-              end if;
-          end if;
-
-          BallsxDN(2).BallX <= resize(unsigned(signed(resize(BallsxDP(2).BallX, COORD_BW + 1)) + resize(BallsxDP(2).BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
-          BallsxDN(2).BallY <= resize(unsigned(signed(resize(BallsxDP(2).BallY, COORD_BW + 1)) + resize(BallsxDP(2).BallYSPeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
-              
-          PlateLeft2xDN <= resize(signed(resize(BallsxDN(2).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          PlateRight2xDN <= resize(signed(resize(BallsxDN(2).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-        end if;
-
-      -- -- Incase other cases appear, reset game
-      -- WHEN OTHERS =>
-      --  FsmStatexDN     <= GameEnd;
-      --  PlateXxDN       <= PLATE_X_INIT;
-      --  ActiveBallsxDN  <= to_unsigned(1,1);
-      --  HighscorexDN    <= to_unsigned(0,1);
-
-      --  BallsxDN <= (OTHERS => (
-      --    BallX      => BALL_X_INIT,
-      --    BallY      => BALL_Y_INIT,
-      --    BallXSpeed => to_signed(0, 2),
-      --    BallYSpeed => to_signed(0, 2)
-      --  ));
-    
     END CASE;
 
   END PROCESS;
 
   FsmStatexDO <= FsmStatexDP;
-  PlateXxDO <= PlateXxDP;
   BallsxDO <= BallsxDP;
+  PlateXxDO <= PlateXxDP;
 
 end rtl;
 --=============================================================================

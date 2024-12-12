@@ -10,6 +10,7 @@ use ieee.numeric_std.all;
 library work;
 use work.dsd_prj_pkg.all;
 use work.pong_types_pkg.all;
+
 --=============================================================================
 --
 -- pong_top
@@ -81,7 +82,7 @@ architecture rtl of pong_top is
   signal FsmStatexD : GameControl;
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
-
+  
   -- TODO:
   signal DrawBallxS  : std_logic; -- If 1, draw the ball
   signal DrawPlatexS : std_logic; -- If 1, draw the plate
@@ -165,8 +166,8 @@ architecture rtl of pong_top is
 
       -- Ball and plate coordinates
       FsmStatexDO: out GameControl;
-      BallsxDO : out BallArrayType;
-      PlateXxDO : out unsigned(COORD_BW - 1 downto 0)
+      PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
+      BallsxDO : out BallArrayType
     );
   end component pong_fsm;
 
@@ -236,8 +237,8 @@ begin
       VSEdgexSI => VSEdgexS,
 
       FsmStatexDO => FsmStatexD,
-      BallsxDO => BallsxD,
-      PlateXxDO => PlateXxD
+      PlateXxDO => PlateXxD,
+      BallsxDO => BallsxD
     );
 
 --=============================================================================
@@ -266,17 +267,6 @@ begin
 -- Sprite logic
 --=============================================================================
   PROCESS (all)
-    -- Function to map FSM states to the number of balls
-    FUNCTION BallCount (state : GameControl) RETURN natural IS
-    BEGIN
-      CASE state IS
-        WHEN Game1Ball => RETURN 1;
-        WHEN Game2Ball => RETURN 2;
-        WHEN Game3Ball => RETURN 3;
-        WHEN GameEnd   => RETURN 1;
-      END CASE;
-    END FUNCTION;
-
   BEGIN
     -- Default background color
     RedxS   <= BGRedxS;
@@ -291,35 +281,37 @@ begin
     END IF;
 
     -- Ball logic 
-    FOR i IN 0 TO BallCount(FsmStatexD) - 1 LOOP
-      IF (XCoordxD >= BallsxD(i).BallX AND XCoordxD < BallsxD(i).BallX + BALL_WIDTH AND
-          YCoordxD >= BallsxD(i).BallY AND YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) THEN
-        RedxS   <= "1111";
-        GreenxS <= "1111";
-        BluexS  <= "1111";
-      END IF;
+    FOR i IN 0 TO (MaxBallCount - 1) LOOP
+      IF (BallsxD(i).IsActive = 1) THEN
+          IF (XCoordxD >= BallsxD(i).BallX AND XCoordxD < BallsxD(i).BallX + BALL_WIDTH AND
+              YCoordxD >= BallsxD(i).BallY AND YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) THEN
+            RedxS   <= "1111";
+            GreenxS <= "1111";
+            BluexS  <= "1111";
+        END IF;
+     END IF;
     END LOOP;
 
     -- Obstacle logic for Game2Ball and Game3Ball states
-    IF (FsmStatexD = Game2Ball OR FsmStatexD = Game3Ball) THEN
-      -- Draw the first obstacle
-      IF (XCoordxD >= Obstacle1XxD AND XCoordxD < Obstacle1XxD + OBSTACLE_WIDTH AND
-          YCoordxD >= Obstacle1YxD AND YCoordxD < Obstacle1YxD + OBSTACLE_HEIGHT) THEN
-        RedxS   <= "1111";
-        GreenxS <= "0000";
-        BluexS  <= "0000";
-      END IF;
-    END IF;
+--    IF (FsmStatexD = Game2Ball OR FsmStatexD = Game3Ball) THEN
+--      -- Draw the first obstacle
+--      IF ((XCoordxD >= Obstacle1XxD) AND (XCoordxD < (Obstacle1XxD + OBSTACLE_WIDTH)) AND
+--          (YCoordxD >= Obstacle1YxD) AND (YCoordxD < (Obstacle1YxD + OBSTACLE_HEIGHT))) THEN
+--        RedxS   <= "1111";
+--        GreenxS <= "0000";
+--        BluexS  <= "0000";
+--      END IF;
+--    END IF;
 
-    IF (FsmStatexD = Game3Ball) THEN
-      -- Draw the second obstacle
-      IF (XCoordxD >= Obstacle2XxD AND XCoordxD < Obstacle2XxD + OBSTACLE_WIDTH AND
-          YCoordxD >= Obstacle2YxD AND YCoordxD < Obstacle2YxD + OBSTACLE_HEIGHT) THEN
-        RedxS   <= "1111";
-        GreenxS <= "0000";
-        BluexS  <= "0000";
-      END IF;
-    END IF;
+--    IF (FsmStatexD = Game3Ball) THEN
+--      -- Draw the second obstacle
+--      IF (XCoordxD >= Obstacle2XxD AND XCoordxD < Obstacle2XxD + OBSTACLE_WIDTH AND
+--          YCoordxD >= Obstacle2YxD AND YCoordxD < Obstacle2YxD + OBSTACLE_HEIGHT) THEN
+--        RedxS   <= "1111";
+--        GreenxS <= "0000";
+--        BluexS  <= "0000";
+--      END IF;
+--    END IF;
 
   END PROCESS;
 

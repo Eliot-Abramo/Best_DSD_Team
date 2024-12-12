@@ -15,9 +15,16 @@ PACKAGE pong_types_pkg IS
     BallX     : unsigned(COORD_BW - 1 DOWNTO 0);
     BallY     : unsigned(COORD_BW - 1 DOWNTO 0);
     BallXSpeed: signed(2-1 DOWNTO 0);
-    BallYSpeed: signed(2-1 DOWNTO 0);    
+    BallYSpeed: signed(2-1 DOWNTO 0);
+    IsActive  : unsigned(2-1 DOWNTO 0);
   END RECORD;
 
-  TYPE BallArrayType IS ARRAY (0 TO MaxBallCount-1) OF BallType;
+  TYPE PlateBumpType IS RECORD
+    Left : signed(COORD_BW-1 downto 0);
+    Right : signed(COORD_BW-1 downto 0);  
+  END RECORD; 
   
+  TYPE BallArrayType IS ARRAY (0 TO MaxBallCount-1) OF BallType;
+  TYPE PlateBumpArrayType IS ARRAY (0 to MaxBallCount-1) OF PlateBumpType;
+
 END PACKAGE;
