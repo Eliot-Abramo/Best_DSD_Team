@@ -96,8 +96,6 @@ architecture rtl of pong_fsm is
 --=============================================================================
   -- Procedure to handle ball updates and collisions
  PROCEDURE UpdateBall (
-    -- TODO: An InOut statement could work instead of having 2 statements, but I'm afraid of VHDL
-    -- inferring Latches which the prof. doesn't want.
     SIGNAL BallIn : IN BallType;
     SIGNAL BallOut : OUT BAllType;
     
@@ -108,6 +106,9 @@ architecture rtl of pong_fsm is
     
     SIGNAL FsmState : INOUT GameControl
   ) IS
+    -- Local variable for ObstacleBump
+    VARIABLE ObstacleBump : ObstacleBumpType;  -- TODO new
+
   BEGIN
     -- Check for horizontal wall collisions
     IF (BallIn.BallX <= 2 * BALL_STEP_X AND BallIn.BallXSpeed < 0) OR
@@ -124,7 +125,7 @@ architecture rtl of pong_fsm is
     IF BallIn.BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT) THEN
       IF (PlateBumpIn.Right > 0 AND PlateBumpIn.Left < PLATE_WIDTH) THEN
         IF BallIn.BallYSpeed >= 0 THEN
-          HighscoreOut <= HighscorexDP + 1;
+          HighscoreOut <= HighscorexDP + 1;  -- TODO potential bug 
           BallOut.BallYSpeed <= -BallIn.BallYSpeed;
           BallOut.BallXSpeed <= to_signed(-1, 2) when PlateBumpIn.Right < (PLATE_WIDTH / 3)
                                                   else to_signed(0, 2) when PlateBumpIn.Right < ((2*PLATE_WIDTH)/ 3) 
@@ -135,6 +136,23 @@ architecture rtl of pong_fsm is
       END IF;
     END IF;
 
+    -- Check for collisions with obstacles   TODO new 
+    FOR i IN Obstacles'RANGE LOOP
+      IF (BallIn.BallY >= Obstacles(i).Y AND BallIn.BallY < Obstacles(i).Y + Obstacles(i).Height AND
+          BallIn.BallX >= Obstacles(i).X AND BallIn.BallX < Obstacles(i).X + Obstacles(i).Width) THEN
+
+        BallOut.BallYSpeed <= -BallIn.BallYSpeed;
+        -- Calculate ObstacleBump values
+        ObstacleBump.Left  := resize(signed(resize(BallIn.BallX, COORD_BW + 1)) - signed(resize(Obstacles(i).X, COORD_BW + 1)), COORD_BW);
+        ObstacleBump.Right := resize(signed(resize(BallIn.BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(Obstacles(i).X, COORD_BW + 1)), COORD_BW);
+        -- Set BallXSpeed based on where the ball hits the obstacle
+        BallOut.BallXSpeed <= to_signed(-1, 2) WHEN ObstacleBump.Right < (Obstacles(i).Width / 3) ELSE
+                              to_signed(0, 2)  WHEN ObstacleBump.Right < ((2 * Obstacles(i).Width) / 3) ELSE
+                              to_signed(1, 2);
+      END IF;
+    END LOOP;
+         
+
     -- Update ball position
     BallOut.BallX <= resize(unsigned(signed(resize(BallIn.BallX, COORD_BW + 1)) + resize(BallIn.BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
     BallOut.BallY <= resize(unsigned(signed(resize(BallIn.BallY, COORD_BW + 1)) + resize(BallIn.BallYSpeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
@@ -144,6 +162,61 @@ architecture rtl of pong_fsm is
 
 END PROCEDURE;
 
+
+--============================================================================= TODO
+-- Procedure to handle ball updates and collisions
+PROCEDURE UpdateBall (
+  SIGNAL BallIn       : IN BallType;
+  SIGNAL BallOut      : OUT BallType;
+  SIGNAL PlateX       : IN unsigned(COORD_BW - 1 DOWNTO 0);
+  SIGNAL HighscoreOut : OUT unsigned(4 - 1 DOWNTO 0);
+  SIGNAL FsmState     : INOUT GameControl
+) IS
+  -- Local variables for PlateBump
+  VARIABLE PlateLeft  : signed(COORD_BW - 1 DOWNTO 0);
+  VARIABLE PlateRight : signed(COORD_BW - 1 DOWNTO 0);
+BEGIN
+  -- Calculate PlateBump values based on the current ball and plate positions
+  PlateLeft  := resize(signed(resize(BallIn.BallX, COORD_BW + 1)) - signed(resize(PlateX, COORD_BW + 1)), COORD_BW);
+  PlateRight := resize(signed(resize(BallIn.BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateX, COORD_BW + 1)), COORD_BW);
+
+  -- Check for horizontal wall collisions
+  IF (BallIn.BallX <= 2 * BALL_STEP_X AND BallIn.BallXSpeed < 0) OR
+     (BallIn.BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X) AND BallIn.BallXSpeed > 0) THEN
+    BallOut.BallXSpeed <= -BallIn.BallXSpeed;
+  ELSE
+    BallOut.BallXSpeed <= BallIn.BallXSpeed;
+  END IF;
+
+  -- Check for vertical wall collisions
+  IF (BallIn.BallY <= 2 * BALL_STEP_Y AND BallIn.BallYSpeed < 0) THEN
+    BallOut.BallYSpeed <= -BallIn.BallYSpeed;
+  ELSE
+    BallOut.BallYSpeed <= BallIn.BallYSpeed;
+  END IF;
+
+  -- Check for collisions with the plate
+  IF BallIn.BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT) THEN
+    IF (PlateRight > 0 AND PlateLeft < PLATE_WIDTH) THEN
+      IF BallIn.BallYSpeed >= 0 THEN
+        HighscoreOut <= HighscoreOut + 1;
+        BallOut.BallYSpeed <= -BallIn.BallYSpeed;
+        BallOut.BallXSpeed <= to_signed(-1, 2) WHEN PlateRight < (PLATE_WIDTH / 3) ELSE
+                              to_signed(0, 2)  WHEN PlateRight < ((2 * PLATE_WIDTH) / 3) ELSE
+                              to_signed(1, 2);
+      END IF;
+    ELSE
+      FsmState <= GameEnd;
+    END IF;
+  END IF;
+
+  -- Update ball position
+  BallOut.BallX <= resize(unsigned(signed(BallIn.BallX) + BallIn.BallXSpeed * to_signed(BALL_STEP_X, COORD_BW)), COORD_BW);
+  BallOut.BallY <= resize(unsigned(signed(BallIn.BallY) + BallIn.BallYSpeed * to_signed(BALL_STEP_Y, COORD_BW)), COORD_BW);
+END PROCEDURE;
+--=============================================================================
+
+-- Procedure to handle plate movement
 PROCEDURE MovePlate(
     SIGNAL PlateIn : IN unsigned(COORD_BW - 1 DOWNTO 0);
     SIGNAL PlateOut : OUT unsigned(COORD_BW - 1 DOWNTO 0)
@@ -283,9 +356,14 @@ begin
             FsmStatexDN <= Game2Ball;
           END IF;
           
-         MovePlate(PlateXxDP, PlateXxDN);
-         UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), HighscorexDN, FsmStatexDN);
+          MovePlate(PlateXxDP, PlateXxDN);
+          UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), HighscorexDN, FsmStatexDN);
 
+          --========================================================================= TODO
+          UpdateBall(BallsxDP(0), BallsxDN(0), PlateXxDP, HighscorexDN, FsmStatexDN);
+          PlateBumpxDN(0).Left  <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
+          PlateBumpxDN(0).Right <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
+          --=========================================================================
         END IF;
 
       WHEN Game2Ball =>
@@ -305,9 +383,10 @@ begin
 
       WHEN Game3Ball =>
       IF(VSEdgexSP = '0' and VSEdgexSN = '1') then
-       MovePlate(PlateXxDP, PlateXxDN);       UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), HighscorexDN, FsmStatexDN);  
-       UpdateBall(BallsxDP(1), BallsxDN(1), PlateBumpxDP(1), PlateBumpxDN(1), HighscorexDN, FsmStatexDN);
-       UpdateBall(BallsxDP(2), BallsxDN(2), PlateBumpxDP(2), PlateBumpxDN(2), HighscorexDN, FsmStatexDN);
+        MovePlate(PlateXxDP, PlateXxDN);       
+        UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), HighscorexDN, FsmStatexDN);  
+        UpdateBall(BallsxDP(1), BallsxDN(1), PlateBumpxDP(1), PlateBumpxDN(1), HighscorexDN, FsmStatexDN);
+        UpdateBall(BallsxDP(2), BallsxDN(2), PlateBumpxDP(2), PlateBumpxDN(2), HighscorexDN, FsmStatexDN);
       END IF;
       
       WHEN OTHERS =>

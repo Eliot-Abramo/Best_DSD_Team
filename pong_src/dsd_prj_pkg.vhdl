@@ -60,5 +60,15 @@ package dsd_prj_pkg is
   constant PLATE_HEIGHT : natural := 10;
   constant PLATE_STEP_X : natural := 5;
 
+  -- Obstacle parameters
+  constant OBSTACLE_WIDTH  : natural := 50;
+  constant OBSTACLE_HEIGHT : natural := 20;
+  
+  -- Obstacle coordinates
+  constant OBSTACLE1_X : unsigned(COORD_BW - 1 downto 0) := to_unsigned(200, COORD_BW);
+  constant OBSTACLE1_Y : unsigned(COORD_BW - 1 downto 0) := to_unsigned(100, COORD_BW);
+
+  constant OBSTACLE2_X : unsigned(COORD_BW - 1 downto 0) := to_unsigned(400, COORD_BW);
+  constant OBSTACLE2_Y : unsigned(COORD_BW - 1 downto 0) := to_unsigned(150, COORD_BW);
 
 end package dsd_prj_pkg;

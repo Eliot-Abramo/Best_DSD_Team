@@ -82,17 +82,6 @@ architecture rtl of pong_top is
   signal FsmStatexD : GameControl;
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
-  
-  -- TODO:
-  signal DrawBallxS  : std_logic; -- If 1, draw the ball
-  signal DrawPlatexS : std_logic; -- If 1, draw the plate
-
-  -- Obstacle coordinates
-  signal Obstacle1XxD : unsigned(COORD_BW - 1 downto 0) := to_unsigned(200, COORD_BW);
-  signal Obstacle1YxD : unsigned(COORD_BW - 1 downto 0) := to_unsigned(100, COORD_BW);
-
-  signal Obstacle2XxD : unsigned(COORD_BW - 1 downto 0) := to_unsigned(400, COORD_BW);
-  signal Obstacle2YxD : unsigned(COORD_BW - 1 downto 0) := to_unsigned(150, COORD_BW);
 
 --=============================================================================
 -- COMPONENT DECLARATIONS
@@ -255,13 +244,11 @@ begin
   ENBxS     <= '1';
   -- We "divide" by a factor of  4 to account for the bigger size of the screen 
   -- coordinates and then multiply y for 256 pixels in a row
-  -- TODO: optmize
   RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, 16));
 
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
   BGGreenxS <= DOUTBxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
   BGBluexS  <= DOUTBxD(1 * COLOR_BW - 1 downto 0 * COLOR_BW);
-
 
 --=============================================================================
 -- Sprite logic
@@ -292,26 +279,30 @@ begin
      END IF;
     END LOOP;
 
-    -- Obstacle logic for Game2Ball and Game3Ball states
---    IF (FsmStatexD = Game2Ball OR FsmStatexD = Game3Ball) THEN
---      -- Draw the first obstacle
---      IF ((XCoordxD >= Obstacle1XxD) AND (XCoordxD < (Obstacle1XxD + OBSTACLE_WIDTH)) AND
---          (YCoordxD >= Obstacle1YxD) AND (YCoordxD < (Obstacle1YxD + OBSTACLE_HEIGHT))) THEN
---        RedxS   <= "1111";
---        GreenxS <= "0000";
---        BluexS  <= "0000";
---      END IF;
---    END IF;
+    -- Obstacle logic for Game2Ball states
+    IF (FsmStatexD = Game2Ball) THEN
+    -- Loop through the first obstacle
+    FOR i IN 0 TO 0 LOOP
+      IF (XCoordxD >= Obstacles(i).X AND XCoordxD < (Obstacles(i).X + Obstacles(i).Width) AND
+          YCoordxD >= Obstacles(i).Y AND YCoordxD < (Obstacles(i).Y + Obstacles(i).Height)) THEN
+        RedxS   <= "1111";
+        GreenxS <= "0000";
+        BluexS  <= "0000";
+      END IF;
+    END LOOP;
+    END IF;
 
---    IF (FsmStatexD = Game3Ball) THEN
---      -- Draw the second obstacle
---      IF (XCoordxD >= Obstacle2XxD AND XCoordxD < Obstacle2XxD + OBSTACLE_WIDTH AND
---          YCoordxD >= Obstacle2YxD AND YCoordxD < Obstacle2YxD + OBSTACLE_HEIGHT) THEN
---        RedxS   <= "1111";
---        GreenxS <= "0000";
---        BluexS  <= "0000";
---      END IF;
---    END IF;
+    IF (FsmStatexD = Game3Ball) THEN
+    -- Loop through all obstacles (in this case, 2 obstacles)
+    FOR i IN 0 TO 1 LOOP
+      IF (XCoordxD >= Obstacles(i).X AND XCoordxD < (Obstacles(i).X + Obstacles(i).Width) AND
+          YCoordxD >= Obstacles(i).Y AND YCoordxD < (Obstacles(i).Y + Obstacles(i).Height)) THEN
+        RedxS   <= "1111";
+        GreenxS <= "0000";
+        BluexS  <= "0000";
+      END IF;
+    END LOOP;
+    END IF;
 
   END PROCESS;
 
