@@ -1,0 +1,17 @@
+
+*** Running vivado
+    with args -log mandelbrot_top.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source mandelbrot_top.tcl
+
+
+
+****** Vivado v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source mandelbrot_top.tcl -notrace
+Command: synth_design -top mandelbrot_top -part xc7z020clg400-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg400-1

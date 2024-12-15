@@ -9,12 +9,16 @@ set rt::rc [catch {
   uplevel #0 {
     set ::env(BUILTIN_SYNTH) true
     source $::env(HRT_TCL_PATH)/rtSynthPrep.tcl
+    rt::HARTNDb_resetJobStats
+    rt::HARTNDb_resetSystemStats
+    rt::HARTNDb_startSystemStats
     rt::HARTNDb_startJobStats
     set rt::cmdEcho 0
     rt::set_parameter writeXmsg true
     rt::set_parameter enableParallelHelperSpawn true
-    set ::env(RT_TMP) "C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/clk_wiz_0_synth_1/.Xil/Vivado-17592-Eliot_Abramo/realtime/tmp"
+    set ::env(RT_TMP) "C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-23920-Eliot_Abramo/realtime/tmp"
     if { [ info exists ::env(RT_TMP) ] } {
+      file delete -force $::env(RT_TMP)
       file mkdir $::env(RT_TMP)
     }
 
@@ -22,46 +26,57 @@ set rt::rc [catch {
 
     rt::set_parameter datapathDensePacking false
     set rt::partid xc7z020clg400-1
+    source $::env(HRT_TCL_PATH)/rtSynthParallelPrep.tcl
      file delete -force synth_hints.os
 
     set rt::multiChipSynthesisFlow false
+    set rt::enableVHDL2008 1
     source $::env(SYNTH_COMMON)/common_vhdl.tcl
     set rt::defaultWorkLibName xil_defaultlib
 
-    # Skipping read_* RTL commands because this is post-elab optimize flow
-    set rt::useElabCache true
+    set rt::useElabCache false
     if {$rt::useElabCache == false} {
-      rt::read_verilog -sv -include {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/clk_wiz_0}} {
+      rt::read_verilog -sv -include {
+    {c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/clk_wiz_0}
+    {c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/blk_mem_gen_0}
+  } {
       C:/Xilinx/Vivado/2020.2/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv
       C:/Xilinx/Vivado/2020.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv
     }
-      rt::read_verilog -include {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/clk_wiz_0}} {
-      {c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v}
-      {c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v}
+      rt::read_vhdl -lib xil_defaultlib {
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-23920-Eliot_Abramo/realtime/blk_mem_gen_0_stub.vhdl}
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-23920-Eliot_Abramo/realtime/clk_wiz_0_stub.vhdl}
     }
       rt::read_vhdl -lib xpm C:/Xilinx/Vivado/2020.2/data/ip/xpm/xpm_VCOMP.vhd
+      rt::read_vhdl -vhdl2008 -lib xil_defaultlib {
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/dsd_prj_pkg.vhdl}
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot.vhdl}
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/pong_types_pkg.vhdl}
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/pong_fsm.vhdl}
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/sprite_manager.vhdl}
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/vga_controller.vhdl}
+      {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot_top.vhdl}
+    }
       rt::filesetChecksum
     }
-    rt::set_parameter usePostFindUniquification true
-    set rt::SDCFileList {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/clk_wiz_0_synth_1/.Xil/Vivado-17592-Eliot_Abramo/realtime/clk_wiz_0_synth.xdc}}
-    rt::sdcChecksum
-    set rt::top clk_wiz_0
+    rt::set_parameter usePostFindUniquification false
+    set rt::top mandelbrot_top
     rt::set_parameter enableIncremental true
     rt::set_parameter markDebugPreservationLevel "enable"
-    set rt::ioInsertion false
     set rt::reportTiming false
-    rt::set_parameter elaborateOnly false
-    rt::set_parameter elaborateRtl false
-    rt::set_parameter eliminateRedundantBitOperator true
+    rt::set_parameter elaborateOnly true
+    rt::set_parameter elaborateRtl true
+    rt::set_parameter eliminateRedundantBitOperator false
     rt::set_parameter elaborateRtlOnlyFlow false
     rt::set_parameter writeBlackboxInterface true
-    rt::set_parameter ramStyle auto
     rt::set_parameter merge_flipflops true
-# MODE: out_of_context
+    rt::set_parameter srlDepthThreshold 3
+    rt::set_parameter rstSrlDepthThreshold 4
+# MODE: 
     rt::set_parameter webTalkPath {}
     rt::set_parameter synthDebugLog false
     rt::set_parameter printModuleName false
-    rt::set_parameter enableSplitFlowPath "C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/clk_wiz_0_synth_1/.Xil/Vivado-17592-Eliot_Abramo/"
+    rt::set_parameter enableSplitFlowPath "C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-23920-Eliot_Abramo/"
     set ok_to_delete_rt_tmp true 
     if { [rt::get_parameter parallelDebug] } { 
        set ok_to_delete_rt_tmp false 
@@ -70,23 +85,16 @@ set rt::rc [catch {
         set oldMIITMVal [rt::get_parameter maxInputIncreaseToMerge]; rt::set_parameter maxInputIncreaseToMerge 1000
         set oldCDPCRL [rt::get_parameter createDfgPartConstrRecurLimit]; rt::set_parameter createDfgPartConstrRecurLimit 1
         $rt::db readXRFFile
-      rt::run_synthesis -module $rt::top
+      rt::run_rtlelab -module $rt::top
         rt::set_parameter maxInputIncreaseToMerge $oldMIITMVal
         rt::set_parameter createDfgPartConstrRecurLimit $oldCDPCRL
     }
 
     set rt::flowresult [ source $::env(SYNTH_COMMON)/flow.tcl ]
     rt::HARTNDb_stopJobStats
-    rt::HARTNDb_reportJobStats "Synthesis Optimization Runtime"
-    rt::HARTNDb_stopSystemStats
     if { $rt::flowresult == 1 } { return -code error }
 
 
-  set hsKey [rt::get_parameter helper_shm_key] 
-  if { $hsKey != "" && [info exists ::env(BUILTIN_SYNTH)] && [rt::get_parameter enableParallelHelperSpawn] } { 
-     $rt::db killSynthHelper $hsKey
-  } 
-  rt::set_parameter helper_shm_key "" 
     if { [ info exists ::env(RT_TMP) ] } {
       if { [info exists ok_to_delete_rt_tmp] && $ok_to_delete_rt_tmp } { 
         file delete -force $::env(RT_TMP)
