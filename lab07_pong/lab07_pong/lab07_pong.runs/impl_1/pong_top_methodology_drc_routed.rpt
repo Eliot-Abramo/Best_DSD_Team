@@ -1,0 +1,444 @@
+Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2020.2 (win64) Build 3064766 Wed Nov 18 09:12:45 MST 2020
+| Date         : Sun Dec 15 19:41:28 2024
+| Host         : Eliot_Abramo running 64-bit major release  (build 9200)
+| Command      : report_methodology -file pong_top_methodology_drc_routed.rpt -pb pong_top_methodology_drc_routed.pb -rpx pong_top_methodology_drc_routed.rpx
+| Design       : pong_top
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Fully Routed
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Report Methodology
+
+Table of Contents
+-----------------
+1. REPORT SUMMARY
+2. REPORT DETAILS
+
+1. REPORT SUMMARY
+-----------------
+            Netlist: netlist
+          Floorplan: design_1
+      Design limits: <entire design considered>
+             Max violations: <unlimited>
+             Violations found: 68
++-----------+------------------+------------------------------------------------------------------+------------+
+| Rule      | Severity         | Description                                                      | Violations |
++-----------+------------------+------------------------------------------------------------------+------------+
+| TIMING-6  | Critical Warning | No common primary clock between related clocks                   | 2          |
+| LUTAR-1   | Warning          | LUT drives async reset alert                                     | 42         |
+| TIMING-20 | Warning          | Non-clocked latch                                                | 22         |
+| TIMING-56 | Warning          | Missing logically or physically excluded clock groups constraint | 2          |
++-----------+------------------+------------------------------------------------------------------+------------+
+
+2. REPORT DETAILS
+-----------------
+TIMING-6#1 Critical Warning
+No common primary clock between related clocks  
+The clocks clk_out1_clk_wiz_0 and clk_out1_clk_wiz_0_1 are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks clk_out1_clk_wiz_0] -to [get_clocks clk_out1_clk_wiz_0_1]
+Related violations: <none>
+
+TIMING-6#2 Critical Warning
+No common primary clock between related clocks  
+The clocks clk_out1_clk_wiz_0_1 and clk_out1_clk_wiz_0 are related (timed together) but they have no common primary clock. The design could fail in hardware. To find a timing path between these clocks, run the following command: report_timing -from [get_clocks clk_out1_clk_wiz_0_1] -to [get_clocks clk_out1_clk_wiz_0]
+Related violations: <none>
+
+LUTAR-1#1 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][10]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#2 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][10]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][10]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#3 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][11]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][11]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][11]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][11]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][11]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#4 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][2]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#5 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][2]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][2]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#6 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][3]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#7 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][3]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][3]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#8 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][4]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#9 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][4]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][4]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#10 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][5]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#11 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][5]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][5]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#12 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][6]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#13 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][6]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][6]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#14 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][7]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#15 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][7]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][7]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#16 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][8]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#17 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][8]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][8]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#18 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Left][9]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#19 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Left][9]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Left][9]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#20 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][0]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#21 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][0]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][0]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#22 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][10]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#23 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][10]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][10]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#24 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][11]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][11]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][11]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][11]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][11]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#25 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][1]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#26 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][1]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][1]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#27 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][2]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#28 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][2]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][2]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#29 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][3]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#30 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][3]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][3]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#31 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][4]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#32 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][4]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][4]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#33 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][5]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#34 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][5]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][5]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#35 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][6]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#36 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][6]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][6]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#37 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][7]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#38 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][7]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][7]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#39 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][8]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#40 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][8]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][8]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#41 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_LDC_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[2][Right][9]_P/PRE. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+LUTAR-1#42 Warning
+LUT drives async reset alert  
+LUT cell i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_LDC_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) i_pong_fsm/PlateBumpxDP_reg[0][Right][9]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_C/CLR,
+i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_LDC/CLR
+i_pong_fsm/PlateBumpxDP_reg[2][Right][9]_C/CLR. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+Related violations: <none>
+
+TIMING-20#1 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#2 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][11]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][11]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#3 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#4 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#5 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#6 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#7 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#8 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#9 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#10 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#11 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#12 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#13 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][11]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][11]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#14 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#15 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#16 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#17 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#18 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#19 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#20 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#21 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-20#22 Warning
+Non-clocked latch  
+The latch i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_LDC cannot be properly analyzed as its control pin i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_LDC/G is not reached by a timing clock
+Related violations: <none>
+
+TIMING-56#1 Warning
+Missing logically or physically excluded clock groups constraint  
+Multiple clocks are user generated or auto-derived on the source pin i_clk_wiz_0/inst/mmcm_adv_inst/CLKFBOUT but are not logically or physically exclusive with respect to one another. To have the static timing analysis match the behavior in hardware, there cannot be multiple clocks generated on the same pin and when such situation occurs, the clocks should be defined as physically or logically exclusive. The list of clocks generated on the source pin is: clkfbout_clk_wiz_0, clkfbout_clk_wiz_0_1
+Related violations: <none>
+
+TIMING-56#2 Warning
+Missing logically or physically excluded clock groups constraint  
+Multiple clocks are user generated or auto-derived on the source pin i_clk_wiz_0/inst/mmcm_adv_inst/CLKOUT0 but are not logically or physically exclusive with respect to one another. To have the static timing analysis match the behavior in hardware, there cannot be multiple clocks generated on the same pin and when such situation occurs, the clocks should be defined as physically or logically exclusive. The list of clocks generated on the source pin is: clk_out1_clk_wiz_0, clk_out1_clk_wiz_0_1
+Related violations: <none>
+
+

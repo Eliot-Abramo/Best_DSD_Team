@@ -141,6 +141,7 @@ OPTRACE "add files" START { }
   read_ip -quiet {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.srcs/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0.xci}}
   read_ip -quiet {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
 OPTRACE "read constraints: implementation" START { }
+  read_xdc {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/constr/PYNQ-Z2_v1.0.xdc}}
 OPTRACE "read constraints: implementation" END { }
 OPTRACE "add files" END { }
 OPTRACE "link_design" START { }

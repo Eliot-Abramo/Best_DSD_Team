@@ -2,8 +2,8 @@
 # Vivado v2020.2 (64-bit)
 # SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
 # IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
-# Start of session at: Sun Dec 15 19:08:24 2024
-# Process ID: 23920
+# Start of session at: Sun Dec 15 19:18:57 2024
+# Process ID: 24084
 # Current directory: C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1
 # Command line: vivado.exe -log mandelbrot_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source mandelbrot_top.tcl
 # Log file: C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/mandelbrot_top.vds
@@ -17,15 +17,15 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020
 INFO: [Device 21-403] Loading part xc7z020clg400-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 4876
+INFO: [Synth 8-7075] Helper process launched with PID 9324
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:10 . Memory (MB): peak = 998.320 ; gain = 0.000
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 999.289 ; gain = 0.000
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-638] synthesizing module 'mandelbrot_top' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot_top.vhdl:50]
-INFO: [Synth 8-3491] module 'clk_wiz_0' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-23920-Eliot_Abramo/realtime/clk_wiz_0_stub.vhdl:5' bound to instance 'i_clk_wiz_0' of component 'clk_wiz_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot_top.vhdl:218]
-INFO: [Synth 8-638] synthesizing module 'clk_wiz_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-23920-Eliot_Abramo/realtime/clk_wiz_0_stub.vhdl:15]
-INFO: [Synth 8-3491] module 'blk_mem_gen_0' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-23920-Eliot_Abramo/realtime/blk_mem_gen_0_stub.vhdl:5' bound to instance 'i_blk_mem_gen_0' of component 'blk_mem_gen_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot_top.vhdl:227]
-INFO: [Synth 8-638] synthesizing module 'blk_mem_gen_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-23920-Eliot_Abramo/realtime/blk_mem_gen_0_stub.vhdl:20]
+INFO: [Synth 8-3491] module 'clk_wiz_0' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-24084-Eliot_Abramo/realtime/clk_wiz_0_stub.vhdl:5' bound to instance 'i_clk_wiz_0' of component 'clk_wiz_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot_top.vhdl:218]
+INFO: [Synth 8-638] synthesizing module 'clk_wiz_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-24084-Eliot_Abramo/realtime/clk_wiz_0_stub.vhdl:15]
+INFO: [Synth 8-3491] module 'blk_mem_gen_0' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-24084-Eliot_Abramo/realtime/blk_mem_gen_0_stub.vhdl:5' bound to instance 'i_blk_mem_gen_0' of component 'blk_mem_gen_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot_top.vhdl:227]
+INFO: [Synth 8-638] synthesizing module 'blk_mem_gen_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/.Xil/Vivado-24084-Eliot_Abramo/realtime/blk_mem_gen_0_stub.vhdl:20]
 INFO: [Synth 8-3491] module 'vga_controller' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/vga_controller.vhdl:24' bound to instance 'i_vga_controller' of component 'vga_controller' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot_top.vhdl:242]
 INFO: [Synth 8-638] synthesizing module 'vga_controller' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/vga_controller.vhdl:54]
 INFO: [Synth 8-256] done synthesizing module 'vga_controller' (1#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/vga_controller.vhdl:54]
@@ -42,18 +42,18 @@ INFO: [Synth 8-638] synthesizing module 'sprite_manager' [C:/Users/eliot/Documen
 INFO: [Synth 8-256] done synthesizing module 'sprite_manager' (4#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/sprite_manager.vhdl:52]
 INFO: [Synth 8-256] done synthesizing module 'mandelbrot_top' (5#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/src/mandelbrot_top.vhdl:50]
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:14 . Memory (MB): peak = 998.320 ; gain = 0.000
+Finished RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:06 . Memory (MB): peak = 999.289 ; gain = 0.000
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:08 ; elapsed = 00:00:16 . Memory (MB): peak = 998.320 ; gain = 0.000
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:04 ; elapsed = 00:00:07 . Memory (MB): peak = 999.289 ; gain = 0.000
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:08 ; elapsed = 00:00:16 . Memory (MB): peak = 998.320 ; gain = 0.000
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:07 . Memory (MB): peak = 999.289 ; gain = 0.000
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.054 . Memory (MB): peak = 998.320 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.016 . Memory (MB): peak = 999.289 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
@@ -62,23 +62,27 @@ Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Tea
 Finished Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0/blk_mem_gen_0_in_context.xdc] for cell 'i_blk_mem_gen_0'
 Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'i_clk_wiz_0'
 Finished Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'i_clk_wiz_0'
+Parsing XDC File [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/constr/PYNQ-Z2_v1.0.xdc]
+Finished Parsing XDC File [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/constr/PYNQ-Z2_v1.0.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/constr/PYNQ-Z2_v1.0.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/mandelbrot_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/mandelbrot_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1015.602 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1028.441 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.019 . Memory (MB): peak = 1015.602 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.010 . Memory (MB): peak = 1028.441 ; gain = 0.000
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'i_blk_mem_gen_0' at clock pin 'clka' is different from the actual clock period '13.333', this can lead to different synthesis results.
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:14 ; elapsed = 00:00:25 . Memory (MB): peak = 1027.836 ; gain = 29.516
+Finished Constraint Validation : Time (s): cpu = 00:00:08 ; elapsed = 00:00:15 . Memory (MB): peak = 1031.414 ; gain = 32.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7z020clg400-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:14 ; elapsed = 00:00:25 . Memory (MB): peak = 1027.836 ; gain = 29.516
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:08 ; elapsed = 00:00:15 . Memory (MB): peak = 1031.414 ; gain = 32.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
@@ -88,7 +92,7 @@ Applied set_property CLOCK_BUFFER_TYPE = NONE for CLK125xCI. (constraint file  {
 Applied set_property KEEP_HIERARCHY = SOFT for i_blk_mem_gen_0. (constraint file  auto generated constraint).
 Applied set_property KEEP_HIERARCHY = SOFT for i_clk_wiz_0. (constraint file  auto generated constraint).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:14 ; elapsed = 00:00:25 . Memory (MB): peak = 1027.836 ; gain = 29.516
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:08 ; elapsed = 00:00:15 . Memory (MB): peak = 1031.414 ; gain = 32.125
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'FsmStatexDP_reg' in module 'mandelbrot'
 ---------------------------------------------------------------------------------------------------
@@ -100,7 +104,7 @@ INFO: [Synth 8-802] inferred FSM for state register 'FsmStatexDP_reg' in module 
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'FsmStatexDP_reg' using encoding 'one-hot' in module 'mandelbrot'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:14 ; elapsed = 00:00:26 . Memory (MB): peak = 1027.836 ; gain = 29.516
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:16 . Memory (MB): peak = 1031.414 ; gain = 32.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
@@ -163,7 +167,7 @@ DSP Report: Generating DSP Complex_NORMxDP, operation Mode is: PCIN+A*B.
 DSP Report: operator Complex_NORMxDP is absorbed into DSP Complex_NORMxDP.
 DSP Report: operator YComplex_FULLxDP is absorbed into DSP Complex_NORMxDP.
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:16 ; elapsed = 00:00:29 . Memory (MB): peak = 1027.836 ; gain = 29.516
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:10 ; elapsed = 00:00:19 . Memory (MB): peak = 1031.414 ; gain = 32.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP, Shift Register and Retiming Reporting
@@ -187,19 +191,19 @@ Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:25 ; elapsed = 00:00:41 . Memory (MB): peak = 1038.598 ; gain = 40.277
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:17 ; elapsed = 00:00:31 . Memory (MB): peak = 1047.652 ; gain = 48.363
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:26 ; elapsed = 00:00:42 . Memory (MB): peak = 1063.641 ; gain = 65.320
+Finished Timing Optimization : Time (s): cpu = 00:00:19 ; elapsed = 00:00:33 . Memory (MB): peak = 1073.152 ; gain = 73.863
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:26 ; elapsed = 00:00:42 . Memory (MB): peak = 1065.922 ; gain = 67.602
+Finished Technology Mapping : Time (s): cpu = 00:00:19 ; elapsed = 00:00:34 . Memory (MB): peak = 1075.648 ; gain = 76.359
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -217,37 +221,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:28 ; elapsed = 00:00:46 . Memory (MB): peak = 1072.715 ; gain = 74.395
+Finished IO Insertion : Time (s): cpu = 00:00:23 ; elapsed = 00:00:43 . Memory (MB): peak = 1082.414 ; gain = 83.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:28 ; elapsed = 00:00:46 . Memory (MB): peak = 1072.715 ; gain = 74.395
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:23 ; elapsed = 00:00:43 . Memory (MB): peak = 1082.414 ; gain = 83.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:28 ; elapsed = 00:00:46 . Memory (MB): peak = 1072.715 ; gain = 74.395
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:23 ; elapsed = 00:00:43 . Memory (MB): peak = 1082.414 ; gain = 83.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:28 ; elapsed = 00:00:46 . Memory (MB): peak = 1072.715 ; gain = 74.395
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:23 ; elapsed = 00:00:43 . Memory (MB): peak = 1082.414 ; gain = 83.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:28 ; elapsed = 00:00:46 . Memory (MB): peak = 1072.715 ; gain = 74.395
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:23 ; elapsed = 00:00:43 . Memory (MB): peak = 1082.414 ; gain = 83.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:28 ; elapsed = 00:00:46 . Memory (MB): peak = 1072.715 ; gain = 74.395
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:23 ; elapsed = 00:00:43 . Memory (MB): peak = 1082.414 ; gain = 83.125
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -281,25 +285,25 @@ Report Cell Usage:
 |14    |OBUF               |    14|
 +------+-------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:28 ; elapsed = 00:00:46 . Memory (MB): peak = 1072.715 ; gain = 74.395
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:23 ; elapsed = 00:00:43 . Memory (MB): peak = 1082.414 ; gain = 83.125
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:18 ; elapsed = 00:00:42 . Memory (MB): peak = 1072.715 ; gain = 44.879
-Synthesis Optimization Complete : Time (s): cpu = 00:00:29 ; elapsed = 00:00:47 . Memory (MB): peak = 1072.715 ; gain = 74.395
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:18 ; elapsed = 00:00:40 . Memory (MB): peak = 1082.414 ; gain = 51.000
+Synthesis Optimization Complete : Time (s): cpu = 00:00:23 ; elapsed = 00:00:43 . Memory (MB): peak = 1082.414 ; gain = 83.125
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 1083.297 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 1093.461 ; gain = 0.000
 INFO: [Netlist 29-17] Analyzing 49 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1083.297 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1093.461 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-35 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
+36 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:33 ; elapsed = 00:00:55 . Memory (MB): peak = 1083.297 ; gain = 84.977
+synth_design: Time (s): cpu = 00:00:26 ; elapsed = 00:00:51 . Memory (MB): peak = 1093.461 ; gain = 94.172
 INFO: [Common 17-1381] The checkpoint 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/mandelbrot_top.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file mandelbrot_top_utilization_synth.rpt -pb mandelbrot_top_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Sun Dec 15 19:09:24 2024...
+INFO: [Common 17-206] Exiting Vivado at Sun Dec 15 19:19:52 2024...

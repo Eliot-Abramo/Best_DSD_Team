@@ -2,8 +2,8 @@
 # Vivado v2020.2 (64-bit)
 # SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
 # IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
-# Start of session at: Sun Dec 15 19:08:24 2024
-# Process ID: 23920
+# Start of session at: Sun Dec 15 19:18:57 2024
+# Process ID: 24084
 # Current directory: C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1
 # Command line: vivado.exe -log mandelbrot_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source mandelbrot_top.tcl
 # Log file: C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/lab08_mandlebrot/lab08_mandlebrot.runs/synth_1/mandelbrot_top.vds

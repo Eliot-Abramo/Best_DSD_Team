@@ -115,6 +115,9 @@ OPTRACE "Adding files" END { }
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
+read_xdc {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/constr/PYNQ-Z2_v1.0.xdc}}
+set_property used_in_implementation false [get_files {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab08_mandlebrot/constr/PYNQ-Z2_v1.0.xdc}}]
+
 set_param ips.enableIPCacheLiteLoad 1
 close [open __synthesis_is_running__ w]
 

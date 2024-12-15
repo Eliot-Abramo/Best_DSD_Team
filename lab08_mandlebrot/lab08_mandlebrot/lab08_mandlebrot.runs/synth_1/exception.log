@@ -1,4 +1,0 @@
-ERROR: Exception caught trying to open file C:\Users\eliot\Documents\University Documents\BA5\Best_DSD_Team\lab08_mandlebrot\lab08_mandlebrot\lab08_mandlebrot.runs\synth_1/runme.log
-	Exception name: Error
-	Exception error code: 70
-	Exception message: Permission denied
