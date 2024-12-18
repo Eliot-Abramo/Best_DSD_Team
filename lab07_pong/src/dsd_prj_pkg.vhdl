@@ -54,11 +54,11 @@ package dsd_prj_pkg is
   -- Pong parameters (in pixels)
   constant BALL_WIDTH   : natural := 10;
   constant BALL_HEIGHT  : natural := 10;
-  constant BALL_STEP_X  : natural := 2;
-  constant BALL_STEP_Y  : natural := 2;
+  constant BALL_STEP_X  : natural := 4;
+  constant BALL_STEP_Y  : natural := 4;
   constant PLATE_WIDTH  : natural := 200;
   constant PLATE_HEIGHT : natural := 10;
-  constant PLATE_STEP_X : natural := 5;
+  constant PLATE_STEP_X : natural := 10;
 
 
 end package dsd_prj_pkg;

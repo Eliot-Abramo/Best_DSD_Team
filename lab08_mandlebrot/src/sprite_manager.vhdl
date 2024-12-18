@@ -10,6 +10,7 @@ use ieee.numeric_std.all;
 -- Packages
 library work;
 use work.dsd_prj_pkg.all;
+use work.pong_types_pkg.all;
 
 --=============================================================================
 --
@@ -36,9 +37,10 @@ entity sprite_manager is
     BGGreenxSI : in std_logic_vector(COLOR_BW - 1 downto 0);
     BGBluexSI  : in std_logic_vector(COLOR_BW - 1 downto 0);
 
-    -- Ball and plate coordinates
+    -- FSM, ball and plate
+    FsmStatexDI: in GameControl;
     PlateXxDI : in unsigned(COORD_BW - 1 downto 0);
-    -- Highscore and state
+    BallsxDI : in BallArrayType;
 
     -- Current output colors
     RedxSO   : out std_logic_vector(COLOR_BW - 1 downto 0);
@@ -57,10 +59,10 @@ architecture rtl of sprite_manager is
 
   -- Constants
   constant SPRITE_WIDTH       : natural := 200;
-  constant SPRITE_MEM_ADR_BW  : natural := 1;
+  constant SPRITE_MEM_ADDR_BW  : natural := 17;
 
   -- Index map
-  constant SPRITE_PLATE_INDEX : natural := 64 * SPRITE_WIDTH + 512
+  constant SPRITE_PLATE_INDEX : natural := 64 * SPRITE_WIDTH + 512;
 
   -- Fixed positions
   constant TEXT_WIDTH  : natural := 512;
@@ -79,6 +81,7 @@ architecture rtl of sprite_manager is
 
   signal ENxS   : std_logic;
   signal DOUTxD : std_logic_vector(MEM_DATA_BW - 1 downto 0);
+  signal RdAddrxD : std_logic_vector(SPRITE_MEM_ADDR_BW - 1 DOWNTO 0);
 
   signal MemRedxS   : std_logic_vector(COLOR_BW - 1 downto 0);
   signal MemGreenxS : std_logic_vector(COLOR_BW - 1 downto 0);
@@ -134,13 +137,23 @@ begin
 
     -- Plate
     if ((PlateRelativeXxD >= 0 and PlateRelativeXxD < PLATE_WIDTH) and (PlateRelativeYxD >= 0)) then
-      RdAddrxD <= std_logic_vector(resize(SPRITE_PLATE_INDEX + PlateMemRelativeXxD + PlateMemRelativeYxD * SPRITE_ATLAS_WIDTH, SPRITE_ATLAS_MEM_ADDR_BW));
+      RdAddrxD <= std_logic_vector(resize(SPRITE_PLATE_INDEX + PlateMemRelativeXxD + PlateMemRelativeYxD * SPRITE_WIDTH, SPRITE_MEM_ADDR_BW));
       RedxSO   <= MemRedxS;
       GreenxSO <= MemGreenxS;
       BluexSO  <= MemBluexS;
     end if;
 
-    -- Ball
+    -- Ball logic 
+    FOR i IN 0 TO (MaxBallCount - 1) LOOP
+      IF (BallsxDI(i).IsActive = 1) THEN
+          IF (XCoordxDI >= BallsxDI(i).BallX AND XCoordxDI < BallsxDI(i).BallX + BALL_WIDTH AND
+              YCoordxDI >= BallsxDI(i).BallY AND YCoordxDI < BallsxDI(i).BallY + BALL_HEIGHT) THEN
+            RedxSO   <= "1111";
+            GreenxSO <= "1111";
+            BluexSO  <= "1111";
+        END IF;
+     END IF;
+    END LOOP;
 
     -- Text (only if stopped)
 
