@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (win64) Build 3064766 Wed Nov 18 09:12:45 MST 2020
-| Date         : Wed Dec 18 09:14:24 2024
+| Date         : Wed Dec 18 14:30:21 2024
 | Host         : Eliot_Abramo running 64-bit major release  (build 9200)
 | Command      : report_utilization -file pong_top_utilization_synth.rpt -pb pong_top_utilization_synth.pb
 | Design       : pong_top
@@ -30,12 +30,12 @@ Table of Contents
 +-------------------------+------+-------+-----------+-------+
 |        Site Type        | Used | Fixed | Available | Util% |
 +-------------------------+------+-------+-----------+-------+
-| Slice LUTs*             |  762 |     0 |     53200 |  1.43 |
-|   LUT as Logic          |  762 |     0 |     53200 |  1.43 |
+| Slice LUTs*             |  664 |     0 |     53200 |  1.25 |
+|   LUT as Logic          |  664 |     0 |     53200 |  1.25 |
 |   LUT as Memory         |    0 |     0 |     17400 |  0.00 |
-| Slice Registers         |  320 |     0 |    106400 |  0.30 |
-|   Register as Flip Flop |  298 |     0 |    106400 |  0.28 |
-|   Register as Latch     |   22 |     0 |    106400 |  0.02 |
+| Slice Registers         |  173 |     0 |    106400 |  0.16 |
+|   Register as Flip Flop |  173 |     0 |    106400 |  0.16 |
+|   Register as Latch     |    0 |     0 |    106400 |  0.00 |
 | F7 Muxes                |    0 |     0 |     26600 |  0.00 |
 | F8 Muxes                |    0 |     0 |     13300 |  0.00 |
 +-------------------------+------+-------+-----------+-------+
@@ -54,23 +54,25 @@ Table of Contents
 | 0     |            _ |         Set |            - |
 | 0     |            _ |       Reset |            - |
 | 0     |          Yes |           - |            - |
-| 110   |          Yes |           - |          Set |
-| 210   |          Yes |           - |        Reset |
+| 50    |          Yes |           - |          Set |
+| 119   |          Yes |           - |        Reset |
 | 0     |          Yes |         Set |            - |
-| 0     |          Yes |       Reset |            - |
+| 4     |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
 2. Memory
 ---------
 
-+----------------+------+-------+-----------+-------+
-|    Site Type   | Used | Fixed | Available | Util% |
-+----------------+------+-------+-----------+-------+
-| Block RAM Tile |    0 |     0 |       140 |  0.00 |
-|   RAMB36/FIFO* |    0 |     0 |       140 |  0.00 |
-|   RAMB18       |    0 |     0 |       280 |  0.00 |
-+----------------+------+-------+-----------+-------+
++-------------------+------+-------+-----------+-------+
+|     Site Type     | Used | Fixed | Available | Util% |
++-------------------+------+-------+-----------+-------+
+| Block RAM Tile    | 16.5 |     0 |       140 | 11.79 |
+|   RAMB36/FIFO*    |   16 |     0 |       140 | 11.43 |
+|     RAMB36E1 only |   16 |       |           |       |
+|   RAMB18          |    1 |     0 |       280 |  0.36 |
+|     RAMB18E1 only |    1 |       |           |       |
++-------------------+------+-------+-----------+-------+
 * Note: Each Block RAM Tile only has one FIFO logic available and therefore can accommodate only one FIFO36E1 or one FIFO18E1. However, if a FIFO18E1 occupies a Block RAM Tile, that tile can still accommodate a RAMB18E1
 
 
@@ -90,7 +92,7 @@ Table of Contents
 +-----------------------------+------+-------+-----------+-------+
 |          Site Type          | Used | Fixed | Available | Util% |
 +-----------------------------+------+-------+-----------+-------+
-| Bonded IOB                  |   17 |     0 |       125 | 13.60 |
+| Bonded IOB                  |   18 |     0 |       125 | 14.40 |
 | Bonded IPADs                |    0 |     0 |         2 |  0.00 |
 | Bonded IOPADs               |    0 |     0 |       130 |  0.00 |
 | PHY_CONTROL                 |    0 |     0 |         4 |  0.00 |
@@ -113,9 +115,9 @@ Table of Contents
 +------------+------+-------+-----------+-------+
 |  Site Type | Used | Fixed | Available | Util% |
 +------------+------+-------+-----------+-------+
-| BUFGCTRL   |    0 |     0 |        32 |  0.00 |
+| BUFGCTRL   |    1 |     0 |        32 |  3.13 |
 | BUFIO      |    0 |     0 |        16 |  0.00 |
-| MMCME2_ADV |    0 |     0 |         4 |  0.00 |
+| MMCME2_ADV |    1 |     0 |         4 | 25.00 |
 | PLLE2_ADV  |    0 |     0 |         4 |  0.00 |
 | BUFMRCE    |    0 |     0 |         8 |  0.00 |
 | BUFHCE     |    0 |     0 |        72 |  0.00 |
@@ -143,33 +145,34 @@ Table of Contents
 7. Primitives
 -------------
 
-+----------+------+---------------------+
-| Ref Name | Used | Functional Category |
-+----------+------+---------------------+
-| LUT6     |  254 |                 LUT |
-| LUT2     |  238 |                 LUT |
-| FDCE     |  188 |        Flop & Latch |
-| LUT4     |  147 |                 LUT |
-| CARRY4   |  131 |          CarryLogic |
-| FDPE     |  110 |        Flop & Latch |
-| LUT5     |  104 |                 LUT |
-| LUT1     |   84 |                 LUT |
-| LUT3     |   44 |                 LUT |
-| LDCE     |   22 |        Flop & Latch |
-| OBUF     |   14 |                  IO |
-| IBUF     |    3 |                  IO |
-+----------+------+---------------------+
++------------+------+---------------------+
+|  Ref Name  | Used | Functional Category |
++------------+------+---------------------+
+| LUT2       |  357 |                 LUT |
+| LUT4       |  192 |                 LUT |
+| CARRY4     |  146 |          CarryLogic |
+| FDCE       |  119 |        Flop & Latch |
+| LUT5       |   96 |                 LUT |
+| LUT6       |   78 |                 LUT |
+| LUT1       |   75 |                 LUT |
+| FDPE       |   50 |        Flop & Latch |
+| LUT3       |   35 |                 LUT |
+| RAMB36E1   |   16 |        Block Memory |
+| OBUF       |   14 |                  IO |
+| IBUF       |    4 |                  IO |
+| FDRE       |    4 |        Flop & Latch |
+| RAMB18E1   |    1 |        Block Memory |
+| MMCME2_ADV |    1 |               Clock |
+| BUFG       |    1 |               Clock |
++------------+------+---------------------+
 
 
 8. Black Boxes
 --------------
 
-+---------------+------+
-|    Ref Name   | Used |
-+---------------+------+
-| clk_wiz_0     |    1 |
-| blk_mem_gen_0 |    1 |
-+---------------+------+
++----------+------+
+| Ref Name | Used |
++----------+------+
 
 
 9. Instantiated Netlists

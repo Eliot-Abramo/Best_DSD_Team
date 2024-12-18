@@ -79,14 +79,9 @@ architecture rtl of pong_top is
   signal VSEdgexS : std_logic; -- If 1, row counter resets (new frame). HIGH for 1 CC, when vertical sync starts)
 
   -- pong_fsm
-  signal FsmStatexD : GameControl;
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
   
-  -- TODO:
-  signal DrawBallxS  : std_logic; -- If 1, draw the ball
-  signal DrawPlatexS : std_logic; -- If 1, draw the plate
-
 --=============================================================================
 -- COMPONENT DECLARATIONS
 --=============================================================================
@@ -158,11 +153,36 @@ architecture rtl of pong_top is
       VSEdgexSI : in std_logic;
 
       -- Ball and plate coordinates
-      FsmStatexDO: out GameControl;
+      -- FsmStatexDO: out GameControl;
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
       BallsxDO : out BallArrayType
     );
   end component pong_fsm;
+
+--  component sprite_manager is
+--    port
+--    (
+--      CLKxCI : in std_logic;
+
+  --     -- Coordinate from VGA
+  --     XCoordxDI : in unsigned(COORD_BW - 1 downto 0);
+  --     YCoordxDI : in unsigned(COORD_BW - 1 downto 0);
+
+  --     -- Background colors from the memory (to handle transparency)
+  --     BGRedxSI   : in std_logic_vector(COLOR_BW - 1 downto 0);
+  --     BGGreenxSI : in std_logic_vector(COLOR_BW - 1 downto 0);
+  --     BGBluexSI  : in std_logic_vector(COLOR_BW - 1 downto 0);
+
+  --     -- Ball and plate coordinates
+  --     BallsxDI  : in BallArrayType;
+  --     PlateXxDI : in unsigned(COORD_BW - 1 downto 0);
+
+  --     -- Current output colors
+  --     RedxSO   : out std_logic_vector(COLOR_BW - 1 downto 0);
+  --     GreenxSO : out std_logic_vector(COLOR_BW - 1 downto 0);
+  --     BluexSO  : out std_logic_vector(COLOR_BW - 1 downto 0)
+  --   );
+  -- end component;
 
 --=============================================================================
 -- ARCHITECTURE BEGIN
@@ -229,11 +249,32 @@ begin
 
       VSEdgexSI => VSEdgexS,
 
-      FsmStatexDO => FsmStatexD,
+      -- FsmStatexDO => FsmStatexD,
       PlateXxDO => PlateXxD,
       BallsxDO => BallsxD
     );
 
+  -- i_sprite_manager : sprite_manager
+  --   port
+  --   map (
+  --   CLKxCI => CLK75xC,
+  
+  --   XCoordxDI => XCoordxD,
+  --   YCoordxDI => YCoordxD,
+  
+  --   BGRedxSI   => BGRedxS,
+  --   BGGreenxSI => BGGreenxS,
+  --   BGBluexSI  => BGBluexS,
+  
+  --   BallsxDI  => BallsxD,
+  --   PlateXxDI => PlateXxD,
+    
+  --   -- Current output colors
+  --   RedxSO   => RedxS,
+  --   GreenxSO => GreenxS,
+  --   BluexSO  => BluexS
+  --   );
+  
 --=============================================================================
 -- MEMORY SIGNAL MAPPING
 --=============================================================================
@@ -305,7 +346,7 @@ begin
 --        BluexS  <= "0000";
 --      END IF;
 --    END IF;
-
+-- 
   END PROCESS;
 
 end rtl;

@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (win64) Build 3064766 Wed Nov 18 09:12:45 MST 2020
-| Date         : Wed Dec 18 09:15:41 2024
+| Date         : Wed Dec 18 14:32:15 2024
 | Host         : Eliot_Abramo running 64-bit major release  (build 9200)
 | Command      : report_drc -file pong_top_drc_routed.rpt -pb pong_top_drc_routed.pb -rpx pong_top_drc_routed.rpx
 | Design       : pong_top
@@ -24,14 +24,13 @@ Table of Contents
       Design limits: <entire design considered>
            Ruledeck: default
              Max violations: <unlimited>
-             Violations found: 67
+             Violations found: 45
 +-----------+------------------+----------------------------+------------+
 | Rule      | Severity         | Description                | Violations |
 +-----------+------------------+----------------------------+------------+
 | NSTD-1    | Critical Warning | Unspecified I/O Standard   | 1          |
 | UCIO-1    | Critical Warning | Unconstrained Logical Port | 1          |
 | CHECK-3   | Warning          | Report rule limit reached  | 2          |
-| PDRC-153  | Warning          | Gated clock check          | 22         |
 | REQP-1839 | Warning          | RAMB36 async control check | 20         |
 | REQP-1840 | Warning          | RAMB18 async control check | 20         |
 | ZPS7-1    | Warning          | PS7 block required         | 1          |
@@ -57,116 +56,6 @@ Related violations: <none>
 CHECK-3#2 Warning
 Report rule limit reached  
 REQP-1840 rule limit reached: 20 violations have been found.
-Related violations: <none>
-
-PDRC-153#1 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][10]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#2 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][11]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][11]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][11]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#3 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][2]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#4 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][3]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#5 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][4]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#6 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][5]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#7 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][6]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#8 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][7]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#9 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][8]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#10 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Left][9]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#11 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][0]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#12 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][10]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#13 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][11]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][11]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][11]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#14 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][1]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#15 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][2]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#16 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][3]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#17 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][4]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#18 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][5]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#19 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][6]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#20 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][7]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#21 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][8]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
-Related violations: <none>
-
-PDRC-153#22 Warning
-Gated clock check  
-Net i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_LDC_i_1_n_0 is a gated clock net sourced by a combinational pin i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_LDC_i_1/O, cell i_pong_fsm/PlateBumpxDP_reg[1][Right][9]_LDC_i_1. This is not good design practice and will likely impact performance. For SLICE registers, for example, use the CE pin to control the loading of data.
 Related violations: <none>
 
 REQP-1839#1 Warning

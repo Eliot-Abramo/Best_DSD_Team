@@ -20,8 +20,8 @@ PACKAGE pong_types_pkg IS
   END RECORD;
 
   TYPE PlateBumpType IS RECORD
-    Left : signed(COORD_BW-1 downto 0);
-    Right : signed(COORD_BW-1 downto 0);  
+    LeftPlate : signed(COORD_BW-1 downto 0);
+    RightPlate : signed(COORD_BW-1 downto 0);  
   END RECORD; 
   
   TYPE BallArrayType IS ARRAY (0 TO MaxBallCount-1) OF BallType;

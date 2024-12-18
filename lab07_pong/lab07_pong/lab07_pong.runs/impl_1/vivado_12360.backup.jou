@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Wed Dec 18 14:30:39 2024
+# Process ID: 12360
+# Current directory: C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/impl_1
+# Command line: vivado.exe -log pong_top.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source pong_top.tcl -notrace
+# Log file: C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/impl_1/pong_top.vdi
+# Journal file: C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/impl_1\vivado.jou
+#-----------------------------------------------------------
+source pong_top.tcl -notrace

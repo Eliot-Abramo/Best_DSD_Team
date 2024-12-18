@@ -96,13 +96,13 @@ read_vhdl -vhdl2008 -library xil_defaultlib {
   {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/vga_controller.vhdl}
   {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl}
 }
+read_ip -quiet {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.srcs/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0.xci}}
+set_property used_in_implementation false [get_files -all {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0_ooc.xdc}}]
+
 read_ip -quiet {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci}}
 set_property used_in_implementation false [get_files -all {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc}}]
 set_property used_in_implementation false [get_files -all {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc}}]
 set_property used_in_implementation false [get_files -all {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_ooc.xdc}}]
-
-read_ip -quiet {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.srcs/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0.xci}}
-set_property used_in_implementation false [get_files -all {{c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0_ooc.xdc}}]
 
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
@@ -116,6 +116,8 @@ foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
 read_xdc {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/constr/PYNQ-Z2_v1.0.xdc}}
 set_property used_in_implementation false [get_files {{C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/constr/PYNQ-Z2_v1.0.xdc}}]
 
+read_xdc dont_touch.xdc
+set_property used_in_implementation false [get_files dont_touch.xdc]
 set_param ips.enableIPCacheLiteLoad 1
 close [open __synthesis_is_running__ w]
 

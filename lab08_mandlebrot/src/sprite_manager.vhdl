@@ -10,7 +10,7 @@ use ieee.numeric_std.all;
 -- Packages
 library work;
 use work.dsd_prj_pkg.all;
-
+use work.pong_types_pkg.all;
 --=============================================================================
 --
 -- sprite_manager
@@ -37,6 +37,8 @@ entity sprite_manager is
     BGBluexSI  : in std_logic_vector(COLOR_BW - 1 downto 0);
 
     -- Ball and plate coordinates
+    BallsxDI : in BallArrayType;
+    PlateXxDI : in unsigned(COORD_BW - 1 downto 0);
     -- Highscore and state
 
     -- Current output colors
@@ -111,10 +113,24 @@ begin
     GreenxSO <= BGGreenxSI;
     BluexSO  <= BGBluexSI;
 
-    -- Plate
+     -- Plate logic
+    IF (XCoordxDI >= PlateXxDI AND XCoordxDI < PlateXxDI + PLATE_WIDTH AND YCoordxDI >= VS_DISPLAY - PLATE_HEIGHT) THEN
+      RedxSO   <= BGRedxSI;
+      GreenxSO <= BGGreenxSI;
+      BluexSO  <= BGBluexSI;
+    END IF;
 
-    -- Ball
-
+    -- Ball logic 
+    FOR i IN 0 TO (MaxBallCount - 1) LOOP
+      IF (BallsxDI(i).IsActive = 1) THEN
+          IF (XCoordxDI >= BallsxDI(i).BallX AND XCoordxDI < BallsxDI(i).BallX + BALL_WIDTH AND
+              YCoordxDI >= BallsxDI(i).BallY AND YCoordxDI < BallsxDI(i).BallY + BALL_HEIGHT) THEN
+            RedxSO   <= BGRedxSI;
+            GreenxSO <= BGGreenxSI;
+            BluexSO  <= BGBluexSI;
+        END IF;
+     END IF;
+    END LOOP;
     -- Text (only if stopped)
 
     -- Transparent background (if black then simply draw the background)
@@ -125,6 +141,7 @@ begin
     end if;
 
   end process;
+  
 end architecture;
 --=============================================================================
 -- ARCHITECTURE END

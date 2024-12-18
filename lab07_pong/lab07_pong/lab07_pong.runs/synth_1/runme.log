@@ -17,106 +17,252 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020
 INFO: [Device 21-403] Loading part xc7z020clg400-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 5404
+INFO: [Synth 8-7075] Helper process launched with PID 9776
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:12 . Memory (MB): peak = 999.633 ; gain = 0.000
+Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:20 . Memory (MB): peak = 998.941 ; gain = 0.000
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-638] synthesizing module 'pong_top' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:49]
-INFO: [Synth 8-3491] module 'clk_wiz_0' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/.Xil/Vivado-5388-Eliot_Abramo/realtime/clk_wiz_0_stub.vhdl:5' bound to instance 'i_clk_wiz_0' of component 'clk_wiz_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:175]
-INFO: [Synth 8-638] synthesizing module 'clk_wiz_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/.Xil/Vivado-5388-Eliot_Abramo/realtime/clk_wiz_0_stub.vhdl:15]
-INFO: [Synth 8-3491] module 'blk_mem_gen_0' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/.Xil/Vivado-5388-Eliot_Abramo/realtime/blk_mem_gen_0_stub.vhdl:5' bound to instance 'i_blk_mem_gen_0' of component 'blk_mem_gen_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:183]
-INFO: [Synth 8-638] synthesizing module 'blk_mem_gen_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/.Xil/Vivado-5388-Eliot_Abramo/realtime/blk_mem_gen_0_stub.vhdl:20]
+INFO: [Synth 8-3491] module 'clk_wiz_0' declared at 'c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:70' bound to instance 'i_clk_wiz_0' of component 'clk_wiz_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:175]
+INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0' [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:70]
+INFO: [Synth 8-6157] synthesizing module 'clk_wiz_0_clk_wiz' [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v:68]
+INFO: [Synth 8-6157] synthesizing module 'IBUF' [C:/Xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:32983]
+	Parameter CAPACITANCE bound to: DONT_CARE - type: string 
+	Parameter IBUF_DELAY_VALUE bound to: 0 - type: string 
+	Parameter IBUF_LOW_PWR bound to: TRUE - type: string 
+	Parameter IFD_DELAY_VALUE bound to: AUTO - type: string 
+	Parameter IOSTANDARD bound to: DEFAULT - type: string 
+INFO: [Synth 8-6155] done synthesizing module 'IBUF' (1#1) [C:/Xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:32983]
+INFO: [Synth 8-6157] synthesizing module 'MMCME2_ADV' [C:/Xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:39998]
+	Parameter BANDWIDTH bound to: HIGH - type: string 
+	Parameter CLKFBOUT_MULT_F bound to: 9.375000 - type: double 
+	Parameter CLKFBOUT_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKFBOUT_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKIN1_PERIOD bound to: 8.000000 - type: double 
+	Parameter CLKIN2_PERIOD bound to: 0.000000 - type: double 
+	Parameter CLKOUT0_DIVIDE_F bound to: 15.625000 - type: double 
+	Parameter CLKOUT0_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT0_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT0_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT1_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT1_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT1_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT1_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT2_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT2_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT2_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT2_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT3_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT3_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT3_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT3_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT4_CASCADE bound to: FALSE - type: string 
+	Parameter CLKOUT4_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT4_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT4_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT4_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT5_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT5_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT5_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT5_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT6_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT6_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT6_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT6_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter COMPENSATION bound to: ZHOLD - type: string 
+	Parameter DIVCLK_DIVIDE bound to: 1 - type: integer 
+	Parameter IS_CLKINSEL_INVERTED bound to: 1'b0 
+	Parameter IS_PSEN_INVERTED bound to: 1'b0 
+	Parameter IS_PSINCDEC_INVERTED bound to: 1'b0 
+	Parameter IS_PWRDWN_INVERTED bound to: 1'b0 
+	Parameter IS_RST_INVERTED bound to: 1'b0 
+	Parameter REF_JITTER1 bound to: 0.010000 - type: double 
+	Parameter REF_JITTER2 bound to: 0.010000 - type: double 
+	Parameter SS_EN bound to: FALSE - type: string 
+	Parameter SS_MODE bound to: CENTER_HIGH - type: string 
+	Parameter SS_MOD_PERIOD bound to: 10000 - type: integer 
+	Parameter STARTUP_WAIT bound to: FALSE - type: string 
+INFO: [Synth 8-6155] done synthesizing module 'MMCME2_ADV' (2#1) [C:/Xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:39998]
+INFO: [Synth 8-6157] synthesizing module 'BUFG' [C:/Xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1083]
+INFO: [Synth 8-6155] done synthesizing module 'BUFG' (3#1) [C:/Xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1083]
+INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0_clk_wiz' (4#1) [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v:68]
+INFO: [Synth 8-6155] done synthesizing module 'clk_wiz_0' (5#1) [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.v:70]
+INFO: [Synth 8-3491] module 'blk_mem_gen_0' declared at 'c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/synth/blk_mem_gen_0.vhd:59' bound to instance 'i_blk_mem_gen_0' of component 'blk_mem_gen_0' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:183]
+INFO: [Synth 8-638] synthesizing module 'blk_mem_gen_0' [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/synth/blk_mem_gen_0.vhd:73]
+	Parameter C_FAMILY bound to: zynq - type: string 
+	Parameter C_XDEVICEFAMILY bound to: zynq - type: string 
+	Parameter C_ELABORATION_DIR bound to: ./ - type: string 
+	Parameter C_INTERFACE_TYPE bound to: 0 - type: integer 
+	Parameter C_AXI_TYPE bound to: 1 - type: integer 
+	Parameter C_AXI_SLAVE_TYPE bound to: 0 - type: integer 
+	Parameter C_USE_BRAM_BLOCK bound to: 0 - type: integer 
+	Parameter C_ENABLE_32BIT_ADDRESS bound to: 0 - type: integer 
+	Parameter C_CTRL_ECC_ALGO bound to: NONE - type: string 
+	Parameter C_HAS_AXI_ID bound to: 0 - type: integer 
+	Parameter C_AXI_ID_WIDTH bound to: 4 - type: integer 
+	Parameter C_MEM_TYPE bound to: 1 - type: integer 
+	Parameter C_BYTE_SIZE bound to: 9 - type: integer 
+	Parameter C_ALGORITHM bound to: 1 - type: integer 
+	Parameter C_PRIM_TYPE bound to: 1 - type: integer 
+	Parameter C_LOAD_INIT_FILE bound to: 1 - type: integer 
+	Parameter C_INIT_FILE_NAME bound to: blk_mem_gen_0.mif - type: string 
+	Parameter C_INIT_FILE bound to: blk_mem_gen_0.mem - type: string 
+	Parameter C_USE_DEFAULT_DATA bound to: 0 - type: integer 
+	Parameter C_DEFAULT_DATA bound to: 0 - type: string 
+	Parameter C_HAS_RSTA bound to: 0 - type: integer 
+	Parameter C_RST_PRIORITY_A bound to: CE - type: string 
+	Parameter C_RSTRAM_A bound to: 0 - type: integer 
+	Parameter C_INITA_VAL bound to: 0 - type: string 
+	Parameter C_HAS_ENA bound to: 1 - type: integer 
+	Parameter C_HAS_REGCEA bound to: 0 - type: integer 
+	Parameter C_USE_BYTE_WEA bound to: 0 - type: integer 
+	Parameter C_WEA_WIDTH bound to: 1 - type: integer 
+	Parameter C_WRITE_MODE_A bound to: NO_CHANGE - type: string 
+	Parameter C_WRITE_WIDTH_A bound to: 12 - type: integer 
+	Parameter C_READ_WIDTH_A bound to: 12 - type: integer 
+	Parameter C_WRITE_DEPTH_A bound to: 49152 - type: integer 
+	Parameter C_READ_DEPTH_A bound to: 49152 - type: integer 
+	Parameter C_ADDRA_WIDTH bound to: 16 - type: integer 
+	Parameter C_HAS_RSTB bound to: 0 - type: integer 
+	Parameter C_RST_PRIORITY_B bound to: CE - type: string 
+	Parameter C_RSTRAM_B bound to: 0 - type: integer 
+	Parameter C_INITB_VAL bound to: 0 - type: string 
+	Parameter C_HAS_ENB bound to: 1 - type: integer 
+	Parameter C_HAS_REGCEB bound to: 0 - type: integer 
+	Parameter C_USE_BYTE_WEB bound to: 0 - type: integer 
+	Parameter C_WEB_WIDTH bound to: 1 - type: integer 
+	Parameter C_WRITE_MODE_B bound to: WRITE_FIRST - type: string 
+	Parameter C_WRITE_WIDTH_B bound to: 12 - type: integer 
+	Parameter C_READ_WIDTH_B bound to: 12 - type: integer 
+	Parameter C_WRITE_DEPTH_B bound to: 49152 - type: integer 
+	Parameter C_READ_DEPTH_B bound to: 49152 - type: integer 
+	Parameter C_ADDRB_WIDTH bound to: 16 - type: integer 
+	Parameter C_HAS_MEM_OUTPUT_REGS_A bound to: 0 - type: integer 
+	Parameter C_HAS_MEM_OUTPUT_REGS_B bound to: 0 - type: integer 
+	Parameter C_HAS_MUX_OUTPUT_REGS_A bound to: 0 - type: integer 
+	Parameter C_HAS_MUX_OUTPUT_REGS_B bound to: 0 - type: integer 
+	Parameter C_MUX_PIPELINE_STAGES bound to: 0 - type: integer 
+	Parameter C_HAS_SOFTECC_INPUT_REGS_A bound to: 0 - type: integer 
+	Parameter C_HAS_SOFTECC_OUTPUT_REGS_B bound to: 0 - type: integer 
+	Parameter C_USE_SOFTECC bound to: 0 - type: integer 
+	Parameter C_USE_ECC bound to: 0 - type: integer 
+	Parameter C_EN_ECC_PIPE bound to: 0 - type: integer 
+	Parameter C_READ_LATENCY_A bound to: 1 - type: integer 
+	Parameter C_READ_LATENCY_B bound to: 1 - type: integer 
+	Parameter C_HAS_INJECTERR bound to: 0 - type: integer 
+	Parameter C_SIM_COLLISION_CHECK bound to: ALL - type: string 
+	Parameter C_COMMON_CLK bound to: 0 - type: integer 
+	Parameter C_DISABLE_WARN_BHV_COLL bound to: 0 - type: integer 
+	Parameter C_EN_SLEEP_PIN bound to: 0 - type: integer 
+	Parameter C_USE_URAM bound to: 0 - type: integer 
+	Parameter C_EN_RDADDRA_CHG bound to: 0 - type: integer 
+	Parameter C_EN_RDADDRB_CHG bound to: 0 - type: integer 
+	Parameter C_EN_DEEPSLEEP_PIN bound to: 0 - type: integer 
+	Parameter C_EN_SHUTDOWN_PIN bound to: 0 - type: integer 
+	Parameter C_EN_SAFETY_CKT bound to: 0 - type: integer 
+	Parameter C_DISABLE_WARN_BHV_RANGE bound to: 0 - type: integer 
+	Parameter C_COUNT_36K_BRAM bound to: 16 - type: string 
+	Parameter C_COUNT_18K_BRAM bound to: 1 - type: string 
+	Parameter C_EST_POWER_SUMMARY bound to: Estimated Power for IP     :     15.379465 mW - type: string 
+INFO: [Synth 8-3491] module 'blk_mem_gen_v8_4_4' declared at 'c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/hdl/blk_mem_gen_v8_4_vhsyn_rfs.vhd:195321' bound to instance 'U0' of component 'blk_mem_gen_v8_4_4' [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/synth/blk_mem_gen_0.vhd:243]
+INFO: [Synth 8-256] done synthesizing module 'blk_mem_gen_0' (16#1) [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/synth/blk_mem_gen_0.vhd:73]
 INFO: [Synth 8-3491] module 'vga_controller' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/vga_controller.vhdl:24' bound to instance 'i_vga_controller' of component 'vga_controller' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:197]
 INFO: [Synth 8-638] synthesizing module 'vga_controller' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/vga_controller.vhdl:54]
-INFO: [Synth 8-256] done synthesizing module 'vga_controller' (1#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/vga_controller.vhdl:54]
+INFO: [Synth 8-256] done synthesizing module 'vga_controller' (17#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/vga_controller.vhdl:54]
 INFO: [Synth 8-3491] module 'pong_fsm' declared at 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_fsm.vhdl:27' bound to instance 'i_pong_fsm' of component 'pong_fsm' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:219]
 INFO: [Synth 8-638] synthesizing module 'pong_fsm' [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_fsm.vhdl:59]
-WARNING: [Synth 8-614] signal 'PlateXxDP' is read in the process but is not in the sensitivity list [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_fsm.vhdl:181]
-INFO: [Synth 8-226] default block is never used [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_fsm.vhdl:241]
-INFO: [Synth 8-256] done synthesizing module 'pong_fsm' (2#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_fsm.vhdl:59]
-INFO: [Synth 8-256] done synthesizing module 'pong_top' (3#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:49]
+WARNING: [Synth 8-614] signal 'PlateXxDP' is read in the process but is not in the sensitivity list [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_fsm.vhdl:237]
+INFO: [Synth 8-226] default block is never used [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_fsm.vhdl:297]
+INFO: [Synth 8-256] done synthesizing module 'pong_fsm' (18#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_fsm.vhdl:59]
+INFO: [Synth 8-256] done synthesizing module 'pong_top' (19#1) [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/src/pong_top.vhdl:49]
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:09 ; elapsed = 00:00:16 . Memory (MB): peak = 999.633 ; gain = 0.000
+Finished RTL Elaboration : Time (s): cpu = 00:00:35 ; elapsed = 00:01:33 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:10 ; elapsed = 00:00:18 . Memory (MB): peak = 999.633 ; gain = 0.000
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:36 ; elapsed = 00:01:35 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:18 . Memory (MB): peak = 999.633 ; gain = 0.000
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:36 ; elapsed = 00:01:35 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.041 . Memory (MB): peak = 999.633 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.122 . Memory (MB): peak = 1226.977 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 18 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
-Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'i_clk_wiz_0'
-Finished Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc] for cell 'i_clk_wiz_0'
-Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0/blk_mem_gen_0_in_context.xdc] for cell 'i_blk_mem_gen_0'
-Finished Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0/blk_mem_gen_0_in_context.xdc] for cell 'i_blk_mem_gen_0'
+Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc] for cell 'i_clk_wiz_0/inst'
+Finished Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0_board.xdc] for cell 'i_clk_wiz_0/inst'
+Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc] for cell 'i_clk_wiz_0/inst'
+Finished Parsing XDC File [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc] for cell 'i_clk_wiz_0/inst'
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/pong_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/pong_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+INFO: [Timing 38-2] Deriving generated clocks
 Parsing XDC File [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/constr/PYNQ-Z2_v1.0.xdc]
 Finished Parsing XDC File [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/constr/PYNQ-Z2_v1.0.xdc]
 INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/constr/PYNQ-Z2_v1.0.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/pong_top_propImpl.xdc].
 Resolution: To avoid this warning, move constraints listed in [.Xil/pong_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Parsing XDC File [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/dont_touch.xdc]
+Finished Parsing XDC File [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/dont_touch.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/dont_touch.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/pong_top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/pong_top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+INFO: [Timing 38-2] Deriving generated clocks
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1023.633 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1226.977 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 1023.633 ; gain = 0.000
-WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'i_blk_mem_gen_0' at clock pin 'clka' is different from the actual clock period '13.333', this can lead to different synthesis results.
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.047 . Memory (MB): peak = 1226.977 ; gain = 0.000
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:16 ; elapsed = 00:00:28 . Memory (MB): peak = 1027.652 ; gain = 28.020
+Finished Constraint Validation : Time (s): cpu = 00:00:42 ; elapsed = 00:01:49 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7z020clg400-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:16 ; elapsed = 00:00:28 . Memory (MB): peak = 1027.652 ; gain = 28.020
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:42 ; elapsed = 00:01:49 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
-Applied set_property IO_BUFFER_TYPE = NONE for CLK125xCI. (constraint file  {c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc}, line 3).
-Applied set_property CLOCK_BUFFER_TYPE = NONE for CLK125xCI. (constraint file  {c:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.gen/sources_1/ip/clk_wiz_0/clk_wiz_0/clk_wiz_0_in_context.xdc}, line 4).
-Applied set_property KEEP_HIERARCHY = SOFT for i_clk_wiz_0. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for i_clk_wiz_0/inst. (constraint file  {C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/dont_touch.xdc}, line 15).
 Applied set_property KEEP_HIERARCHY = SOFT for i_blk_mem_gen_0. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for i_clk_wiz_0. (constraint file  auto generated constraint).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:16 ; elapsed = 00:00:28 . Memory (MB): peak = 1027.652 ; gain = 28.020
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:42 ; elapsed = 00:01:49 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:17 ; elapsed = 00:00:30 . Memory (MB): peak = 1027.652 ; gain = 28.020
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:42 ; elapsed = 00:01:50 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
 ---------------------------------------------------------------------------------
 Detailed RTL Component Info : 
 +---Adders : 
-	   2 Input   13 Bit       Adders := 3     
-	   3 Input   13 Bit       Adders := 7     
+	   3 Input   13 Bit       Adders := 13    
 	   2 Input   12 Bit       Adders := 15    
 	   2 Input    4 Bit       Adders := 1     
 	   2 Input    2 Bit       Adders := 4     
 +---Registers : 
-	               12 Bit    Registers := 17    
-	                4 Bit    Registers := 4     
+	               12 Bit    Registers := 11    
+	                4 Bit    Registers := 6     
 	                2 Bit    Registers := 10    
 	                1 Bit    Registers := 5     
 +---Muxes : 
-	   2 Input   12 Bit        Muxes := 11    
+	   2 Input   12 Bit        Muxes := 7     
 	   4 Input   12 Bit        Muxes := 7     
 	   2 Input    4 Bit        Muxes := 24    
 	   4 Input    4 Bit        Muxes := 1     
 	   4 Input    2 Bit        Muxes := 8     
-	   5 Input    2 Bit        Muxes := 1     
 	   2 Input    2 Bit        Muxes := 20    
+	   5 Input    2 Bit        Muxes := 1     
 	   3 Input    2 Bit        Muxes := 1     
-	   2 Input    1 Bit        Muxes := 35    
-	   4 Input    1 Bit        Muxes := 19    
+	   2 Input    1 Bit        Muxes := 67    
+	   4 Input    1 Bit        Muxes := 16    
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -133,25 +279,25 @@ Finished Part Resource Summary
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:23 ; elapsed = 00:00:40 . Memory (MB): peak = 1027.652 ; gain = 28.020
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:44 ; elapsed = 00:01:55 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:38 ; elapsed = 00:01:01 . Memory (MB): peak = 1027.652 ; gain = 28.020
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:48 ; elapsed = 00:02:04 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:42 ; elapsed = 00:01:08 . Memory (MB): peak = 1047.168 ; gain = 47.535
+Finished Timing Optimization : Time (s): cpu = 00:00:50 ; elapsed = 00:02:07 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:43 ; elapsed = 00:01:09 . Memory (MB): peak = 1054.391 ; gain = 54.758
+Finished Technology Mapping : Time (s): cpu = 00:00:50 ; elapsed = 00:02:08 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -169,90 +315,89 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:46 ; elapsed = 00:01:14 . Memory (MB): peak = 1060.164 ; gain = 60.531
+Finished IO Insertion : Time (s): cpu = 00:00:53 ; elapsed = 00:02:18 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:46 ; elapsed = 00:01:14 . Memory (MB): peak = 1060.164 ; gain = 60.531
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:53 ; elapsed = 00:02:18 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:46 ; elapsed = 00:01:14 . Memory (MB): peak = 1060.164 ; gain = 60.531
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:54 ; elapsed = 00:02:18 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:46 ; elapsed = 00:01:14 . Memory (MB): peak = 1060.164 ; gain = 60.531
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:54 ; elapsed = 00:02:18 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:46 ; elapsed = 00:01:14 . Memory (MB): peak = 1060.164 ; gain = 60.531
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:54 ; elapsed = 00:02:18 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:46 ; elapsed = 00:01:14 . Memory (MB): peak = 1060.164 ; gain = 60.531
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:54 ; elapsed = 00:02:18 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
 ---------------------------------------------------------------------------------
 
 Report BlackBoxes: 
-+------+--------------+----------+
-|      |BlackBox name |Instances |
-+------+--------------+----------+
-|1     |clk_wiz_0     |         1|
-|2     |blk_mem_gen_0 |         1|
-+------+--------------+----------+
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
 
 Report Cell Usage: 
-+------+-------------------+------+
-|      |Cell               |Count |
-+------+-------------------+------+
-|1     |blk_mem_gen_0_bbox |     1|
-|2     |clk_wiz_0_bbox     |     1|
-|3     |CARRY4             |   131|
-|4     |LUT1               |    84|
-|5     |LUT2               |   238|
-|6     |LUT3               |    44|
-|7     |LUT4               |   147|
-|8     |LUT5               |   104|
-|9     |LUT6               |   254|
-|10    |FDCE               |   188|
-|11    |FDPE               |   110|
-|12    |LDC                |    22|
-|13    |IBUF               |     3|
-|14    |OBUF               |    14|
-+------+-------------------+------+
++------+-----------+------+
+|      |Cell       |Count |
++------+-----------+------+
+|1     |BUFG       |     1|
+|2     |CARRY4     |   146|
+|3     |LUT1       |    75|
+|4     |LUT2       |   357|
+|5     |LUT3       |    35|
+|6     |LUT4       |   192|
+|7     |LUT5       |    96|
+|8     |LUT6       |    78|
+|9     |MMCME2_ADV |     1|
+|10    |RAMB18E1   |     1|
+|11    |RAMB36E1   |    16|
+|27    |FDCE       |   119|
+|28    |FDPE       |    50|
+|29    |FDRE       |     4|
+|30    |IBUF       |     4|
+|31    |OBUF       |    14|
++------+-----------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:46 ; elapsed = 00:01:14 . Memory (MB): peak = 1060.164 ; gain = 60.531
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:54 ; elapsed = 00:02:18 . Memory (MB): peak = 1226.977 ; gain = 228.035
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:33 ; elapsed = 00:01:09 . Memory (MB): peak = 1060.164 ; gain = 32.512
-Synthesis Optimization Complete : Time (s): cpu = 00:00:46 ; elapsed = 00:01:14 . Memory (MB): peak = 1060.164 ; gain = 60.531
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:15 ; elapsed = 00:02:10 . Memory (MB): peak = 1226.977 ; gain = 228.035
+Synthesis Optimization Complete : Time (s): cpu = 00:00:54 ; elapsed = 00:02:19 . Memory (MB): peak = 1226.977 ; gain = 228.035
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.018 . Memory (MB): peak = 1072.258 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 153 Unisim elements for replacement
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.045 . Memory (MB): peak = 1226.977 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 164 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1072.258 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1226.977 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
-  A total of 22 instances were transformed.
-  LDC => LDCE: 22 instances
+No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-28 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
+45 Infos, 1 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:50 ; elapsed = 00:01:26 . Memory (MB): peak = 1072.258 ; gain = 72.625
+synth_design: Time (s): cpu = 00:00:59 ; elapsed = 00:02:34 . Memory (MB): peak = 1226.977 ; gain = 228.035
 INFO: [Common 17-1381] The checkpoint 'C:/Users/eliot/Documents/University Documents/BA5/Best_DSD_Team/lab07_pong/lab07_pong/lab07_pong.runs/synth_1/pong_top.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file pong_top_utilization_synth.rpt -pb pong_top_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Wed Dec 18 09:14:24 2024...
+INFO: [Common 17-206] Exiting Vivado at Wed Dec 18 14:30:21 2024...

@@ -80,7 +80,6 @@ architecture rtl of mandelbrot_top is
   signal VSEdgexS : std_logic; -- If 1, row counter resets (new frame). HIGH for 1 CC, when vertical sync starts)
 
   -- pong_fsm
-  signal FsmStatexD : GameControl;
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
 
@@ -165,7 +164,7 @@ architecture rtl of mandelbrot_top is
       VSEdgexSI : in std_logic;
 
       -- Ball and plate coordinates
-      FsmStatexDO: out GameControl;
+--      FsmStatexDO: out GameControl;
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
       BallsxDO : out BallArrayType
     );
@@ -276,9 +275,8 @@ begin
 
   VSEdgexSI => VSEdgexS,
 
-      FsmStatexDO => FsmStatexD,
   PlateXxDO => PlateXxD,
-      BallsxDO => BallsxD
+   BallsxDO => BallsxD
   );
 
   i_mandelbrot : mandelbrot
@@ -327,7 +325,7 @@ begin
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
   BGGreenxS <= DOUTBxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
   BGBluexS  <= DOUTBxD(1 * COLOR_BW - 1 downto 0 * COLOR_BW);
-
+  
 end rtl;
 --=============================================================================
 -- ARCHITECTURE END
