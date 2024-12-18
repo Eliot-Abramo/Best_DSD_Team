@@ -1,5 +1,5 @@
 --=============================================================================
--- @file pong_top.vhdl
+-- @file mandelbrot_top.vhdl
 --=============================================================================
 -- Standard library
 library ieee;
@@ -13,18 +13,19 @@ use work.pong_types_pkg.all;
 
 --=============================================================================
 --
--- pong_top
+-- mandelbrot_top
 --
--- @brief This file specifies the toplevel of the pong game with bacground from
--- an image. For lab 7.
+-- @brief This file specifies the toplevel of the pong game with the Mandelbrot
+-- to generate the background for lab 8, the final lab.
 --
 --=============================================================================
 
 --=============================================================================
--- ENTITY DECLARATION FOR PONG_TOP
+-- ENTITY DECLARATION FOR MANDELBROT_TOP
 --=============================================================================
-entity pong_top is
-  port (
+entity mandelbrot_top is
+  port
+  (
     CLK125xCI : in std_logic;
     RSTxRI    : in std_logic;
 
@@ -41,16 +42,16 @@ entity pong_top is
     GreenxSO : out std_logic_vector(COLOR_BW - 1 downto 0);
     BluexSO  : out std_logic_vector(COLOR_BW - 1 downto 0)
   );
-end pong_top;
+end mandelbrot_top;
 
 --=============================================================================
 -- ARCHITECTURE DECLARATION
 --=============================================================================
-architecture rtl of pong_top is
+architecture rtl of mandelbrot_top is
 
---=============================================================================
--- SIGNAL (COMBINATIONAL) DECLARATIONS
---=============================================================================;
+  --=============================================================================
+  -- SIGNAL (COMBINATIONAL) DECLARATIONS
+  --=============================================================================;
 
   -- clk_wiz_0
   signal CLK75xC : std_logic;
@@ -82,25 +83,29 @@ architecture rtl of pong_top is
   signal FsmStatexD : GameControl;
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
-  
-  -- TODO:
-  signal DrawBallxS  : std_logic; -- If 1, draw the ball
-  signal DrawPlatexS : std_logic; -- If 1, draw the plate
 
---=============================================================================
--- COMPONENT DECLARATIONS
---=============================================================================
+  -- mandelbrot
+  signal MandelbrotWExS   : std_logic; -- If 1, Mandelbrot writes
+  signal MandelbrotXxD    : unsigned(COORD_BW - 1 downto 0);
+  signal MandelbrotYxD    : unsigned(COORD_BW - 1 downto 0);
+  signal MandelbrotITERxD : unsigned(MEM_DATA_BW - 1 downto 0); -- Iteration number from Mandelbrot (chooses colour)
+
+  --=============================================================================
+  -- COMPONENT DECLARATIONS
+  --=============================================================================
   component clk_wiz_0 is
-    port (
+    port
+    (
       clk_out1 : out std_logic;
-      reset    : in  std_logic;
+      reset    : in std_logic;
       locked   : out std_logic;
-      clk_in1  : in  std_logic
+      clk_in1  : in std_logic
     );
   end component clk_wiz_0;
 
   component blk_mem_gen_0
-    port (
+    port
+    (
       clka  : in std_logic;
       ena   : in std_logic;
       wea   : in std_logic_vector(0 downto 0);
@@ -115,7 +120,8 @@ architecture rtl of pong_top is
   end component;
 
   component vga_controller is
-    port (
+    port
+    (
       CLKxCI : in std_logic;
       RSTxRI : in std_logic;
 
@@ -142,7 +148,8 @@ architecture rtl of pong_top is
   end component vga_controller;
 
   component pong_fsm is
-    port (
+    port
+    (
       CLKxCI : in std_logic;
       RSTxRI : in std_logic;
 
@@ -158,155 +165,203 @@ architecture rtl of pong_top is
       VSEdgexSI : in std_logic;
 
       -- Ball and plate coordinates
-      FsmStatexDO: out GameControl;
+--      FsmStatexDO: out GameControl;
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
       BallsxDO : out BallArrayType
     );
   end component pong_fsm;
 
---=============================================================================
--- ARCHITECTURE BEGIN
---=============================================================================
+  component mandelbrot is
+    port
+    (
+      CLKxCI : in std_logic;
+      RSTxRI : in std_logic;
+
+      WExSO   : out std_logic;
+      XxDO    : out unsigned(COORD_BW - 1 downto 0);
+      YxDO    : out unsigned(COORD_BW - 1 downto 0);
+      ITERxDO : out unsigned(MEM_DATA_BW - 1 downto 0)
+    );
+  end component mandelbrot;
+  
+ component sprite_manager is
+    port
+    (
+      CLKxCI : in std_logic;
+
+      -- Coordinate from VGA
+      XCoordxDI : in unsigned(COORD_BW - 1 downto 0);
+      YCoordxDI : in unsigned(COORD_BW - 1 downto 0);
+
+      -- Background colors from the memory (to handle transparency)
+      BGRedxSI   : in std_logic_vector(COLOR_BW - 1 downto 0);
+      BGGreenxSI : in std_logic_vector(COLOR_BW - 1 downto 0);
+      BGBluexSI  : in std_logic_vector(COLOR_BW - 1 downto 0);
+
+      -- Ball and plate coordinates
+      PlateXxDI : in unsigned(COORD_BW - 1 downto 0);
+      BallsxDI : in BallArrayType;
+      FsmStatexDI : in GameControl;
+
+      -- Current output colors
+      RedxSO   : out std_logic_vector(COLOR_BW - 1 downto 0);
+      GreenxSO : out std_logic_vector(COLOR_BW - 1 downto 0);
+      BluexSO  : out std_logic_vector(COLOR_BW - 1 downto 0)
+    );
+  end component;
+
+  --=============================================================================
+  -- ARCHITECTURE BEGIN
+  --=============================================================================
 begin
 
---=============================================================================
--- COMPONENT INSTANTIATIONS
---=============================================================================
+  --=============================================================================
+  -- COMPONENT INSTANTIATIONS
+  --=============================================================================
   i_clk_wiz_0 : clk_wiz_0
-    port map (
-      clk_out1 => CLK75xC,
-      reset    => RSTxRI,
-      locked   => open,
-      clk_in1  => CLK125xCI
-    );
+  port map
+  (
+    clk_out1 => CLK75xC,
+    reset    => RSTxRI,
+    locked   => open,
+    clk_in1  => CLK125xCI
+  );
 
   i_blk_mem_gen_0 : blk_mem_gen_0
-    port map (
-      clka  => CLK75xC,
-      ena   => ENAxS,
-      wea   => WEAxS,
-      addra => WrAddrAxD,
-      dina  => DINAxD,
+  port
+  map (
+  clka  => CLK75xC,
+  ena   => ENAxS,
+  wea   => WEAxS,
+  addra => WrAddrAxD,
+  dina  => DINAxD,
 
-      clkb  => CLK75xC,
-      enb   => ENBxS,
-      addrb => RdAddrBxD,
-      doutb => DOUTBxD
-    );
+  clkb  => CLK75xC,
+  enb   => ENBxS,
+  addrb => RdAddrBxD,
+  doutb => DOUTBxD
+  );
 
-  i_vga_controller: vga_controller
-    port map (
-      CLKxCI => CLK75xC,
-      RSTxRI => RSTxRI,
+  i_vga_controller : vga_controller
+  port
+  map (
+  CLKxCI => CLK75xC,
+  RSTxRI => RSTxRI,
 
-      RedxSI   => RedxS,
-      GreenxSI => GreenxS,
-      BluexSI  => BluexS,
+  RedxSI   => RedxS,
+  GreenxSI => GreenxS,
+  BluexSI  => BluexS,
 
-      HSxSO => HSxSO,
-      VSxSO => VSxSO,
+  HSxSO => HSxSO,
+  VSxSO => VSxSO,
 
-      VSEdgexSO => VSEdgexS,
+  VSEdgexSO => VSEdgexS,
 
-      XCoordxDO => XCoordxD,
-      YCoordxDO => YCoordxD,
+  XCoordxDO => XCoordxD,
+  YCoordxDO => YCoordxD,
 
-      RedxSO   => RedxSO,
-      GreenxSO => GreenxSO,
-      BluexSO  => BluexSO
-    );
+  RedxSO   => RedxSO,
+  GreenxSO => GreenxSO,
+  BluexSO  => BluexSO
+  );
 
   i_pong_fsm : pong_fsm
-    port map (
-      CLKxCI => CLK75xC,
-      RSTxRI => RSTxRI,
+  port
+  map (
+  CLKxCI => CLK75xC,
+  RSTxRI => RSTxRI,
 
-      RightxSI => RightxSI,
-      LeftxSI  => LeftxSI,
+  RightxSI => RightxSI,
+  LeftxSI  => LeftxSI,
 
-      VgaXxDI => XCoordxD,
-      VgaYxDI => YCoordxD,
+  VgaXxDI => XCoordxD,
+  VgaYxDI => YCoordxD,
 
-      VSEdgexSI => VSEdgexS,
+  VSEdgexSI => VSEdgexS,
 
-      FsmStatexDO => FsmStatexD,
-      PlateXxDO => PlateXxD,
-      BallsxDO => BallsxD
-    );
+  FsmStatexDO => FsmStatexD,
+  PlateXxDO => PlateXxD,
+  BallsxDO => BallsxD
+  );
 
---=============================================================================
--- MEMORY SIGNAL MAPPING
---=============================================================================
+  i_mandelbrot : mandelbrot
+  port
+  map (
+  CLKxCI => CLK75xC,
+  RSTxRI => RSTxRI,
 
+  WExSO   => MandelbrotWExS,
+  XxDO    => MandelbrotXxD,
+  YxDO    => MandelbrotYxD,
+  ITERxDO => MandelbrotITERxD
+  );
+
+  i_sprite_manager : sprite_manager
+  port
+  map (
+  CLKxCI => CLK75xC,
+
+  XCoordxDI => XCoordxD,
+  YCoordxDI => YCoordxD,
+
+  BGRedxSI   => BGRedxS,
+  BGGreenxSI => BGGreenxS,
+  BGBluexSI  => BGBluexS,
+  
+  PlateXxDI => PlateXxD,
+  BallsxDI => BallsxD,
+  FsmStatexDI => FsmStatexD,
+
+  -- Current output colors
+  RedxSO   => RedxS,
+  GreenxSO => GreenxS,
+  BluexSO  => BluexS  
+  
+  );
+
+  --=============================================================================
+  -- MEMORY SIGNAL MAPPING
+  --=============================================================================
   -- Port A
-  ENAxS     <= '0';
-  WEAxS     <= "0";
-  WrAddrAxD <= (others => '0');
-  DINAxD    <= (others => '0');
+  ENAxS     <= MandelbrotWExS;
+  WEAxS     <= (others => MandelbrotWExS);
+  WrAddrAxD <= std_logic_vector(resize(MandelbrotYxD / 4 * 256 + MandelbrotXxD / 4, 16));
+  DINAxD    <= std_logic_vector(MandelbrotITERxD);
 
   -- Port B
   ENBxS     <= '1';
-  -- We "divide" by a factor of  4 to account for the bigger size of the screen 
-  -- coordinates and then multiply y for 256 pixels in a row
-  -- TODO: optmize
   RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, 16));
 
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
   BGGreenxS <= DOUTBxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
   BGBluexS  <= DOUTBxD(1 * COLOR_BW - 1 downto 0 * COLOR_BW);
 
+  -- PROCESS (all)
+  -- BEGIN
+  --   -- Default background color
+  --   RedxS   <= BGRedxS;
+  --   GreenxS <= BGGreenxS;
+  --   BluexS  <= BGBluexS;
 
---=============================================================================
--- Sprite logic
---=============================================================================
-  PROCESS (all)
-  BEGIN
-    -- Default background color
-    RedxS   <= BGRedxS;
-    GreenxS <= BGGreenxS;
-    BluexS  <= BGBluexS;
+  --   -- Plate logic
+  --   IF (XCoordxD >= PlateXxD AND XCoordxD < PlateXxD + PLATE_WIDTH AND YCoordxD >= VS_DISPLAY - PLATE_HEIGHT) THEN
+  --     RedxS   <= "1111";
+  --     GreenxS <= "1111";
+  --     BluexS  <= "1111";
+  --   END IF;
 
-    -- Plate logic
-    IF (XCoordxD >= PlateXxD AND XCoordxD < PlateXxD + PLATE_WIDTH AND YCoordxD >= VS_DISPLAY - PLATE_HEIGHT) THEN
-      RedxS   <= "1111";
-      GreenxS <= "1111";
-      BluexS  <= "1111";
-    END IF;
-
-    -- Ball logic 
-    FOR i IN 0 TO (MaxBallCount - 1) LOOP
-      IF (BallsxD(i).IsActive = 1) THEN
-          IF (XCoordxD >= BallsxD(i).BallX AND XCoordxD < BallsxD(i).BallX + BALL_WIDTH AND
-              YCoordxD >= BallsxD(i).BallY AND YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) THEN
-            RedxS   <= "1111";
-            GreenxS <= "1111";
-            BluexS  <= "1111";
-        END IF;
-     END IF;
-    END LOOP;
-
-    -- Obstacle logic for Game2Ball and Game3Ball states
---    IF (FsmStatexD = Game2Ball OR FsmStatexD = Game3Ball) THEN
---      -- Draw the first obstacle
---      IF ((XCoordxD >= Obstacle1XxD) AND (XCoordxD < (Obstacle1XxD + OBSTACLE_WIDTH)) AND
---          (YCoordxD >= Obstacle1YxD) AND (YCoordxD < (Obstacle1YxD + OBSTACLE_HEIGHT))) THEN
---        RedxS   <= "1111";
---        GreenxS <= "0000";
---        BluexS  <= "0000";
---      END IF;
---    END IF;
-
---    IF (FsmStatexD = Game3Ball) THEN
---      -- Draw the second obstacle
---      IF (XCoordxD >= Obstacle2XxD AND XCoordxD < Obstacle2XxD + OBSTACLE_WIDTH AND
---          YCoordxD >= Obstacle2YxD AND YCoordxD < Obstacle2YxD + OBSTACLE_HEIGHT) THEN
---        RedxS   <= "1111";
---        GreenxS <= "0000";
---        BluexS  <= "0000";
---      END IF;
---    END IF;
-
-  END PROCESS;
+  --   -- Ball logic 
+  --   FOR i IN 0 TO (MaxBallCount - 1) LOOP
+  --     IF (BallsxD(i).IsActive = 1) THEN
+  --         IF (XCoordxD >= BallsxD(i).BallX AND XCoordxD < BallsxD(i).BallX + BALL_WIDTH AND
+  --             YCoordxD >= BallsxD(i).BallY AND YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) THEN
+  --           RedxS   <= "1111";
+  --           GreenxS <= "1111";
+  --           BluexS  <= "1111";
+  --       END IF;
+  --    END IF;
+  --   END LOOP;
+  --  END PROCESS;
 
 end rtl;
 --=============================================================================

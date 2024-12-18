@@ -406,14 +406,14 @@ begin
 
        END IF;
       
-      WHEN OTHERS =>
-        FsmStatexDN <= GameEnd;
+--      WHEN OTHERS =>
+--        FsmStatexDN <= GameEnd;
 
     END CASE;
 
   END PROCESS;
 
-  FsmStatexDO <= FsmStatexDP;
+--  FsmStatexDO <= FsmStatexDP;
   BallsxDO <= BallsxDP;
   PlateXxDO <= PlateXxDP;
 
