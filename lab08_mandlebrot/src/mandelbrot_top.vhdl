@@ -164,6 +164,21 @@ architecture rtl of pong_top is
     );
   end component pong_fsm;
 
+  component mandelbrot is
+    port(
+      CLKxCI : in std_logic;
+      RSTxRI : in std_logic;
+
+      WExSO   : out std_logic;
+      XxDO    : out unsigned(COORD_BW -1 downto 0);
+      XxDO    : out unsigned(COORD_BW -1 downto 0);
+      IterxDO : out unsigned(MEM_DATA_BW -1 downto 0);
+
+    );
+
+  end component mandelbrot;
+
+
 --=============================================================================
 -- ARCHITECTURE BEGIN
 --=============================================================================
@@ -234,6 +249,17 @@ begin
       BallsxDO => BallsxD
     );
 
+    i_mandelbrot : mandelbrot
+      port map(
+        CLKxCI => CLK75xC,
+        RSTxRI => RSTxRI,
+
+        WExSO => Mandelbrot_WExS,
+        XxDO => Mandelbrot_XxD,
+        YxDO => Mandelbrot_YxD,
+        ITERxDO => Mandelbrot_ITERxD
+      );
+
 --=============================================================================
 -- MEMORY SIGNAL MAPPING
 --=============================================================================
@@ -248,20 +274,18 @@ begin
   ENBxS     <= '1';
   -- We "divide" by a factor of  4 to account for the bigger size of the screen 
   -- coordinates and then multiply y for 256 pixels in a row
-  -- TODO: optmize
   RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, 16));
 
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
   BGGreenxS <= DOUTBxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
   BGBluexS  <= DOUTBxD(1 * COLOR_BW - 1 downto 0 * COLOR_BW);
 
-
 --=============================================================================
 -- Sprite logic
 --=============================================================================
   PROCESS (all)
   BEGIN
-    -- Default background color
+    -- Default background color from mandelbrot
     RedxS   <= BGRedxS;
     GreenxS <= BGGreenxS;
     BluexS  <= BGBluexS;
