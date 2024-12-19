@@ -64,14 +64,6 @@ architecture rtl of pong_fsm is
   
   -- State of Plate
   SIGNAL PlateXxDP, PlateXxDN : unsigned(COORD_BW - 1 DOWNTO 0) := PLATE_X_INIT;
-
-  -- Signal containing the bump of balls with plate to control angle reaction
---  SIGNAL PlateBumpxDP, PlateBumpxDN : PlateBumpArrayType := (OTHERS => (
---    LeftPlate => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) -
---                   signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
---    RightPlate => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - 
---                    signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
---   ));    
   
   -- Signal containing all of the balls
   SIGNAL BallsxDN, BallsxDP : BallArrayType := (OTHERS => (
@@ -94,60 +86,6 @@ architecture rtl of pong_fsm is
 --=============================================================================
 -- PROCEDURE DECLARATION
 --=============================================================================
-  -- Procedure to handle ball updates and collisions
---  PROCEDURE UpdateBall (
---     -- TODO: An InOut statement could work instead of having 2 statements, but I'm afraid of VHDL
---     -- inferring Latches which the prof. doesn't want.
---     SIGNAL BallIn : IN BallType;
---     SIGNAL BallOut : OUT BAllType;
-    
---     SIGNAL PlateBumpIn : IN PlateBumpType;
---     SIGNAL PlateBumpOut : OUT PlateBumpType;
---     SIGNAL PlateXIn : IN unsigned(COORD_BW - 1 DOWNTO 0); 
-
---     SIGNAL HighScoreIn : IN unsigned(4-1 downto 0);
---     SIGNAL HighscoreOut : OUT unsigned(4-1 DOWNTO 0);
-    
---     SIGNAL FsmState : OUT GameControl
---   ) IS
---   BEGIN
---     -- Check for horizontal wall collisions
---     IF (BallIn.BallX <= 2 * BALL_STEP_X AND BallIn.BallXSpeed < 0) OR
---        (BallIn.BallX >= (HS_DISPLAY - BALL_WIDTH - BALL_STEP_X) AND BallIn.BallXSpeed > 0) THEN
---       BallOut.BallXSpeed <= -BallIn.BallXSpeed;
---     END IF;
-
---     -- Check for vertical wall collisions
---     IF (BallIn.BallY <= 2 * BALL_STEP_Y AND BallIn.BallYSpeed < 0) THEN
---       BallOut.BallYSpeed <= -BallIn.BallYSpeed;
---     END IF;
-
---     -- Check for collisions with the plate
---     IF (BallIn.BallY >= (VS_DISPLAY - PLATE_HEIGHT - BALL_HEIGHT)) THEN
---       IF (PlateBumpIn.Right > 0 AND PlateBumpIn.Left < PLATE_WIDTH) THEN
---         IF BallIn.BallYSpeed >= 0 THEN
---           HighscoreOut <= HighScoreIn + 1;
---           BallOut.BallYSpeed <= -BallIn.BallYSpeed;
---           BallOut.BallXSpeed <= to_signed(-1, 2) when PlateBumpIn.Right < (PLATE_WIDTH / 3)
---                                                   else to_signed(0, 2) when PlateBumpIn.Right < ((2*PLATE_WIDTH)/ 3) 
---                                                   else to_signed(1, 2); 
---         END IF;
---       ELSE
---         FsmState <= GameEnd;
---       END IF;
---     END IF;
-
---     -- Update ball position
---     BallOut.BallX <= resize(unsigned(signed(resize(BallIn.BallX, COORD_BW + 1)) + resize(BallIn.BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
---     BallOut.BallY <= resize(unsigned(signed(resize(BallIn.BallY, COORD_BW + 1)) + resize(BallIn.BallYSpeed, COORD_BW + 1) * to_signed(BALL_STEP_Y, COORD_BW + 1)), COORD_BW);
-
---     PlateBumpOut.Left  <= resize(signed(resize(BallOut.BallX, COORD_BW + 1)) - signed(resize(PlateXIn, COORD_BW + 1)), COORD_BW);
---     PlateBumpOut.Right <= resize(signed(resize(BallOut.BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXIn, COORD_BW + 1)), COORD_BW);
-
--- END PROCEDURE;
-
-
---============================================================================= TODO
 -- Procedure to handle ball updates and collisions
 PROCEDURE UpdateBall (
   SIGNAL BallIn       : IN BallType;
@@ -245,13 +183,6 @@ begin
       PlateXxDP          <= PLATE_X_INIT;
       HighscorexDP       <= to_unsigned(1,8);
 
---      PlateBumpxDP <=(OTHERS => (
---       LeftPlate => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) -
---                        signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW),
---       RightPlate => resize(signed(resize(Ball_X_INIT, COORD_BW + 1)) + BALL_WIDTH - 
---                        signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW)
---      ));    
-
       BallsxDP <= (OTHERS => (
         BallX      => BALL_X_INIT,
         BallY      => BALL_Y_INIT,
@@ -270,7 +201,6 @@ begin
 
       -- Update plate
       PlateXxDP     <= PlateXxDN;
---      PlateBumpxDP  <= PlateBumpxDN;
         
     END IF;
 
@@ -293,7 +223,6 @@ begin
 
     -- Update Plate
     PlateXxDN         <= PlateXxDP;
---    PlateBumpxDN      <= PlateBumpxDP;
 
     -- State machine
     CASE FsmStatexDP IS
@@ -320,24 +249,11 @@ begin
         -- Check if player starts game
         if(LeftxSI = '1' and RightxSI = '1') then
           FsmStatexDN  <= Game1Ball;
-          -- VSEdgexSN <= '0';
           HighScorexDN <= to_unsigned(1,8);
-
---           BallsxDN <= (OTHERS => (
---             BallX      => BALL_X_INIT,
---             BallY      => BALL_Y_INIT,
---             BallXSpeed => to_signed(0, 2),
---             BallYSpeed => to_signed(1, 2),
---             IsActive   => to_unsigned(0,2)
---           ));
-         BallsxDN(0).BallYSpeed <= to_signed(1, 2);
-        --  BallsxDN(0).BallX <= VgaXxDI when (VgaXxDI <= HS_DISPLAY - BALL_WIDTH and VgaXxDI >= BALL_WIDTH) 
-                                          -- else BALL_X_INIT;
-        --  BallsxDN(0).BallY <= VgaYxDI when (VgaYxDI >= VS_DISPLAY - 5 * BALL_HEIGHT) 
-                                          -- else BALL_Y_INIT;
-         BallsxDN(0).BallX <= BALL_X_INIT;
-         BallsxDN(0).BallY <= BALL_Y_INIT;
-         BallsxDN(0).IsActive <= to_unsigned(1,2);
+          BallsxDN(0).BallYSpeed <= to_signed(1, 2);
+          BallsxDN(0).BallX <= BALL_X_INIT;
+          BallsxDN(0).BallY <= BALL_Y_INIT;
+          BallsxDN(0).IsActive <= to_unsigned(1,2);
         end if;
 
       WHEN Game1Ball =>
@@ -346,23 +262,17 @@ begin
           IF HighscorexDP > to_unsigned(3, 8) THEN
             BallsxDN(1).IsActive <= to_unsigned(1,2);
             BallsxDN(1).BallYSpeed <= to_signed(1,2);
-            -- BallsxDN(1).BallX <= VgaXxDI when (VgaXxDI <= HS_DISPLAY - BALL_WIDTH and VgaXxDI >= BALL_WIDTH)
-            --                             else BALL_X_INIT;
-            -- BallsxDN(1).BallY <= VgaYxDI when (VgaYxDI >= VS_DISPLAY - 5 * BALL_HEIGHT) 
-            --                             else BALL_Y_INIT;
-            BallsxDN(1).BallX <= BALL_X_INIT;
-            BallsxDN(1).BallY <= BALL_Y_INIT;   
-            -- FsmStatexDN <= Game2Ball;
+            BallsxDN(1).BallX <= VgaXxDI when (VgaXxDI <= HS_DISPLAY - BALL_WIDTH and VgaXxDI >= BALL_WIDTH)
+                                        else BALL_X_INIT;
+            BallsxDN(1).BallY <= VgaYxDI when (VgaYxDI >= VS_DISPLAY - 6 * BALL_HEIGHT) 
+                                        else BALL_Y_INIT;
+          BallsxDN(1).BallX <= BALL_X_INIT;
+          BallsxDN(1).BallY <= BALL_Y_INIT;
+          FsmStatexDN <= Game2Ball;
           END IF;
           
          MovePlate(PlateXxDP, PlateXxDN);
-        --  UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-        -- UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-        --========================================================================= TODO
-        UpdateBall(BallsxDP(0), BallsxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-        -- PlateBumpxDN(0).Left  <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-        -- PlateBumpxDN(0).Right <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-        --=========================================================================
+         UpdateBall(BallsxDP(0), BallsxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
       END IF;
 
     
@@ -372,43 +282,25 @@ begin
           IF HighscorexDP > to_unsigned(5, 8) THEN
             BallsxDN(2).IsActive <= to_unsigned(1,2);
             BallsxDN(2).BallYSpeed <= to_signed(1,2);
-            -- BallsxDN(2).BallX <= VgaXxDI when (VgaXxDI <= HS_DISPLAY - BALL_WIDTH and VgaXxDI >= BALL_WIDTH)
-            --                             else BALL_X_INIT;
-            -- BallsxDN(2).BallY <= VgaYxDI when (VgaYxDI >= VS_DISPLAY - 5 * BALL_HEIGHT) 
-            --                             else BALL_Y_INIT;
-            BallsxDN(2).BallX <= BALL_X_INIT;
-            BallsxDN(2).BallY <= BALL_Y_INIT;
-
+            BallsxDN(2).BallX <= VgaXxDI when (VgaXxDI <= HS_DISPLAY - BALL_WIDTH and VgaXxDI >= BALL_WIDTH)
+                                        else BALL_X_INIT;
+            BallsxDN(2).BallY <= VgaYxDI when (VgaYxDI >= VS_DISPLAY - 5 * BALL_HEIGHT) 
+                                        else BALL_Y_INIT;
             FsmStatexDN <= Game3Ball;
           END IF;
-        
+
           MovePlate(PlateXxDP, PlateXxDN);       
-          -- UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-          -- UpdateBall(BallsxDP(1), BallsxDN(1), PlateBumpxDP(1), PlateBumpxDN(1), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
           UpdateBall(BallsxDP(0), BallsxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-          -- PlateBumpxDN(0).Left  <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          -- PlateBumpxDN(0).Right <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
           UpdateBall(BallsxDP(1), BallsxDN(1), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-          -- PlateBumpxDN(1).Left  <= resize(signed(resize(BallsxDN(1).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-          -- PlateBumpxDN(1).Right <= resize(signed(resize(BallsxDN(1).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
         END IF;
 
       WHEN Game3Ball =>
       IF(VSEdgexSP = '0' and VSEdgexSN = '1') then
-       MovePlate(PlateXxDP, PlateXxDN);       
-      --  UpdateBall(BallsxDP(0), BallsxDN(0), PlateBumpxDP(0), PlateBumpxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-      --  UpdateBall(BallsxDP(1), BallsxDN(1), PlateBumpxDP(1), PlateBumpxDN(1), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-      --  UpdateBall(BallsxDP(2), BallsxDN(2), PlateBumpxDP(2), PlateBumpxDN(2), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-      UpdateBall(BallsxDP(0), BallsxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-      -- PlateBumpxDN(0).Left  <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-      -- PlateBumpxDN(0).Right <= resize(signed(resize(BallsxDN(0).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-      UpdateBall(BallsxDP(1), BallsxDN(1), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-      -- PlateBumpxDN(1).Left  <= resize(signed(resize(BallsxDN(1).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-      -- PlateBumpxDN(1).Right <= resize(signed(resize(BallsxDN(1).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-      UpdateBall(BallsxDP(2), BallsxDN(2), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
-      -- PlateBumpxDN(2).Left  <= resize(signed(resize(BallsxDN(2).BallX, COORD_BW + 1)) - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-      -- PlateBumpxDN(2).Right <= resize(signed(resize(BallsxDN(2).BallX, COORD_BW + 1)) + BALL_WIDTH - signed(resize(PlateXxDP, COORD_BW + 1)), COORD_BW);
-       END IF;
+        MovePlate(PlateXxDP, PlateXxDN);       
+        UpdateBall(BallsxDP(0), BallsxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
+        UpdateBall(BallsxDP(1), BallsxDN(1), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
+        UpdateBall(BallsxDP(2), BallsxDN(2), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
+      END IF;
       
       WHEN OTHERS =>
         FsmStatexDN  <= GameEnd;
@@ -419,7 +311,6 @@ begin
 
   END PROCESS;
 
-  -- FsmStatexDO <= FsmStatexDP;
   BallsxDO <= BallsxDP;
   PlateXxDO <= PlateXxDP;
 

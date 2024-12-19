@@ -83,7 +83,7 @@ architecture rtl of vga_controller is
   -- signals for coordinate output
   signal XCoordxDP : unsigned(COORD_BW - 1 downto 0);
   signal YCoordxDP : unsigned(COORD_BW - 1 downto 0);
-
+    
   signal VSEdgexSP : std_logic := '0';
   signal VSEdgexSN : std_logic;
   signal active_area : std_logic := '0'; -- High during the visible area
@@ -104,18 +104,6 @@ begin
   YCoordxDO <= YCoordxDP;
 
   VSEdgexSO <= VSEdgexSP;
-
-  -- -- DISPLAY | FRONT PORCH | SYNC PULSE | BACK PORCH
-  -- active_area <= '1' when (HCntxDP < HS_DISPLAY and VCntxDP < VS_DISPLAY) else '0';
-
-  -- HSyncxDN <= HS_POLARITY when (HCntxDP >= HS_DISPLAY + HS_FRONT_PORCH and 
-  --                               HCntxDP < HS_DISPLAY + HS_FRONT_PORCH + HS_PULSE) else
-  --                         not HS_POLARITY;
-
-  -- VSyncxDN <= VS_POLARITY when (VCntxDP >= VS_DISPLAY + VS_FRONT_PORCH and 
-  --                               VCntxDP < VS_DISPLAY + VS_FRONT_PORCH + VS_PULSE) else
-  --                         not VS_POLARITY;
-
 
   -- SYNC PULSE | BACK PORCH | DISPLAY | FRONT PORCH 
   active_area <= '1' when ((HCntxDP >= HS_AFTER_BACK and HCntxDP < HS_BEFORE_FRONT)
@@ -146,7 +134,7 @@ begin
       GreenxDP  <= GreenxDN;
       BluexDP   <= BluexDN;
       XCoordxDP <= HCntxDP - HS_PULSE - HS_BACK_PORCH;
-      YCoordxDP <= VCntxDP - VS_PULSE - VS_BACK_PORCH;
+      YCoordxDP <= VCntxDP - VS_PULSE - VS_BACK_PORCH;      
       VSEdgexSP <= VSEdgexSN;
     end if;
   end process;
@@ -173,17 +161,23 @@ begin
     end if;
   end process;
 
+  -- VGA 
+  process(CLKxCI, RSTxRI)
+  begin
+    if RSTxRI = '1' then
+      VSEdgexSN <= '0';
+    elsif rising_edge(CLKxCI) then
+      if VCntxDP = 0 then
+        VSEdgexSN <= '1';
+      else
+      VSEdgexSN <= '0'; 
+       end if;
+    end if;
+  end process;
+
   -- RGB output
   process(all) 
   begin
-    VSEdgexSN <= '0';
-
-    if rising_edge(CLKxCI) then
-      if VCntxDP = 0 then
-        VSEdgexSN <= '1';
-      end if;
-    end if;
-    
     if active_area = '1' then
       -- Load the input colors during the active area
       RedxDN   <= RedxSI;
