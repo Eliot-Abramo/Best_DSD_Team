@@ -7,8 +7,10 @@ use work.dsd_prj_pkg.all;
 
 PACKAGE pong_types_pkg IS
   
-  CONSTANT MaxBallCount : natural := 4;
+  CONSTANT MAX_BALL_COUNT : natural := 4;
   TYPE GameControl IS (Game1Ball, Game2Ball, Game3Ball, GameEnd);
+
+  CONSTANT MAX_OBS_COUNT : natural := 9;
   
   -- Ball object 
   TYPE BallType IS RECORD
@@ -35,14 +37,21 @@ PACKAGE pong_types_pkg IS
   END RECORD;
   
   -- Array of objects
-  TYPE BallArrayType IS ARRAY (0 TO MaxBallCount-1) OF BallType;
-  TYPE PlateBumpArrayType IS ARRAY (0 to MaxBallCount-1) OF PlateBumpType;  
-  TYPE ObstacleArrayType IS ARRAY (0 to 9-1) OF ObstacleType;
+  TYPE BallArrayType IS ARRAY (0 TO MAX_BALL_COUNT-1) OF BallType;
+  TYPE PlateBumpArrayType IS ARRAY (0 to MAX_BALL_COUNT-1) OF PlateBumpType;  
+  TYPE ObstacleArrayType IS ARRAY (0 to MAX_OBS_COUNT-1) OF ObstacleType;
 
   -- Example obstacle definitions
---  CONSTANT Obstacles : ObstacleArrayType := (
---    (X => OBSTACLE1_X, Y => OBSTACLE1_Y, Width => OBSTACLE_WIDTH, Height => OBSTACLE_HEIGHT),
---    (X => OBSTACLE2_X, Y => OBSTACLE2_Y, Width => OBSTACLE_WIDTH, Height => OBSTACLE_HEIGHT)
---  );
+  CONSTANT OBSTACLES : ObstacleArrayType := (
+    0 => (x => to_unsigned(70, COORD_BW), y => to_unsigned(180, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
+    1 => (x => to_unsigned(190, COORD_BW), y => to_unsigned(180, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
+    2 => (x => to_unsigned(260, COORD_BW), y => to_unsigned(260, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
+    3 => (x => to_unsigned(340, COORD_BW), y => to_unsigned(260, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
+    4 => (x => to_unsigned(400, COORD_BW), y => to_unsigned(210, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
+    5 => (x => to_unsigned(470, COORD_BW), y => to_unsigned(310, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
+    6 => (x => to_unsigned(640, COORD_BW), y => to_unsigned(310, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
+    7 => (x => to_unsigned(730, COORD_BW), y => to_unsigned(210, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
+    8 => (x => to_unsigned(850, COORD_BW), y => to_unsigned(310, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW))
+  );
 
 END PACKAGE;

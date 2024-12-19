@@ -41,9 +41,6 @@ ENTITY pong_fsm is
     -- Signals from video interface to synchronize (HIGH for 1 CC, when vertical sync starts)
     VSEdgexSI   : in std_logic;
 
-    -- Obstacles
-   ObstaclesxDO  : out ObstacleArrayType;
-
     -- Multiple balls
     BallsxDO       : out BallArrayType;
 
@@ -52,7 +49,6 @@ ENTITY pong_fsm is
 
     -- Game State
     FsmStatexDO : out GameControl
-    
   );
 end pong_fsm;
 
@@ -86,19 +82,6 @@ architecture rtl of pong_fsm is
 
   -- Highscore init
   SIGNAL HighscorexDN, HighscorexDP : unsigned(8-1 DOWNTO 0) := to_unsigned(1,8);
-
-  -- Obstacles coordinates
-  SIGNAL ObstaclesxDN, ObstaclesxDP : ObstacleArrayType := (
-    0 => (x => to_unsigned(70, COORD_BW), y => to_unsigned(180, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-    1 => (x => to_unsigned(190, COORD_BW), y => to_unsigned(180, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-    2 => (x => to_unsigned(260, COORD_BW), y => to_unsigned(260, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-    3 => (x => to_unsigned(340, COORD_BW), y => to_unsigned(260, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-    4 => (x => to_unsigned(400, COORD_BW), y => to_unsigned(210, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-    5 => (x => to_unsigned(470, COORD_BW), y => to_unsigned(310, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-    6 => (x => to_unsigned(640, COORD_BW), y => to_unsigned(310, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-    7 => (x => to_unsigned(730, COORD_BW), y => to_unsigned(210, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-    8 => (x => to_unsigned(850, COORD_BW), y => to_unsigned(310, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW))
-    );
 
 --=============================================================================
 -- PROCEDURE DECLARATION
@@ -150,16 +133,16 @@ BEGIN
 
     --Obstacle collision
     for i in 0 to 9-1 loop
-      if (BallIn.BallX + BALL_WIDTH >= ObstaclesxDP(i).x and
-          BallIn.BallX <= ObstaclesxDP(i).x + ObstaclesxDP(i).Width and
-          BallIn.BallY + BALL_HEIGHT >= ObstaclesxDP(i).y and
-          BallIn.BallY <= ObstaclesxDP(i).y + ObstaclesxDP(i).Height) then
+      if (BallIn.BallX + BALL_WIDTH >= OBSTACLES(i).x and
+          BallIn.BallX <= OBSTACLES(i).x + OBSTACLES(i).Width and
+          BallIn.BallY + BALL_HEIGHT >= OBSTACLES(i).y and
+          BallIn.BallY <= OBSTACLES(i).y + OBSTACLES(i).Height) then
             
           BallOut.Collision <= '1';
         -- Determine collision side and adjust speed
-        if (BallIn.BallX + BALL_WIDTH/2 < ObstaclesxDP(i).x + ObstaclesxDP(i).Width/3) then
+        if (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + OBSTACLES(i).Width/3) then
           BallOut.BallXSpeed <= to_signed(-1, 2);
-        elsif (BallIn.BallX + BALL_WIDTH/2 < ObstaclesxDP(i).x + 2*ObstaclesxDP(i).Width/3) then
+        elsif (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + 2*OBSTACLES(i).Width/3) then
           BallOut.BallXSpeed <= to_signed(0, 2);
         else
           BallOut.BallXSpeed <= to_signed(1, 2);
@@ -235,18 +218,6 @@ begin
         IsActive   => to_unsigned(0,2),
         Collision  => '0'
       ));
-
-        ObstaclesxDP <= (
-          0 => (x => to_unsigned(70, COORD_BW), y => to_unsigned(80, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-          1 => (x => to_unsigned(190, COORD_BW), y => to_unsigned(80, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-          2 => (x => to_unsigned(260, COORD_BW), y => to_unsigned(160, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-          3 => (x => to_unsigned(340, COORD_BW), y => to_unsigned(160, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-          4 => (x => to_unsigned(400, COORD_BW), y => to_unsigned(110, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-          5 => (x => to_unsigned(470, COORD_BW), y => to_unsigned(210, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-          6 => (x => to_unsigned(540, COORD_BW), y => to_unsigned(210, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-          7 => (x => to_unsigned(610, COORD_BW), y => to_unsigned(110, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
-          8 => (x => to_unsigned(670, COORD_BW), y => to_unsigned(210, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW))
-          );
       
     ELSIF rising_edge(CLKxCI) THEN
       -- udate fsm informations
@@ -259,10 +230,6 @@ begin
 
       -- Update plate
       PlateXxDP     <= PlateXxDN;
-      
-      -- update obstacles
-      ObstaclesxDP <= ObstaclesxDN;
-
     END IF;
 
   END PROCESS; 
@@ -284,8 +251,6 @@ begin
 
     -- Update Plate
     PlateXxDN         <= PlateXxDP;
-
-    ObstaclesxDN <= ObstaclesxDP;
 
     -- State machine
     CASE FsmStatexDP IS
@@ -331,7 +296,7 @@ begin
             BallsxDN(1).BallYSpeed <= to_signed(1,2);
             BallsxDN(1).BallX <= BALL_X_INIT;
             BallsxDN(1).BallY <= BALL_Y_INIT;
-          FsmStatexDN <= Game2Ball;
+            FsmStatexDN <= Game2Ball;
           END IF;
           
          MovePlate(PlateXxDP, PlateXxDN);
@@ -376,7 +341,6 @@ begin
   -- Update game informations in process
   BallsxDO <= BallsxDP;
   PlateXxDO <= PlateXxDP;
-  ObstaclesxDO <= ObstaclesxDP;
   FsmStatexDO <= FsmStatexDP;
 
 end rtl;

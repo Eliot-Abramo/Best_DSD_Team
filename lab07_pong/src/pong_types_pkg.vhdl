@@ -7,7 +7,7 @@ use work.dsd_prj_pkg.all;
 
 PACKAGE pong_types_pkg IS
   
-  CONSTANT MaxBallCount : natural := 3;
+  CONSTANT MAX_BALL_COUNT : natural := 3;
 
   TYPE GameControl IS (Game1Ball, Game2Ball, Game3Ball, GameEnd);
   
@@ -24,7 +24,7 @@ PACKAGE pong_types_pkg IS
     Right : signed(COORD_BW-1 downto 0);  
   END RECORD; 
   
-  TYPE BallArrayType IS ARRAY (0 TO MaxBallCount-1) OF BallType;
-  TYPE PlateBumpArrayType IS ARRAY (0 to MaxBallCount-1) OF PlateBumpType;
+  TYPE BallArrayType IS ARRAY (0 TO MAX_BALL_COUNT-1) OF BallType;
+  TYPE PlateBumpArrayType IS ARRAY (0 to MAX_BALL_COUNT-1) OF PlateBumpType;
 
 END PACKAGE;

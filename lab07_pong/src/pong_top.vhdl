@@ -274,7 +274,7 @@ begin
     END IF;
 
     -- Ball logic 
-    FOR i IN 0 TO (MaxBallCount - 1) LOOP
+    FOR i IN 0 TO (MAX_BALL_COUNT - 1) LOOP
       IF (BallsxD(i).IsActive = 1) THEN
           IF (XCoordxD >= BallsxD(i).BallX AND XCoordxD < BallsxD(i).BallX + BALL_WIDTH AND
               YCoordxD >= BallsxD(i).BallY AND YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) THEN

@@ -317,7 +317,7 @@ begin
 
       -- Draw obstacles
       if(FsmStatexD /= GameEnd) then
-       for j in 0 to 9-1 loop
+       for j in 0 to MAX_OBS_COUNT-1 loop
          if ((XCoordxD >= ObstaclesxD(j).X) and
              (XCoordxD <= (ObstaclesxD(j).X + ObstaclesxD(j).Width)) and
              (YCoordxD >= ObstaclesxD(j).Y) and
