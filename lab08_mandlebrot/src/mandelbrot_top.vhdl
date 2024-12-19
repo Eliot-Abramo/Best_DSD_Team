@@ -82,7 +82,6 @@ architecture rtl of mandelbrot_top is
   -- pong_fsm
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
-  signal ObstaclesxD : ObstacleArrayType;
   signal FsmStatexD : GameControl;
 
   -- mandelbrot
@@ -172,7 +171,6 @@ architecture rtl of mandelbrot_top is
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
       BallsxDO : out BallArrayType;
       FsmStatexDO : out GameControl;
-      ObstaclesxDO : out ObstacleArrayType
     );
   end component pong_fsm;
 
@@ -261,7 +259,6 @@ begin
   PlateXxDO => PlateXxD,
   BallsxDO => BallsxD,
   FsmStatexDO => FsmStatexD,
-  ObstaclesxDO => ObstaclesxD
   );
 
   i_mandelbrot : mandelbrot
@@ -318,10 +315,10 @@ begin
       -- Draw obstacles
       if(FsmStatexD /= GameEnd) then
        for j in 0 to MAX_OBS_COUNT-1 loop
-         if ((XCoordxD >= ObstaclesxD(j).X) and
-             (XCoordxD <= (ObstaclesxD(j).X + ObstaclesxD(j).Width)) and
-             (YCoordxD >= ObstaclesxD(j).Y) and
-             (YCoordxD <= (ObstaclesxD(j).Y + ObstaclesxD(j).Height))) then
+         if ((XCoordxD >= OBSTACLES(j).X) and
+             (XCoordxD <= (OBSTACLES(j).X + OBSTACLES(j).Width)) and
+             (YCoordxD >= OBSTACLES(j).Y) and
+             (YCoordxD <= (OBSTACLES(j).Y + OBSTACLES(j).Height))) then
            RedxS   <= OBSTACLE_RGB(11 downto 8);
            GreenxS <= OBSTACLE_RGB(7 downto 4);
            BluexS  <= OBSTACLE_RGB(3 downto 0);

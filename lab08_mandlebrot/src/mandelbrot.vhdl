@@ -71,7 +71,7 @@ architecture rtl of mandelbrot is
 begin
     process(CLKxCI, RSTxRI)
     begin
-        if (RSTxRI = '1') then -- Asynchrone Reset
+        if (RSTxRI = '1') then -- Asynchronous Reset
             FsmStatexDP <= CalculateNew;
             XCntxDP <= (others => '0');
             YCntxDP <= (others => '0');
@@ -82,7 +82,7 @@ begin
             IterxDP <= (others => '0');
             WExDP <= '0';
 
-        elsif rising_edge(CLKxCI) then --Synchrone Reset
+        elsif rising_edge(CLKxCI) then 
             FsmStatexDP <= FsmStatexDN;
             XCntxDP <= XCntxDN;
             YCntxDP <= YCntxDN;
