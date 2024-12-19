@@ -140,7 +140,7 @@ BEGIN
   FOR i IN 0 TO MAX_OBS_COUNT-1 LOOP
     IF (BallIn.BallX + BALL_WIDTH >= OBSTACLES(i).x AND
         BallIn.BallX <= OBSTACLES(i).x + OBSTACLES(i).Width AND
-        BallIn.BallY - BALL_HEIGHT >= OBSTACLES(i).y AND
+        BallIn.BallY >= OBSTACLES(i).y AND
         BallIn.BallY <= OBSTACLES(i).y + OBSTACLES(i).Height) THEN
           
         BallOut.Collision <= '1';
