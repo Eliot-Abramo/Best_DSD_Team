@@ -90,9 +90,6 @@ architecture rtl of mandelbrot_top is
   signal MandelbrotYxD    : unsigned(COORD_BW - 1 downto 0);
   signal MandelbrotITERxD : unsigned(MEM_DATA_BW - 1 downto 0); -- Iteration number from Mandelbrot (chooses colour)
 
-  -- Obstacle coordinates and dimensions
-  constant OBSTACLE_RGB : std_logic_vector(11 downto 0) := "111100000000"; -- Red color
-
   --=============================================================================
   -- COMPONENT DECLARATIONS
   --=============================================================================
@@ -307,9 +304,9 @@ begin
       if (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length) and
           XCoordxD >= PlateXxD and
           XCoordxD <= (PlateXxD + PLATE_WIDTH)) then
-        RedxS   <= PLATE_RGB(11 downto 8);
-        GreenxS <= PLATE_RGB(7 downto 4);
-        BluexS  <= PLATE_RGB(3 downto 0);
+            RedxS   <= PLATE_RGB(11 downto 8);
+            GreenxS <= PLATE_RGB(7 downto 4);
+            BluexS  <= PLATE_RGB(3 downto 0);
       end if;
 
       -- Draw obstacles
@@ -319,9 +316,9 @@ begin
              (XCoordxD <= (OBSTACLES(j).X + OBSTACLES(j).Width)) and
              (YCoordxD >= OBSTACLES(j).Y) and
              (YCoordxD <= (OBSTACLES(j).Y + OBSTACLES(j).Height))) then
-           RedxS   <= OBSTACLE_RGB(11 downto 8);
-           GreenxS <= OBSTACLE_RGB(7 downto 4);
-           BluexS  <= OBSTACLE_RGB(3 downto 0);
+                RedxS   <= OBSTACLE_RGB(11 downto 8);
+                GreenxS <= OBSTACLE_RGB(7 downto 4);
+                BluexS  <= OBSTACLE_RGB(3 downto 0);
          end if;
        end loop;
       end if;
@@ -330,12 +327,12 @@ begin
       for i in 0 to 2 loop
         if (BallsxD(i).IsActive = 1) then
           if (XCoordxD > BallsxD(i).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(i).BallX'length) and
-          XCoordxD < BallsxD(i).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(i).BallX'length) and
-          YCoordxD > BallsxD(i).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(i).BallY'length) and
-          YCoordxD < BallsxD(i).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(i).BallY'length)) then
-        RedxS   <= BALL_RGB(11 downto 8);
-        GreenxS <= BALL_RGB(7 downto 4);
-        BluexS  <= BALL_RGB(3 downto 0);
+              XCoordxD < BallsxD(i).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(i).BallX'length) and
+              YCoordxD > BallsxD(i).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(i).BallY'length) and
+              YCoordxD < BallsxD(i).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(i).BallY'length)) then
+                RedxS   <= BALL_RGB(11 downto 8);
+                GreenxS <= BALL_RGB(7 downto 4);
+                BluexS  <= BALL_RGB(3 downto 0);
           end if;
         end if;
       end loop;

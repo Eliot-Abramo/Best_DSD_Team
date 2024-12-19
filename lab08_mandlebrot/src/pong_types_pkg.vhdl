@@ -11,6 +11,7 @@ PACKAGE pong_types_pkg IS
   TYPE GameControl IS (Game1Ball, Game2Ball, Game3Ball, GameEnd);
 
   CONSTANT MAX_OBS_COUNT : natural := 9;
+  constant OBSTACLE_RGB : std_logic_vector(BIT_SIZE_RGB - 1 downto 0) := x"F00"; -- Red color
   
   -- Ball object 
   TYPE BallType IS RECORD
