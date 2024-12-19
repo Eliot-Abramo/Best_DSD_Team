@@ -130,9 +130,10 @@ BEGIN
                               to_signed(0, 2)  WHEN PlateRight < ((2 * PLATE_WIDTH) / 3) ELSE
                               to_signed(1, 2);
       END IF;
+    END IF;
 
     --Obstacle collision
-    for i in 0 to 9-1 loop
+    for i in 0 to MAX_OBS_COUNT-1 loop
       if (BallIn.BallX + BALL_WIDTH >= OBSTACLES(i).x and
           BallIn.BallX <= OBSTACLES(i).x + OBSTACLES(i).Width and
           BallIn.BallY + BALL_HEIGHT >= OBSTACLES(i).y and
