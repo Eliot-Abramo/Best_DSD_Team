@@ -130,36 +130,34 @@ BEGIN
                               to_signed(0, 2)  WHEN PlateRight < ((2 * PLATE_WIDTH) / 3) ELSE
                               to_signed(1, 2);
       END IF;
-    END IF;
-
-    --Obstacle collision
-    for i in 0 to MAX_OBS_COUNT-1 loop
-      if (BallIn.BallX + BALL_WIDTH >= OBSTACLES(i).x and
-          BallIn.BallX <= OBSTACLES(i).x + OBSTACLES(i).Width and
-          BallIn.BallY + BALL_HEIGHT >= OBSTACLES(i).y and
-          BallIn.BallY <= OBSTACLES(i).y + OBSTACLES(i).Height) then
-            
-          BallOut.Collision <= '1';
-        -- Determine collision side and adjust speed
-        if (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + OBSTACLES(i).Width/3) then
-          BallOut.BallXSpeed <= to_signed(-1, 2);
-        elsif (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + 2*OBSTACLES(i).Width/3) then
-          BallOut.BallXSpeed <= to_signed(0, 2);
-        else
-          BallOut.BallXSpeed <= to_signed(1, 2);
-        end if;
-        
-        -- Reverse Y speed to bounce and adjust position
-        BallOut.BallYSpeed <= -BallIn.BallYSpeed;
---        BallOut.BallY <= BallIn.BallY + BallOut.BallYSpeed * BALL_STEP_Y;
-        
-      end if;
-    end loop;
     --------------------
     ELSE
       FsmState <= GameEnd;
     END IF;
   END IF;
+
+  --Obstacle collision
+  for i in 0 to MAX_OBS_COUNT-1 loop
+    if (BallIn.BallX + BALL_WIDTH >= OBSTACLES(i).x and
+        BallIn.BallX <= OBSTACLES(i).x + OBSTACLES(i).Width and
+        BallIn.BallY + BALL_HEIGHT >= OBSTACLES(i).y and
+        BallIn.BallY <= OBSTACLES(i).y + OBSTACLES(i).Height) then
+          
+        BallOut.Collision <= '1';
+      -- Determine collision side and adjust speed
+      if (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + OBSTACLES(i).Width/3) then
+        BallOut.BallXSpeed <= to_signed(-1, 2);
+      elsif (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + 2*OBSTACLES(i).Width/3) then
+        BallOut.BallXSpeed <= to_signed(0, 2);
+      else
+        BallOut.BallXSpeed <= to_signed(1, 2);
+      end if;
+      
+      -- Reverse Y speed to bounce and adjust position
+      BallOut.BallYSpeed <= -BallIn.BallYSpeed;
+--        BallOut.BallY <= BallIn.BallY + BallOut.BallYSpeed * BALL_STEP_Y;
+    end if;
+  end loop;
 
   -- Update ball position
   BallOut.BallX <= resize(unsigned(signed(resize(BallIn.BallX, COORD_BW + 1)) + resize(BallIn.BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
