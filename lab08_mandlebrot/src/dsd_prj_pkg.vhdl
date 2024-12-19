@@ -68,8 +68,15 @@ package dsd_prj_pkg is
   constant PLATE_HEIGHT : natural := 10;
   constant PLATE_STEP_X : natural := 5;
   
-  constant PLATE_RGB : std_logic_vector(12 - 1 DOWNTO 0) := (OTHERS => '1'); -- WHITE
-  constant BALL_RGB : std_logic_vector(12 - 1 DOWNTO 0) := (OTHERS => '1'); -- WHITE
+  -- constant PLATE_RGB : std_logic_vector(12 - 1 DOWNTO 0) := (OTHERS => '1'); -- WHITE
+  -- constant BALL_RGB : std_logic_vector(12 - 1 DOWNTO 0) := (OTHERS => '1'); -- WHITE
+
+  constant PLATE_RGB : std_logic_vector(11 downto 0) := x"0FF"; -- Cyan (R=0, G=15, B=15)
+  constant BALL_RGB  : std_logic_vector(11 downto 0) := x"F0F"; -- Magenta (R=15, G=0, B=15)
+
+  -- constant PLATE_RGB : std_logic_vector(11 downto 0) := x"00F"; -- Electric Blue (R=0, G=0, B=15)
+  -- constant BALL_RGB  : std_logic_vector(11 downto 0) := x"FFF"; -- White (R=15, G=15, B=15)
+
 
   -- Obstacle parameters
   constant OBSTACLE_WIDTH  : natural := 50;

@@ -262,12 +262,8 @@ begin
           IF HighscorexDP > to_unsigned(3, 8) THEN
             BallsxDN(1).IsActive <= to_unsigned(1,2);
             BallsxDN(1).BallYSpeed <= to_signed(1,2);
-            BallsxDN(1).BallX <= VgaXxDI when (VgaXxDI <= HS_DISPLAY - BALL_WIDTH and VgaXxDI >= BALL_WIDTH)
-                                        else BALL_X_INIT;
-            BallsxDN(1).BallY <= VgaYxDI when (VgaYxDI >= VS_DISPLAY - 6 * BALL_HEIGHT) 
-                                        else BALL_Y_INIT;
-          BallsxDN(1).BallX <= BALL_X_INIT;
-          BallsxDN(1).BallY <= BALL_Y_INIT;
+            BallsxDN(1).BallX <= BALL_X_INIT;
+            BallsxDN(1).BallY <= BALL_Y_INIT;
           FsmStatexDN <= Game2Ball;
           END IF;
           
@@ -282,10 +278,8 @@ begin
           IF HighscorexDP > to_unsigned(5, 8) THEN
             BallsxDN(2).IsActive <= to_unsigned(1,2);
             BallsxDN(2).BallYSpeed <= to_signed(1,2);
-            BallsxDN(2).BallX <= VgaXxDI when (VgaXxDI <= HS_DISPLAY - BALL_WIDTH and VgaXxDI >= BALL_WIDTH)
-                                        else BALL_X_INIT;
-            BallsxDN(2).BallY <= VgaYxDI when (VgaYxDI >= VS_DISPLAY - 5 * BALL_HEIGHT) 
-                                        else BALL_Y_INIT;
+            BallsxDN(2).BallX <= BALL_X_INIT;
+            BallsxDN(2).BallY <= BALL_Y_INIT;
             FsmStatexDN <= Game3Ball;
           END IF;
 
