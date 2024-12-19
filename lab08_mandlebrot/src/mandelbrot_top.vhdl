@@ -83,6 +83,7 @@ architecture rtl of mandelbrot_top is
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
   signal FsmStatexD : GameControl;
+  signal PlateWidthxD : natural;
 
   -- mandelbrot
   signal MandelbrotWExS   : std_logic; -- If 1, Mandelbrot writes
@@ -167,7 +168,8 @@ architecture rtl of mandelbrot_top is
       -- Ball and plate coordinates
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
       BallsxDO : out BallArrayType;
-      FsmStatexDO : out GameControl
+      FsmStatexDO : out GameControl;
+      PlateWidthxDO : out natural
     );
   end component pong_fsm;
 
@@ -255,7 +257,8 @@ begin
 
   PlateXxDO => PlateXxD,
   BallsxDO => BallsxD,
-  FsmStatexDO => FsmStatexD
+  FsmStatexDO => FsmStatexD,
+  PlateWidthxDO => PlateWidthxD
   );
 
   i_mandelbrot : mandelbrot
@@ -303,7 +306,7 @@ begin
       -- Draw plate
       if (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length) and
           XCoordxD >= PlateXxD and
-          XCoordxD <= (PlateXxD + PLATE_WIDTH)) then
+          XCoordxD <= (PlateXxD + PlateWidthxD)) then
             RedxS   <= PLATE_RGB(11 downto 8);
             GreenxS <= PLATE_RGB(7 downto 4);
             BluexS  <= PLATE_RGB(3 downto 0);
@@ -330,9 +333,9 @@ begin
               XCoordxD < BallsxD(i).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(i).BallX'length) and
               YCoordxD > BallsxD(i).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(i).BallY'length) and
               YCoordxD < BallsxD(i).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(i).BallY'length)) then
-                RedxS   <= BALL_RGB(11 downto 8);
-                GreenxS <= BALL_RGB(7 downto 4);
-                BluexS  <= BALL_RGB(3 downto 0);
+                RedxS   <= BallsxD(i).Color(11 downto 8);
+                GreenxS <= BallsxD(i).Color(7 downto 4);
+                BluexS  <= BallsxD(i).Color(3 downto 0);
           end if;
         end if;
       end loop;

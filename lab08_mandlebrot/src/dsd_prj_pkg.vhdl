@@ -66,7 +66,7 @@ package dsd_prj_pkg is
   constant BALL_STEP_Y  : natural := 4;
   constant PLATE_WIDTH  : natural := 200;
   constant PLATE_HEIGHT : natural := 10;
-  constant PLATE_STEP_X : natural := 9;
+  constant PLATE_STEP_X : natural := 3;
 
   -- Ball and plate colors
   constant BIT_SIZE_RGB : natural := 12;
