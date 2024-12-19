@@ -82,12 +82,17 @@ architecture rtl of mandelbrot_top is
   -- pong_fsm
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
+  signal ObstaclesxD : ObstacleArrayType;
+  signal FsmStatexD : GameControl;
 
   -- mandelbrot
   signal MandelbrotWExS   : std_logic; -- If 1, Mandelbrot writes
   signal MandelbrotXxD    : unsigned(COORD_BW - 1 downto 0);
   signal MandelbrotYxD    : unsigned(COORD_BW - 1 downto 0);
   signal MandelbrotITERxD : unsigned(MEM_DATA_BW - 1 downto 0); -- Iteration number from Mandelbrot (chooses colour)
+
+  -- Obstacle coordinates and dimensions
+  constant OBSTACLE_RGB : std_logic_vector(11 downto 0) := "111100000000"; -- Red color
 
   --=============================================================================
   -- COMPONENT DECLARATIONS
@@ -165,7 +170,9 @@ architecture rtl of mandelbrot_top is
 
       -- Ball and plate coordinates
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
-      BallsxDO : out BallArrayType
+      BallsxDO : out BallArrayType;
+      FsmStatexDO : out GameControl;
+      ObstaclesxDO : out ObstacleArrayType
     );
   end component pong_fsm;
 
@@ -182,32 +189,6 @@ architecture rtl of mandelbrot_top is
     );
   end component mandelbrot;
   
---  component sprite_manager is
---     port
---     (
---       CLKxCI : in std_logic;
-
---       -- Coordinate from VGA
---       XCoordxDI : in unsigned(COORD_BW - 1 downto 0);
---       YCoordxDI : in unsigned(COORD_BW - 1 downto 0);
-
---       -- Background colors from the memory (to handle transparency)
---       BGRedxSI   : in std_logic_vector(COLOR_BW - 1 downto 0);
---       BGGreenxSI : in std_logic_vector(COLOR_BW - 1 downto 0);
---       BGBluexSI  : in std_logic_vector(COLOR_BW - 1 downto 0);
-
---       -- Ball and plate coordinates
---       BallsxDI : in BallArrayType;
---       PlateXxDI : in unsigned(COORD_BW - 1 downto 0);
-
-
---       -- Current output colors
---       RedxSO   : out std_logic_vector(COLOR_BW - 1 downto 0);
---       GreenxSO : out std_logic_vector(COLOR_BW - 1 downto 0);
---       BluexSO  : out std_logic_vector(COLOR_BW - 1 downto 0)
---     );
---   end component;
-
   --=============================================================================
   -- ARCHITECTURE BEGIN
   --=============================================================================
@@ -278,7 +259,9 @@ begin
   VSEdgexSI => VSEdgexS,
 
   PlateXxDO => PlateXxD,
-  BallsxDO => BallsxD
+  BallsxDO => BallsxD,
+  FsmStatexDO => FsmStatexD,
+  ObstaclesxDO => ObstaclesxD
   );
 
   i_mandelbrot : mandelbrot
@@ -293,41 +276,17 @@ begin
   ITERxDO => MandelbrotITERxD
   );
 
-  -- i_sprite_manager : sprite_manager
-  -- port
-  -- map (
-  -- CLKxCI => CLK75xC,
-
-  -- XCoordxDI => XCoordxD,
-  -- YCoordxDI => YCoordxD,
-
-  -- BGRedxSI   => BGRedxS,
-  -- BGGreenxSI => BGGreenxS,
-  -- BGBluexSI  => BGBluexS,
-  
-  -- BallsxDI => BallsxD,
-  -- PlateXxDI => PlateXxD,
-  
-  -- -- Current output colors
-  -- RedxSO   => RedxS,
-  -- GreenxSO => GreenxS,
-  -- BluexSO  => BluexS
-  -- );
-
   --=============================================================================
   -- MEMORY SIGNAL MAPPING
   --=============================================================================
   -- Port A
   ENAxS     <= MandelbrotWExS;
   WEAxS     <= (others => MandelbrotWExS);
-  -- WrAddrAxD <= std_logic_vector(MandelbrotYxD(9 DOWNTO 2) & MandelbrotXxD(9 DOWNTO 2));
   WrAddrAxD <= std_logic_vector(resize(MandelbrotYxD / 4 * 256 + MandelbrotXxD / 4, 16));
-  -- DINAxD    <= std_logic_vector(shift_left(MandelbrotITERxD, 9));
   DINAxD    <= std_logic_vector(MandelbrotITERxD);
 
   -- Port B
   ENBxS     <= '1';
-  -- RdAddrBxD <= std_logic_vector(YCoordxD(9 DOWNTO 2) & XCoordxD(9 DOWNTO 2)); -- Map the X and Y coordinates to the address of the memory
   RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, 16));
 
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 DOWNTO 2 * COLOR_BW);
@@ -338,151 +297,51 @@ begin
 -- SPRITE SIGNAL MAPPING
 --=============================================================================
 
--- RedxS <= BALL_RGB(12-1 downto 8) WHEN (XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
---                                       AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
---                                       AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
---                                       AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length))
-
---         ELSE PLATE_RGB(12-1 downto 8) WHEN (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
---                                       AND XCoordxD >= (PlateXxD)
---                                       AND XCoordxD <= (PlateXxD + PLATE_WIDTH)) 
---         ELSE BGRedxS;
-       
--- GreenxS <= BALL_RGB(8-1 downto 4)    WHEN (XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
---                                           AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
---                                           AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
---                                           AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)) 
-
---         ELSE PLATE_RGB(8-1 downto 4) WHEN (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
---                                           AND XCoordxD >= (PlateXxD)
---                                           AND XCoordxD <= (PlateXxD + PLATE_WIDTH)) 
---         ELSE BGGreenxS;
-  
--- BluexS <= BALL_RGB(4-1 downto 0)    WHEN (XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
---                                           AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
---                                           AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
---                                           AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)) 
-                                          
---         ELSE PLATE_RGB(4-1 downto 0) WHEN (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
---                                           AND XCoordxD >= (PlateXxD)
---                                           AND XCoordxD <= (PlateXxD + PLATE_WIDTH)) 
---         ELSE BGBluexS;
-
 process(all)
 begin
 
-      RedxS <= PLATE_RGB(12-1 downto 8) WHEN (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
-                                      AND XCoordxD >= (PlateXxD)
-                                      AND XCoordxD <= (PlateXxD + PLATE_WIDTH))
-        ELSE BGRedxS;
-       
-    GreenxS <= PLATE_RGB(8-1 downto 4) WHEN (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
-                                          AND XCoordxD >= (PlateXxD)
-                                          AND XCoordxD <= (PlateXxD + PLATE_WIDTH))
-        ELSE BGGreenxS;
-  
-    BluexS <= PLATE_RGB(4-1 downto 0) WHEN (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length)
-                                          AND XCoordxD >= (PlateXxD)
-                                          AND XCoordxD <= (PlateXxD + PLATE_WIDTH))
-        ELSE BGBluexS;
+      -- Default to background color
+      RedxS   <= BGRedxS;
+      GreenxS <= BGGreenxS;
+      BluexS  <= BGBluexS;
 
-  
-  if(BallsxD(0).IsActive = 1 and BallsxD(1).IsActive = 0 and BallsxD(2).IsActive = 0) then
-    RedxS <= BALL_RGB(12-1 downto 8) WHEN (XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                      AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                      AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                      AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length));
-       
-    GreenxS <= BALL_RGB(8-1 downto 4)    WHEN (XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                          AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length));
-  
-    BluexS <= BALL_RGB(4-1 downto 0)    WHEN (XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                          AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length));
+      -- Draw plate
+      if (YCoordxD > to_unsigned(VS_DISPLAY - PLATE_HEIGHT, YCoordxD'length) and
+          XCoordxD >= PlateXxD and
+          XCoordxD <= (PlateXxD + PLATE_WIDTH)) then
+        RedxS   <= PLATE_RGB(11 downto 8);
+        GreenxS <= PLATE_RGB(7 downto 4);
+        BluexS  <= PLATE_RGB(3 downto 0);
+      end if;
 
-  elsif(BallsxD(0).IsActive = 1 and BallsxD(1).IsActive = 1 and BallsxD(2).IsActive = 0) then
-    RedxS <= BALL_RGB(12-1 downto 8) WHEN ((XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                      AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                      AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                      AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)) 
-                                      OR
-                                      (XCoordxD > BallsxD(1).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                      AND XCoordxD < BallsxD(1).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                      AND YCoordxD > BallsxD(1).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)
-                                      AND YCoordxD < BallsxD(1).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)));
-       
-    GreenxS <= BALL_RGB(8-1 downto 4)    WHEN((XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                          AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length))
-                                          OR
-                                          (XCoordxD > BallsxD(1).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                          AND XCoordxD < BallsxD(1).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                          AND YCoordxD > BallsxD(1).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)
-                                          AND YCoordxD < BallsxD(1).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)));
-  
-    BluexS <= BALL_RGB(4-1 downto 0)    WHEN((XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                          AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length))
-                                          OR
-                                          (XCoordxD > BallsxD(1).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                          AND XCoordxD < BallsxD(1).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                          AND YCoordxD > BallsxD(1).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)
-                                          AND YCoordxD < BallsxD(1).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)));                                        
-
-  elsif(BallsxD(0).IsActive = 1 and BallsxD(1).IsActive = 1 and BallsxD(2).IsActive = 1) then
-    RedxS <= BALL_RGB(12-1 downto 8) WHEN ((XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                      AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                      AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                      AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)) 
-                                      OR
-                                      (XCoordxD > BallsxD(1).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                      AND XCoordxD < BallsxD(1).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                      AND YCoordxD > BallsxD(1).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)
-                                      AND YCoordxD < BallsxD(1).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length))
-                                      OR
-                                      (XCoordxD > BallsxD(2).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(2).BallX'length)
-                                      AND XCoordxD < BallsxD(2).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(2).BallX'length)
-                                      AND YCoordxD > BallsxD(2).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(2).BallY'length)
-                                      AND YCoordxD < BallsxD(2).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(2).BallY'length)));
-       
-    GreenxS <= BALL_RGB(8-1 downto 4)    WHEN((XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                          AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length))
-                                          OR
-                                          (XCoordxD > BallsxD(1).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                          AND XCoordxD < BallsxD(1).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                          AND YCoordxD > BallsxD(1).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)
-                                          AND YCoordxD < BallsxD(1).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length))
-                                          OR
-                                          (XCoordxD > BallsxD(2).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(2).BallX'length)
-                                          AND XCoordxD < BallsxD(2).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(2).BallX'length)
-                                          AND YCoordxD > BallsxD(2).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(2).BallY'length)
-                                          AND YCoordxD < BallsxD(2).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(2).BallY'length)));
-  
-    BluexS <= BALL_RGB(4-1 downto 0)    WHEN((XCoordxD > BallsxD(0).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND XCoordxD < BallsxD(0).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(0).BallX'length)
-                                          AND YCoordxD > BallsxD(0).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length)
-                                          AND YCoordxD < BallsxD(0).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(0).BallY'length))
-                                          OR
-                                          (XCoordxD > BallsxD(1).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                          AND XCoordxD < BallsxD(1).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(1).BallX'length)
-                                          AND YCoordxD > BallsxD(1).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length)
-                                          AND YCoordxD < BallsxD(1).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(1).BallY'length))
-                                          OR
-                                          (XCoordxD > BallsxD(2).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(2).BallX'length)
-                                          AND XCoordxD < BallsxD(2).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(2).BallX'length)
-                                          AND YCoordxD > BallsxD(2).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(2).BallY'length)
-                                          AND YCoordxD < BallsxD(2).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(2).BallY'length)));
-  end if;
-  
-end process;
-
+      -- Draw obstacles
+      if(FsmStatexD /= GameEnd) then
+       for j in 0 to 9-1 loop
+         if ((XCoordxD >= ObstaclesxD(j).X) and
+             (XCoordxD <= (ObstaclesxD(j).X + ObstaclesxD(j).Width)) and
+             (YCoordxD >= ObstaclesxD(j).Y) and
+             (YCoordxD <= (ObstaclesxD(j).Y + ObstaclesxD(j).Height))) then
+           RedxS   <= OBSTACLE_RGB(11 downto 8);
+           GreenxS <= OBSTACLE_RGB(7 downto 4);
+           BluexS  <= OBSTACLE_RGB(3 downto 0);
+         end if;
+       end loop;
+      end if;
+      
+      -- Draw active balls
+      for i in 0 to 2 loop
+        if (BallsxD(i).IsActive = 1) then
+          if (XCoordxD > BallsxD(i).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(i).BallX'length) and
+          XCoordxD < BallsxD(i).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(i).BallX'length) and
+          YCoordxD > BallsxD(i).BallY - to_unsigned(BALL_HEIGHT/2, BallsxD(i).BallY'length) and
+          YCoordxD < BallsxD(i).BallY + to_unsigned(BALL_HEIGHT/2, BallsxD(i).BallY'length)) then
+        RedxS   <= BALL_RGB(11 downto 8);
+        GreenxS <= BALL_RGB(7 downto 4);
+        BluexS  <= BALL_RGB(3 downto 0);
+          end if;
+        end if;
+      end loop;
+  end process;
 end rtl;
 --=============================================================================
 -- ARCHITECTURE END

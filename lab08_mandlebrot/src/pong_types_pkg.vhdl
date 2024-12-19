@@ -8,7 +8,6 @@ use work.dsd_prj_pkg.all;
 PACKAGE pong_types_pkg IS
   
   CONSTANT MaxBallCount : natural := 4;
-
   TYPE GameControl IS (Game1Ball, Game2Ball, Game3Ball, GameEnd);
   
   TYPE BallType IS RECORD
@@ -32,9 +31,8 @@ PACKAGE pong_types_pkg IS
   END RECORD;
   
   TYPE BallArrayType IS ARRAY (0 TO MaxBallCount-1) OF BallType;
-  TYPE PlateBumpArrayType IS ARRAY (0 to MaxBallCount-1) OF PlateBumpType;
-  
---  TYPE ObstacleArrayType IS ARRAY (natural RANGE <>) OF ObstacleType;
+  TYPE PlateBumpArrayType IS ARRAY (0 to MaxBallCount-1) OF PlateBumpType;  
+  TYPE ObstacleArrayType IS ARRAY (0 to 9-1) OF ObstacleType;
 
   -- Example obstacle definitions
 --  CONSTANT Obstacles : ObstacleArrayType := (
