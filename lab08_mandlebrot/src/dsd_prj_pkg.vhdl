@@ -62,11 +62,14 @@ package dsd_prj_pkg is
   -- Pong parameters (in pixels)
   constant BALL_WIDTH   : natural := 10;
   constant BALL_HEIGHT  : natural := 10;
-  constant BALL_STEP_X  : natural := 2;
-  constant BALL_STEP_Y  : natural := 2;
-  constant PLATE_WIDTH  : natural := 70;
+  constant BALL_STEP_X  : natural := 4;
+  constant BALL_STEP_Y  : natural := 4;
+  constant PLATE_WIDTH  : natural := 200;
   constant PLATE_HEIGHT : natural := 10;
-  constant PLATE_STEP_X : natural := 40;
+  constant PLATE_STEP_X : natural := 5;
+  
+  constant PLATE_RGB : std_logic_vector(12 - 1 DOWNTO 0) := (OTHERS => '1'); -- WHITE
+  constant BALL_RGB : std_logic_vector(12 - 1 DOWNTO 0) := (OTHERS => '1'); -- WHITE
 
 -------------------------------------------------------------------------------
 -- Lab 8 parameters

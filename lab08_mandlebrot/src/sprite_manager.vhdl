@@ -10,7 +10,7 @@ use ieee.numeric_std.all;
 -- Packages
 library work;
 use work.dsd_prj_pkg.all;
-
+use work.pong_types_pkg.all;
 --=============================================================================
 --
 -- sprite_manager
@@ -37,8 +37,8 @@ entity sprite_manager is
     BGBluexSI  : in std_logic_vector(COLOR_BW - 1 downto 0);
 
     -- Ball and plate coordinates
+    BallsxDI : in BallArrayType;
     PlateXxDI : in unsigned(COORD_BW - 1 downto 0);
-    -- Highscore and state
 
     -- Current output colors
     RedxSO   : out std_logic_vector(COLOR_BW - 1 downto 0);
@@ -56,26 +56,28 @@ architecture rtl of sprite_manager is
   --=============================================================================
 
   -- Constants
-  constant SPRITE_WIDTH       : natural := 200;
-  constant SPRITE_MEM_ADR_BW  : natural := 1;
+  constant SPRITE_ATLAS_WIDTH       : natural := 768;
+  constant SPRITE_ATLAS_MEM_ADDR_BW : natural := 17;
 
   -- Index map
-  constant SPRITE_PLATE_INDEX : natural := 64 * SPRITE_WIDTH + 512
-
-  -- Fixed positions
-  constant TEXT_WIDTH  : natural := 512;
-  constant TEXT_HEIGHT : natural := 128;
-  constant TEXT_POS_X  : natural := HS_DISPLAY/2 - TEXT_WIDTH/2;
-  constant TEXT_POS_Y  : natural := VS_DISPLAY/4;
+  constant SPRITE_BALL_INDEX  : natural := 512;
+  constant SPRITE_PLATE_INDEX : natural := 64 * SPRITE_ATLAS_WIDTH + 512;
 
   -- Signals (TODO: remove signed)
-  signal PlateRelativeXxD : signed(COORD_BW downto 0) := (others => '0');
-  signal PlateRelativeYxD : signed(COORD_BW downto 0) := (others => '0');
+  signal BallRelativeXxD : signed(COORD_BW downto 0) := (others => '0');
+  signal BallRelativeYxD : signed(COORD_BW downto 0) := (others => '0');
 
-  signal PlateMemRelativeXxD : unsigned(SPRITE_MEM_ADDR_BW - 1 downto 0) := (others => '0');
-  signal PlateMemRelativeYxD : unsigned(SPRITE_MEM_ADDR_BW - 1 downto 0) := (others => '0');
+  signal BallMemRelativeXxD : unsigned(SPRITE_ATLAS_MEM_ADDR_BW - 1 downto 0) := (others => '0');
+  signal BallMemRelativeYxD : unsigned(SPRITE_ATLAS_MEM_ADDR_BW - 1 downto 0) := (others => '0');
+
+ signal PlateRelativeXxD : signed(COORD_BW downto 0) := (others => '0');
+ signal PlateRelativeYxD : signed(COORD_BW downto 0) := (others => '0');
+
+  signal PlateMemRelativeXxD : unsigned(SPRITE_ATLAS_MEM_ADDR_BW - 1 downto 0) := (others => '0');
+  signal PlateMemRelativeYxD : unsigned(SPRITE_ATLAS_MEM_ADDR_BW - 1 downto 0) := (others => '0');
 
   -- Memory ROM
+  signal RdAddrxD : std_logic_vector(SPRITE_ATLAS_MEM_ADDR_BW - 1 downto 0);
 
   signal ENxS   : std_logic;
   signal DOUTxD : std_logic_vector(MEM_DATA_BW - 1 downto 0);
@@ -102,23 +104,30 @@ begin
   -- COMPONENT INSTANTIATIONS
   --=============================================================================
   i_bkl_mem_gen_1 : blk_mem_gen_1
-  port map(
-    clka => CLKxCI,
-    ena => ENxS,
+  port map
+  (
+    clka  => CLKxCI,
+    ena   => ENxS,
     addra => RdAddrxD,
     douta => DOUTxD
   );
+
   --=========================================================================
   -- Precalculated signals
   --=========================================================================
-  MemRedxS   <= DOUTxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
-  MemGreenxS <= DOUTxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
-  MemBluexS  <= DOUTxD(1 * COLOR_BW - 1 downto 0 * COLOR_BW);
+  BallRelativeXxD    <= signed(resize(XCoordxDI, COORD_BW + 1)) - signed(resize(BallsxDI(0).BallX, COORD_BW + 1));
+  BallRelativeYxD    <= signed(resize(YCoordxDI, COORD_BW + 1)) - signed(resize(BallsxDI(0).BallY, COORD_BW + 1));
+  BallMemRelativeXxD <= resize(unsigned(BallRelativeXxD), SPRITE_ATLAS_MEM_ADDR_BW);
+  BallMemRelativeYxD <= resize(unsigned(BallRelativeYxD), SPRITE_ATLAS_MEM_ADDR_BW);
 
   PlateRelativeXxD    <= signed(resize(XCoordxDI, COORD_BW + 1)) - signed(resize(PlateXxDI, COORD_BW + 1));
   PlateRelativeYxD    <= signed(resize(YCoordxDI, COORD_BW + 1)) - (VS_DISPLAY - PLATE_HEIGHT);
-  PlateMemRelativeXxD <= resize(unsigned(PlateRelativeXxD), SPRITE_MEM_ADDR_BW);
-  PlateMemRelativeYxD <= resize(unsigned(PlateRelativeYxD), SPRITE_MEM_ADDR_BW);
+  PlateMemRelativeXxD <= resize(unsigned(PlateRelativeXxD), SPRITE_ATLAS_MEM_ADDR_BW);
+  PlateMemRelativeYxD <= resize(unsigned(PlateRelativeYxD), SPRITE_ATLAS_MEM_ADDR_BW);
+
+  MemRedxS   <= DOUTxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
+  MemGreenxS <= DOUTxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
+  MemBluexS  <= DOUTxD(1 * COLOR_BW - 1 downto 0 * COLOR_BW);
 
   --=============================================================================
   -- Sprite logic
@@ -127,11 +136,13 @@ begin
   begin
     -- Default
     EnxS     <= '1';
+    RdAddrxD <= (others => '0');
 
     RedxSO   <= BGRedxSI;
     GreenxSO <= BGGreenxSI;
     BluexSO  <= BGBluexSI;
 
+    -- TODO optmize since the code is always the same
     -- Plate
     if ((PlateRelativeXxD >= 0 and PlateRelativeXxD < PLATE_WIDTH) and (PlateRelativeYxD >= 0)) then
       RdAddrxD <= std_logic_vector(resize(SPRITE_PLATE_INDEX + PlateMemRelativeXxD + PlateMemRelativeYxD * SPRITE_ATLAS_WIDTH, SPRITE_ATLAS_MEM_ADDR_BW));
@@ -141,6 +152,16 @@ begin
     end if;
 
     -- Ball
+    if ((BallRelativeXxD >= 0 and BallRelativeXxD < BALL_WIDTH) and (BallRelativeYxD >= 0 and BallRelativeYxD < BALL_HEIGHT)) then
+      if (BallsxDI(0).BallYSpeed > 0) then
+        RdAddrxD <= std_logic_vector(resize(SPRITE_BALL_INDEX + BallMemRelativeXxD + BallMemRelativeYxD * SPRITE_ATLAS_WIDTH, SPRITE_ATLAS_MEM_ADDR_BW));
+      else
+        RdAddrxD <= std_logic_vector(resize(SPRITE_BALL_INDEX + BallMemRelativeXxD + (BALL_HEIGHT - BallMemRelativeYxD) * SPRITE_ATLAS_WIDTH, SPRITE_ATLAS_MEM_ADDR_BW));
+      end if;
+      RedxSO   <= MemRedxS;
+      GreenxSO <= MemGreenxS;
+      BluexSO  <= MemBluexS;
+    end if;
 
     -- Text (only if stopped)
 
