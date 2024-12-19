@@ -87,6 +87,7 @@ architecture rtl of pong_fsm is
   -- Highscore init
   SIGNAL HighscorexDN, HighscorexDP : unsigned(8-1 DOWNTO 0) := to_unsigned(1,8);
 
+  -- Obstacles coordinates
   SIGNAL ObstaclesxDN, ObstaclesxDP : ObstacleArrayType := (
     0 => (x => to_unsigned(70, COORD_BW), y => to_unsigned(180, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
     1 => (x => to_unsigned(190, COORD_BW), y => to_unsigned(180, COORD_BW), Width => to_unsigned(80, COORD_BW), Height => to_unsigned(20, COORD_BW)),
@@ -188,7 +189,7 @@ PROCEDURE MovePlate(
     SIGNAL PlateOut : OUT unsigned(COORD_BW - 1 DOWNTO 0)
 ) IS 
 BEGIN
-  -- Check motion of plate
+  -- Check motion of plate left
   if(LeftxSI = '1') then
       if PlateIn <= PLATE_STEP_X then
           PlateOut <= PlateIn + HS_DISPLAY - PLATE_STEP_X;
@@ -196,7 +197,8 @@ BEGIN
         PlateOut <= PlateIn - PLATE_STEP_X;
       end if;
   end if;
-        
+  
+  -- Check motion of plate right
   if(RightxSI = '1') then
     PlateOut <= PlateIn + PLATE_STEP_X;
     if PlateIn >= HS_DISPLAY - PLATE_STEP_X then
@@ -217,6 +219,7 @@ begin
   --===========================================================================
   PROCESS(CLKxCI, RSTxRI)
   BEGIN
+    -- Asynchrone reset
     IF (RSTxRI = '1') THEN
       FsmStatexDP        <= GameEnd;
       VSEdgexSP          <= '0';
@@ -246,6 +249,7 @@ begin
           );
       
     ELSIF rising_edge(CLKxCI) THEN
+      -- udate fsm informations
       FsmStatexDP   <= FsmStatexDN;
       HighscorexDP  <= HighscorexDN;
       VSEdgexSP     <= VSEdgexSN;
@@ -256,6 +260,7 @@ begin
       -- Update plate
       PlateXxDP     <= PlateXxDN;
       
+      -- update obstacles
       ObstaclesxDP <= ObstaclesxDN;
 
     END IF;
@@ -287,6 +292,8 @@ begin
       --=========================================================================
       -- Game End Logic
       --=========================================================================
+
+      -- Game over logic
       WHEN GameEnd =>
         FsmStatexDN        <= GameEnd;
         VSEdgexSN          <= '0';
@@ -314,7 +321,8 @@ begin
           BallsxDN(0).BallY <= BALL_Y_INIT;
           BallsxDN(0).IsActive <= to_unsigned(1,2);
         end if;
-
+      
+      -- logic for ball 1
       WHEN Game1Ball =>
         IF(VSEdgexSP = '0' and VSEdgexSN = '1') then
           -- Check switching condition
@@ -330,7 +338,7 @@ begin
          UpdateBall(BallsxDP(0), BallsxDN(0), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
       END IF;
 
-    
+      -- logic for ball 2
       WHEN Game2Ball =>
         IF(VSEdgexSP = '0' and VSEdgexSN = '1') then
           -- Check switching condition
@@ -347,6 +355,7 @@ begin
           UpdateBall(BallsxDP(1), BallsxDN(1), PlateXxDP, HighscorexDP, HighscorexDN, FsmStatexDN);
         END IF;
 
+      -- logic for ball 3
       WHEN Game3Ball =>
       IF(VSEdgexSP = '0' and VSEdgexSN = '1') then
         MovePlate(PlateXxDP, PlateXxDN);       
@@ -364,6 +373,7 @@ begin
 
   END PROCESS;
 
+  -- Update game informations in process
   BallsxDO <= BallsxDP;
   PlateXxDO <= PlateXxDP;
   ObstaclesxDO <= ObstaclesxDP;

@@ -10,6 +10,7 @@ PACKAGE pong_types_pkg IS
   CONSTANT MaxBallCount : natural := 4;
   TYPE GameControl IS (Game1Ball, Game2Ball, Game3Ball, GameEnd);
   
+  -- Ball object 
   TYPE BallType IS RECORD
     BallX     : unsigned(COORD_BW - 1 DOWNTO 0);
     BallY     : unsigned(COORD_BW - 1 DOWNTO 0);
@@ -19,11 +20,13 @@ PACKAGE pong_types_pkg IS
     Collision : std_logic;
   END RECORD;
 
+  -- Plate object
   TYPE PlateBumpType IS RECORD
     Left : signed(COORD_BW-1 downto 0);
     Right : signed(COORD_BW-1 downto 0);  
   END RECORD; 
   
+  -- Obstacle object
   TYPE ObstacleType IS RECORD
     X      : unsigned(COORD_BW - 1 DOWNTO 0);
     Y      : unsigned(COORD_BW - 1 DOWNTO 0);
@@ -31,6 +34,7 @@ PACKAGE pong_types_pkg IS
     Height : unsigned(COORD_BW - 1 DOWNTO 0);
   END RECORD;
   
+  -- Array of objects
   TYPE BallArrayType IS ARRAY (0 TO MaxBallCount-1) OF BallType;
   TYPE PlateBumpArrayType IS ARRAY (0 to MaxBallCount-1) OF PlateBumpType;  
   TYPE ObstacleArrayType IS ARRAY (0 to 9-1) OF ObstacleType;

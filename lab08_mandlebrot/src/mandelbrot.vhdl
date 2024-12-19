@@ -55,11 +55,11 @@ architecture rtl of mandelbrot is
     signal IterxDP, IterxDN : unsigned(MEM_DATA_BW - 1 downto 0) := (others => '0');
 
     -- Mandelbrot intermediate values
-    signal XComplex_FULLxDP, YComplex_FULLxDP, Complex_NORMxDP : unsigned(2*N_BITS-1 downto 0);
-    signal Z_rxxDP, Z_ixxDP : unsigned(N_BITS-1 downto 0);
-    signal z_RxIx_2xDP : unsigned(N_BITS+3-1 downto 0);
-    signal Complex_XY_FULLxDP : signed(2*N_BITS-1 downto 0);
-    signal Complex_XYxD : signed(N_BITS-1 downto 0);
+    signal X_Norm_2xDP, Y_Norm_2xDP, Complex_NORMxDP : unsigned(2*N_BITS-1 downto 0);
+    signal X_Unsigned_Norm_2xDP, Y_Unsigned_Norm_2xDP : unsigned(N_BITS-1 downto 0);
+    signal Iter_countxDP : unsigned(N_BITS+3-1 downto 0);
+    signal RealComplexCntxDP : signed(2*N_BITS-1 downto 0);
+    signal RealComplexxD : signed(N_BITS-1 downto 0);
 
     -- Output
     signal WExDP, WExDN : std_logic := '0';
@@ -71,7 +71,7 @@ architecture rtl of mandelbrot is
 begin
     process(CLKxCI, RSTxRI)
     begin
-        if (RSTxRI = '1') then
+        if (RSTxRI = '1') then -- Asynchrone Reset
             FsmStatexDP <= CalculateNew;
             XCntxDP <= (others => '0');
             YCntxDP <= (others => '0');
@@ -82,7 +82,7 @@ begin
             IterxDP <= (others => '0');
             WExDP <= '0';
 
-        elsif rising_edge(CLKxCI) then
+        elsif rising_edge(CLKxCI) then --Synchrone Reset
             FsmStatexDP <= FsmStatexDN;
             XCntxDP <= XCntxDN;
             YCntxDP <= YCntxDN;
@@ -98,6 +98,7 @@ begin
 
     process(all)
     begin
+        -- Default values for signals
         FsmStatexDN <= FsmStatexDP;
         XCntxDN <= XCntxDP;
         YCntxDN <= YCntxDP;
@@ -108,6 +109,7 @@ begin
         IterxDN <= IterxDP;
         WExDN <= '0';
 
+        -- All states for the mangelbrot algorithm
         case FsmStatexDP is
             when CalculateNew =>
                 -- Update FSM state
@@ -143,7 +145,7 @@ begin
                     FsmStatexDN <= Output;
                     IterxDN <= (others => '0');
                     WExDN <= '1';
-                elsif (z_RxIx_2xDP >= ITER_LIM) then
+                elsif (Iter_countxDP >= ITER_LIM) then
                     -- Count color if reach MAX_ITER
                     FsmStatexDN <= Output;
                     IterxDN <= IterxDP;
@@ -151,10 +153,10 @@ begin
                 else
                     -- Iterate and claculate
                     -- z_r = z_r^2 - z_i^2 + c_r
-                    zRealCntxDN <= signed(Z_rxxDP) - signed(Z_ixxDP) + signed(cRealCntxDP);
+                    zRealCntxDN <= signed(X_Unsigned_Norm_2xDP) - signed(Y_Unsigned_Norm_2xDP) + signed(cRealCntxDP);
 
                     -- z_i = 2*z_r*z_i + c_i
-                    zComplexCntxDN <= signed(Complex_XYxD) + signed(cComplexCntxDP);
+                    zComplexCntxDN <= signed(RealComplexxD) + signed(cComplexCntxDP);
 
                     -- Increment iteration count
                     IterxDN <= IterxDP + 1;
@@ -162,6 +164,7 @@ begin
                     FsmStatexDN <= IterateCheck;
                 end if;
             
+                -- set output 
             when Output =>
                 FsmStatexDN <= CalculateNew;
                 WExDN <= '0';
@@ -173,18 +176,19 @@ begin
         end case;
     end process;
 
-    XComplex_FULLxDP <= unsigned(signed(zRealCntxDP)*signed(zRealCntxDP));
-    YComplex_FULLxDP <= unsigned(signed(zComplexCntxDP)*signed(zComplexCntxDP));
+    -- signal update in process
+    X_Norm_2xDP <= unsigned(signed(zRealCntxDP)*signed(zRealCntxDP));
+    Y_Norm_2xDP <= unsigned(signed(zComplexCntxDP)*signed(zComplexCntxDP));
 
-    Z_rxxDP <= unsigned(XComplex_FULLxDP(2*N_BITS-4 downto N_BITS-3));
-    Z_ixxDP <= unsigned(YComplex_FULLxDP(2*N_BITS-4 downto N_BITS-3));
+    X_Unsigned_Norm_2xDP <= unsigned(X_Norm_2xDP(2*N_BITS-4 downto N_BITS-3));
+    Y_Unsigned_Norm_2xDP <= unsigned(Y_Norm_2xDP(2*N_BITS-4 downto N_BITS-3));
 
-    Complex_NORMxDP <= resize(XComplex_FULLxDP + YComplex_FULLxDP, 2*N_BITS);
+    Complex_NORMxDP <= resize(X_Norm_2xDP + Y_Norm_2xDP, 2*N_BITS);
 
-    z_RxIx_2xDP <= Complex_NORMxDP(2*N_BITS-1 downto N_BITS-3);
+    Iter_countxDP <= Complex_NORMxDP(2*N_BITS-1 downto N_BITS-3);
 
-    Complex_XY_FULLxDP <= resize(2*zRealCntxDP*zComplexCntxDP, 2*N_BITS);
-    Complex_XYxD <= Complex_XY_FULLxDP(2*N_BITS-4 downto N_BITS-3);
+    RealComplexCntxDP <= resize(2*zRealCntxDP*zComplexCntxDP, 2*N_BITS);
+    RealComplexxD <= RealComplexCntxDP(2*N_BITS-4 downto N_BITS-3);
 
     WExSO <= WExDP;
     XxDO <= XCntxDP;
