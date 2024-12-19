@@ -170,7 +170,7 @@ architecture rtl of mandelbrot_top is
       -- Ball and plate coordinates
       PlateXxDO : out unsigned(COORD_BW - 1 downto 0);
       BallsxDO : out BallArrayType;
-      FsmStatexDO : out GameControl;
+      FsmStatexDO : out GameControl
     );
   end component pong_fsm;
 
@@ -258,7 +258,7 @@ begin
 
   PlateXxDO => PlateXxD,
   BallsxDO => BallsxD,
-  FsmStatexDO => FsmStatexD,
+  FsmStatexDO => FsmStatexD
   );
 
   i_mandelbrot : mandelbrot

@@ -55,15 +55,14 @@ architecture rtl of mandelbrot is
     signal IterxDP, IterxDN : unsigned(MEM_DATA_BW - 1 downto 0) := (others => '0');
 
     -- Mandelbrot intermediate values
-    signal X_Norm_2xDP, Y_Norm_2xDP, Complex_NORMxDP : unsigned(2*N_BITS-1 downto 0);
-    signal X_Unsigned_Norm_2xDP, Y_Unsigned_Norm_2xDP : unsigned(N_BITS-1 downto 0);
-    signal Iter_countxDP : unsigned(N_BITS+3-1 downto 0);
-    signal RealComplexCntxDP : signed(2*N_BITS-1 downto 0);
-    signal RealComplexxD : signed(N_BITS-1 downto 0);
+    signal X_Norm_2xDP, Y_Norm_2xDP, Complex_NORMxDP : unsigned(N_COMPLEX_NORM - 1 downto 0);
+    signal X_Unsigned_Norm_2xDP, Y_Unsigned_Norm_2xDP : unsigned(N_BITS - 1 downto 0);
+    signal Iter_countxDP : unsigned(N_BITS + N_INT - 1 downto 0);
+    signal RealComplexCntxDP : signed(N_COMPLEX_NORM - 1 downto 0);
+    signal RealComplexxD : signed(N_BITS - 1 downto 0);
 
     -- Output
     signal WExDP, WExDN : std_logic := '0';
-
 
 --=============================================================================
 -- ARCHITECTURE BEGIN
@@ -123,12 +122,12 @@ begin
                 IterxDN <= (others => '0');
 
                 -- If reach end of x-axis of screen, reset and increment row
-                if (XCntxDP >= 1023) then
+                if (XCntxDP >= HS_DISPLAY-1) then
                     XCntxDN <= (others => '0');
                     cRealCntxDN <= C_RE_0;
                     zRealCntxDN <= C_RE_0;
 
-                    if (YCntxDP < 767) then
+                    if (YCntxDP < VS_DISPLAY-1) then
                         YCntxDN <= YCntxDP + 1;
                         cComplexCntxDN <= cComplexCntxDP + C_IM_INC;
                         zComplexCntxDN <= cComplexCntxDP + C_IM_INC;
@@ -177,18 +176,18 @@ begin
     end process;
 
     -- signal update in process
-    X_Norm_2xDP <= unsigned(signed(zRealCntxDP)*signed(zRealCntxDP));
-    Y_Norm_2xDP <= unsigned(signed(zComplexCntxDP)*signed(zComplexCntxDP));
+    X_Norm_2xDP <= unsigned(signed(zRealCntxDP) * signed(zRealCntxDP));
+    Y_Norm_2xDP <= unsigned(signed(zComplexCntxDP) * signed(zComplexCntxDP));
 
-    X_Unsigned_Norm_2xDP <= unsigned(X_Norm_2xDP(2*N_BITS-4 downto N_BITS-3));
-    Y_Unsigned_Norm_2xDP <= unsigned(Y_Norm_2xDP(2*N_BITS-4 downto N_BITS-3));
+    X_Unsigned_Norm_2xDP <= unsigned(X_Norm_2xDP(N_COMPLEX_NORM - N_NORM_BITS -1 downto N_BITS - N_NORM_BITS));
+    Y_Unsigned_Norm_2xDP <= unsigned(Y_Norm_2xDP(N_COMPLEX_NORM - N_NORM_BITS -1 downto N_BITS - N_NORM_BITS));
 
-    Complex_NORMxDP <= resize(X_Norm_2xDP + Y_Norm_2xDP, 2*N_BITS);
+    Complex_NORMxDP <= resize(X_Norm_2xDP + Y_Norm_2xDP, N_COMPLEX_NORM);
 
-    Iter_countxDP <= Complex_NORMxDP(2*N_BITS-1 downto N_BITS-3);
+    Iter_countxDP <= Complex_NORMxDP(N_COMPLEX_NORM - 1 downto N_BITS - N_NORM_BITS);
 
-    RealComplexCntxDP <= resize(2*zRealCntxDP*zComplexCntxDP, 2*N_BITS);
-    RealComplexxD <= RealComplexCntxDP(2*N_BITS-4 downto N_BITS-3);
+    RealComplexCntxDP <= resize(2*zRealCntxDP*zComplexCntxDP, N_COMPLEX_NORM);
+    RealComplexxD <= RealComplexCntxDP(N_COMPLEX_NORM - N_NORM_BITS -1 downto N_BITS - N_NORM_BITS);
 
     WExSO <= WExDP;
     XxDO <= XCntxDP;

@@ -99,6 +99,9 @@ package dsd_prj_pkg is
   constant N_INT  : natural := 3;   -- # Integer bits (plus sign-bit)
   constant N_FRAC : natural := 15;  -- # Fractional bits
   constant N_BITS : natural := N_INT + N_FRAC;
+  constant N_NORM_BITS : natural := 3;
+
+  constant N_COMPLEX_NORM : natural := 2*N_BITS; -- Number of bits for complex number norm
 
   constant ITER_LIM : natural := 2**(2 + N_FRAC); -- Represents 2^2 in UQ3.15 (100.000000000000000)
   constant MAX_ITER : natural := 100;             -- Maximum iteration bumber before stopping
