@@ -136,28 +136,28 @@ BEGIN
     END IF;
   END IF;
 
-  --Obstacle collision
-  for i in 0 to MAX_OBS_COUNT-1 loop
-    if (BallIn.BallX + BALL_WIDTH >= OBSTACLES(i).x and
-        BallIn.BallX <= OBSTACLES(i).x + OBSTACLES(i).Width and
-        BallIn.BallY + BALL_HEIGHT >= OBSTACLES(i).y and
-        BallIn.BallY <= OBSTACLES(i).y + OBSTACLES(i).Height) then
+  --OBSTACLE COLLISION
+  FOR i IN 0 TO MAX_OBS_COUNT-1 LOOP
+    IF (BallIn.BallX + BALL_WIDTH >= OBSTACLES(i).x AND
+        BallIn.BallX <= OBSTACLES(i).x + OBSTACLES(i).Width AND
+        BallIn.BallY - BALL_HEIGHT >= OBSTACLES(i).y AND
+        BallIn.BallY <= OBSTACLES(i).y + OBSTACLES(i).Height) THEN
           
         BallOut.Collision <= '1';
-      -- Determine collision side and adjust speed
-      if (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + OBSTACLES(i).Width/3) then
-        BallOut.BallXSpeed <= to_signed(-1, 2);
-      elsif (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + 2*OBSTACLES(i).Width/3) then
-        BallOut.BallXSpeed <= to_signed(0, 2);
-      else
-        BallOut.BallXSpeed <= to_signed(1, 2);
-      end if;
+      -- DETERMINE COLLISION SIDE AND ADJUST SPEED
+      IF (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + OBSTACLES(i).Width/3) THEN
+        BallOut.BallXSpeed <= TO_SIGNED(-1, 2);
+      ELSIF (BallIn.BallX + BALL_WIDTH/2 < OBSTACLES(i).x + 2*OBSTACLES(i).Width/3) THEN
+        BallOut.BallXSpeed <= TO_SIGNED(0, 2);
+      ELSE
+        BallOut.BallXSpeed <= TO_SIGNED(1, 2);
+      END IF;
       
-      -- Reverse Y speed to bounce and adjust position
+      -- REVERSE Y SPEED TO BOUNCE AND ADJUST POSITION
       BallOut.BallYSpeed <= -BallIn.BallYSpeed;
 --        BallOut.BallY <= BallIn.BallY + BallOut.BallYSpeed * BALL_STEP_Y;
-    end if;
-  end loop;
+    END IF;
+  END LOOP;
 
   -- Update ball position
   BallOut.BallX <= resize(unsigned(signed(resize(BallIn.BallX, COORD_BW + 1)) + resize(BallIn.BallXSpeed, COORD_BW + 1) * to_signed(BALL_STEP_X, COORD_BW + 1)), COORD_BW);
