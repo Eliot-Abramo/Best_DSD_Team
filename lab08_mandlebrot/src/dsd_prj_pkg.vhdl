@@ -66,7 +66,7 @@ package dsd_prj_pkg is
   constant BALL_STEP_Y  : natural := 4;
   constant PLATE_WIDTH  : natural := 200;
   constant PLATE_HEIGHT : natural := 10;
-  constant PLATE_STEP_X : natural := 5;
+  constant PLATE_STEP_X : natural := 9;
   
   -- constant PLATE_RGB : std_logic_vector(12 - 1 DOWNTO 0) := (OTHERS => '1'); -- WHITE
   -- constant BALL_RGB : std_logic_vector(12 - 1 DOWNTO 0) := (OTHERS => '1'); -- WHITE

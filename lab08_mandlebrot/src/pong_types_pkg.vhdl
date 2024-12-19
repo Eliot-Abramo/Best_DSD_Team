@@ -16,6 +16,7 @@ PACKAGE pong_types_pkg IS
     BallXSpeed: signed(2-1 DOWNTO 0);
     BallYSpeed: signed(2-1 DOWNTO 0);
     IsActive  : unsigned(2-1 DOWNTO 0);
+    Collision : std_logic;
   END RECORD;
 
   TYPE PlateBumpType IS RECORD

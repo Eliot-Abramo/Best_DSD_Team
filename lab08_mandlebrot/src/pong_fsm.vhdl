@@ -74,7 +74,8 @@ architecture rtl of pong_fsm is
     BallY      => BALL_Y_INIT,
     BallXSpeed => to_signed(0, 2),
     BallYSpeed => to_signed(0, 2),
-    IsActive   => to_unsigned(0, 2)
+    IsActive   => to_unsigned(0, 2),
+    Collision  => '0'
   ));
 
   -- States of FSM
@@ -153,6 +154,7 @@ BEGIN
           BallIn.BallY + BALL_HEIGHT >= ObstaclesxDP(i).y and
           BallIn.BallY <= ObstaclesxDP(i).y + ObstaclesxDP(i).Height) then
             
+          BallOut.Collision <= '1';
         -- Determine collision side and adjust speed
         if (BallIn.BallX + BALL_WIDTH/2 < ObstaclesxDP(i).x + ObstaclesxDP(i).Width/3) then
           BallOut.BallXSpeed <= to_signed(-1, 2);
@@ -227,7 +229,8 @@ begin
         BallY      => BALL_Y_INIT,
         BallXSpeed => to_signed(0, 2),
         BallYSpeed => to_signed(0, 2),
-        IsActive   => to_unsigned(0,2)
+        IsActive   => to_unsigned(0,2),
+        Collision  => '0'
       ));
 
         ObstaclesxDP <= (
@@ -295,7 +298,8 @@ begin
           BallY      => BALL_Y_INIT,
           BallXSpeed => to_signed(0, 2),
           BallYSpeed => to_signed(0, 2),
-          IsActive   => to_unsigned(0,2)
+          IsActive   => to_unsigned(0,2),
+          Collision  => '0'
         ));
         
         -- Update Plate
