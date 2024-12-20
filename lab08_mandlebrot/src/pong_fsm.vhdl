@@ -139,9 +139,13 @@ begin
         end if;
 
         BallOut.BallYSpeed <= -BallIn.BallYSpeed;
-        BallOut.BallXSpeed <= to_signed(-1, 2) when PlateRight < (PlateWidthIn / 3) else
-                              to_signed(0, 2)  when PlateRight < ((2 * PlateWidthIn) / 3) else
-                              to_signed(1, 2);
+        if PlateRight < (PlateWidthIn / 3) then
+            BallOut.BallXSpeed <= to_signed(-1, 2);
+        elsif PlateRight < ((2 * PlateWidthIn) / 3) then
+            BallOut.BallXSpeed <= to_signed(0, 2);
+        else
+            BallOut.BallXSpeed <= to_signed(1, 2);
+        end if;
 
         case (BallIn.Counter) is 
           when to_unsigned(0, 3) => BallOut.Color <= x"F00";
