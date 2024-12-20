@@ -100,18 +100,6 @@ begin
   XCoordxDO <= XCoordxDP;
   YCoordxDO <= YCoordxDP;
 
-  -- -- DISPLAY | FRONT PORCH | SYNC PULSE | BACK PORCH
-  -- active_area <= '1' when (HCntxDP < HS_DISPLAY and VCntxDP < VS_DISPLAY) else '0';
-
-  -- HSyncxDN <= HS_POLARITY when (HCntxDP >= HS_DISPLAY + HS_FRONT_PORCH and 
-  --                               HCntxDP < HS_DISPLAY + HS_FRONT_PORCH + HS_PULSE) else
-  --                         not HS_POLARITY;
-
-  -- VSyncxDN <= VS_POLARITY when (VCntxDP >= VS_DISPLAY + VS_FRONT_PORCH and 
-  --                               VCntxDP < VS_DISPLAY + VS_FRONT_PORCH + VS_PULSE) else
-  --                         not VS_POLARITY;
-
-
   -- SYNC PULSE | BACK PORCH | DISPLAY | FRONT PORCH 
   active_area <= '1' when ((HCntxDP >= HS_AFTER_BACK and HCntxDP < HS_BEFORE_FRONT)
                             and (VCntxDP >= VS_AFTER_BACK and VCntxDP < VS_BEFORE_FRONT)) else '0';

@@ -1,50 +1,52 @@
 -- pong_types_pkg.vhd
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
+-- pong_types_pkg.vhd
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 use work.dsd_prj_pkg.all;
 
-PACKAGE pong_types_pkg IS
+package pong_types_pkg is
   
-  CONSTANT MAX_BALL_COUNT : natural := 4;
-  TYPE GameControl IS (Game1Ball, Game2Ball, Game3Ball, GameEnd);
+  constant MAX_BALL_COUNT : natural := 4;
+  constant MAX_OBS_COUNT  : natural := 25;
+  constant OBSTACLE_RGB   : std_logic_vector(BIT_SIZE_RGB - 1 downto 0) := x"F00"; -- Red color
 
-  CONSTANT MAX_OBS_COUNT : natural := 25;
-  constant OBSTACLE_RGB : std_logic_vector(BIT_SIZE_RGB - 1 downto 0) := x"F00"; -- Red color
+  constant HIGH_SCORE_WIDTH        : natural := 8;
+  constant HIGH_SCORE_1_THRESHOLD  : unsigned(8-1 downto 0) := to_unsigned(3, 8);
+  constant HIGH_SCORE_2_THRESHOLD  : unsigned(8-1 downto 0) := to_unsigned(5, 8);
   
   -- Ball object 
-  TYPE BallType IS RECORD
-    BallX     : unsigned(COORD_BW - 1 DOWNTO 0);
-    BallY     : unsigned(COORD_BW - 1 DOWNTO 0);
-    BallXSpeed: signed(2-1 DOWNTO 0);
-    BallYSpeed: signed(2-1 DOWNTO 0);
-    IsActive  : unsigned(2-1 DOWNTO 0);
-    Color : std_logic_vector(BIT_SIZE_RGB - 1 DOWNTO 0);
-    Counter : unsigned(3-1 DOWNTO 0);
-  END RECORD;
+  type BallType is record
+    BallX      : unsigned(COORD_BW - 1 downto 0);
+    BallY      : unsigned(COORD_BW - 1 downto 0);
+    BallXSpeed : signed(2-1 downto 0);
+    BallYSpeed : signed(2-1 downto 0);
+    IsActive   : unsigned(2-1 downto 0);
+    Color      : std_logic_vector(BIT_SIZE_RGB - 1 downto 0);
+    Counter    : unsigned(3-1 downto 0);
+  end record;
 
   -- Plate object
-  TYPE PlateBumpType IS RECORD
-    Left : signed(COORD_BW-1 downto 0);
+  type PlateBumpType is record
+    Left  : signed(COORD_BW-1 downto 0);
     Right : signed(COORD_BW-1 downto 0);  
-  END RECORD; 
+  end record; 
   
   -- Obstacle object
-  TYPE ObstacleType IS RECORD
-    X      : unsigned(COORD_BW - 1 DOWNTO 0);
-    Y      : unsigned(COORD_BW - 1 DOWNTO 0);
-    Width  : unsigned(COORD_BW - 1 DOWNTO 0);
-    Height : unsigned(COORD_BW - 1 DOWNTO 0);
-  END RECORD;
+  type ObstacleType is record
+    X      : unsigned(COORD_BW - 1 downto 0);
+    Y      : unsigned(COORD_BW - 1 downto 0);
+    Width  : unsigned(COORD_BW - 1 downto 0);
+    Height : unsigned(COORD_BW - 1 downto 0);
+  end record;
   
-  -- Array of objects
-  TYPE BallArrayType IS ARRAY (0 TO MAX_BALL_COUNT-1) OF BallType;
-  TYPE PlateBumpArrayType IS ARRAY (0 to MAX_BALL_COUNT-1) OF PlateBumpType;  
-  TYPE ObstacleArrayType IS ARRAY (0 to MAX_OBS_COUNT-1) OF ObstacleType;
+  type GameControl is (Game1Ball, Game2Ball, Game3Ball, GameEnd);
+  type BallArrayType is array (0 to MAX_BALL_COUNT-1) of BallType;
+  type PlateBumpArrayType is array (0 to MAX_BALL_COUNT-1) of PlateBumpType;  
+  type ObstacleArrayType is array (0 to MAX_OBS_COUNT-1) of ObstacleType;
 
-  
-  CONSTANT OBSTACLES : ObstacleArrayType := (
+  constant OBSTACLES : ObstacleArrayType := (
     -- Obstacles to draw 'Roboto' in the top left corner
     -- R
     0 => (X => to_unsigned(10, COORD_BW),  Y => to_unsigned(10, COORD_BW),  Width => to_unsigned(5, COORD_BW),  Height => to_unsigned(25, COORD_BW)),  -- Left vertical bar
@@ -79,4 +81,4 @@ PACKAGE pong_types_pkg IS
    24 => (X => to_unsigned(120, COORD_BW), Y => to_unsigned(15, COORD_BW),  Width => to_unsigned(5, COORD_BW),  Height => to_unsigned(15, COORD_BW))   -- Right vertical bar
   );
   
-END PACKAGE;
+end package;

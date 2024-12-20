@@ -55,11 +55,11 @@ architecture rtl of mandelbrot is
     signal IterxDP, IterxDN : unsigned(MEM_DATA_BW - 1 downto 0) := (others => '0');
 
     -- Mandelbrot intermediate values
-    signal X_Norm_2xDP, Y_Norm_2xDP, Complex_NORMxDP : unsigned(N_COMPLEX_NORM - 1 downto 0);
+    signal X_Norm_2xDP, Y_Norm_2xDP, Complex_NORMxDP  : unsigned(N_COMPLEX_NORM - 1 downto 0);
     signal X_Unsigned_Norm_2xDP, Y_Unsigned_Norm_2xDP : unsigned(N_BITS - 1 downto 0);
-    signal Iter_countxDP : unsigned(N_BITS + N_INT - 1 downto 0);
+    signal Iter_countxDP     : unsigned(N_BITS + N_INT - 1 downto 0);
     signal RealComplexCntxDP : signed(N_COMPLEX_NORM - 1 downto 0);
-    signal RealComplexxD : signed(N_BITS - 1 downto 0);
+    signal RealComplexxD     : signed(N_BITS - 1 downto 0);
 
     -- Output
     signal WExDP, WExDN : std_logic := '0';
@@ -76,10 +76,10 @@ begin
             YCntxDP <= (others => '0');
             cRealCntxDP <= C_RE_0;
             cComplexCntxDP <= C_IM_0;
-            zRealCntxDP <= C_RE_0;
+            zRealCntxDP    <= C_RE_0;
             zComplexCntxDP <= C_IM_0;
             IterxDP <= (others => '0');
-            WExDP <= '0';
+            WExDP   <= '0';
 
         elsif rising_edge(CLKxCI) then 
             FsmStatexDP <= FsmStatexDN;
@@ -87,10 +87,10 @@ begin
             YCntxDP <= YCntxDN;
             cRealCntxDP <= cRealCntxDN;
             cComplexCntxDP <= cComplexCntxDN;
-            zRealCntxDP <= zRealCntxDN;
+            zRealCntxDP    <= zRealCntxDN;
             zComplexCntxDP <= zComplexCntxDN;
             IterxDP <= IterxDN;
-            WExDP <= WExDN;
+            WExDP   <= WExDN;
             
         end if;
     end process;
@@ -103,10 +103,10 @@ begin
         YCntxDN <= YCntxDP;
         cRealCntxDN <= cRealCntxDP;
         cComplexCntxDN <= cComplexCntxDP;
-        zRealCntxDN <= zRealCntxDP;
+        zRealCntxDN    <= zRealCntxDP;
         zComplexCntxDN <= zComplexCntxDP;
         IterxDN <= IterxDP;
-        WExDN <= '0';
+        WExDN   <= '0';
 
         -- All states for the mangelbrot algorithm
         case FsmStatexDP is
@@ -163,7 +163,7 @@ begin
                     FsmStatexDN <= IterateCheck;
                 end if;
             
-                -- set output 
+            -- set output 
             when Output =>
                 FsmStatexDN <= CalculateNew;
                 WExDN <= '0';
@@ -179,19 +179,19 @@ begin
     X_Norm_2xDP <= unsigned(signed(zRealCntxDP) * signed(zRealCntxDP));
     Y_Norm_2xDP <= unsigned(signed(zComplexCntxDP) * signed(zComplexCntxDP));
 
-    X_Unsigned_Norm_2xDP <= unsigned(X_Norm_2xDP(N_COMPLEX_NORM - N_NORM_BITS -1 downto N_BITS - N_NORM_BITS));
-    Y_Unsigned_Norm_2xDP <= unsigned(Y_Norm_2xDP(N_COMPLEX_NORM - N_NORM_BITS -1 downto N_BITS - N_NORM_BITS));
+    X_Unsigned_Norm_2xDP <= unsigned(X_Norm_2xDP(N_COMPLEX_NORM - N_NORM_BITS - 1 downto N_BITS - N_NORM_BITS));
+    Y_Unsigned_Norm_2xDP <= unsigned(Y_Norm_2xDP(N_COMPLEX_NORM - N_NORM_BITS - 1 downto N_BITS - N_NORM_BITS));
 
     Complex_NORMxDP <= resize(X_Norm_2xDP + Y_Norm_2xDP, N_COMPLEX_NORM);
 
     Iter_countxDP <= Complex_NORMxDP(N_COMPLEX_NORM - 1 downto N_BITS - N_NORM_BITS);
 
     RealComplexCntxDP <= resize(2*zRealCntxDP*zComplexCntxDP, N_COMPLEX_NORM);
-    RealComplexxD <= RealComplexCntxDP(N_COMPLEX_NORM - N_NORM_BITS -1 downto N_BITS - N_NORM_BITS);
+    RealComplexxD <= RealComplexCntxDP(N_COMPLEX_NORM - N_NORM_BITS - 1 downto N_BITS - N_NORM_BITS);
 
     WExSO <= WExDP;
-    XxDO <= XCntxDP;
-    YxDO <= YCntxDP;
+    XxDO  <= XCntxDP;
+    YxDO  <= YCntxDP;
     ITERxDO <= IterxDP;
 
 end architecture rtl;

@@ -82,10 +82,6 @@ architecture rtl of pong_top is
   signal FsmStatexD : GameControl;
   signal BallsxD : BallArrayType;
   signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
-  
-  -- TODO:
-  signal DrawBallxS  : std_logic; -- If 1, draw the ball
-  signal DrawPlatexS : std_logic; -- If 1, draw the plate
 
 --=============================================================================
 -- COMPONENT DECLARATIONS
@@ -249,7 +245,7 @@ begin
   -- We "divide" by a factor of  4 to account for the bigger size of the screen 
   -- coordinates and then multiply y for 256 pixels in a row
   -- TODO: optmize
-  RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, 16));
+  RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, MEM_ADDR_BW));
 
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 downto 2 * COLOR_BW);
   BGGreenxS <= DOUTBxD(2 * COLOR_BW - 1 downto 1 * COLOR_BW);
@@ -259,54 +255,33 @@ begin
 --=============================================================================
 -- Sprite logic
 --=============================================================================
-  PROCESS (all)
-  BEGIN
+  process (all)
+  begin
     -- Default background color
     RedxS   <= BGRedxS;
     GreenxS <= BGGreenxS;
     BluexS  <= BGBluexS;
 
     -- Plate logic
-    IF (XCoordxD >= PlateXxD AND XCoordxD < PlateXxD + PLATE_WIDTH AND YCoordxD >= VS_DISPLAY - PLATE_HEIGHT) THEN
+    if (XCoordxD >= PlateXxD and XCoordxD < PlateXxD + PLATE_WIDTH and YCoordxD >= VS_DISPLAY - PLATE_HEIGHT) then
       RedxS   <= "1111";
       GreenxS <= "1111";
       BluexS  <= "1111";
-    END IF;
+    end if;
 
     -- Ball logic 
-    FOR i IN 0 TO (MAX_BALL_COUNT - 1) LOOP
-      IF (BallsxD(i).IsActive = 1) THEN
-          IF (XCoordxD >= BallsxD(i).BallX AND XCoordxD < BallsxD(i).BallX + BALL_WIDTH AND
-              YCoordxD >= BallsxD(i).BallY AND YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) THEN
+    for i in 0 to (MAX_BALL_COUNT - 1) loop
+      if (BallsxD(i).IsActive = 1) then
+          if (XCoordxD >= BallsxD(i).BallX and XCoordxD < BallsxD(i).BallX + BALL_WIDTH and
+              YCoordxD >= BallsxD(i).BallY and YCoordxD < BallsxD(i).BallY + BALL_HEIGHT) then
             RedxS   <= "1111";
             GreenxS <= "1111";
             BluexS  <= "1111";
-        END IF;
-     END IF;
-    END LOOP;
+        end if;
+    end if;
+    end loop;
 
-    -- Obstacle logic for Game2Ball and Game3Ball states
---    IF (FsmStatexD = Game2Ball OR FsmStatexD = Game3Ball) THEN
---      -- Draw the first obstacle
---      IF ((XCoordxD >= Obstacle1XxD) AND (XCoordxD < (Obstacle1XxD + OBSTACLE_WIDTH)) AND
---          (YCoordxD >= Obstacle1YxD) AND (YCoordxD < (Obstacle1YxD + OBSTACLE_HEIGHT))) THEN
---        RedxS   <= "1111";
---        GreenxS <= "0000";
---        BluexS  <= "0000";
---      END IF;
---    END IF;
-
---    IF (FsmStatexD = Game3Ball) THEN
---      -- Draw the second obstacle
---      IF (XCoordxD >= Obstacle2XxD AND XCoordxD < Obstacle2XxD + OBSTACLE_WIDTH AND
---          YCoordxD >= Obstacle2YxD AND YCoordxD < Obstacle2YxD + OBSTACLE_HEIGHT) THEN
---        RedxS   <= "1111";
---        GreenxS <= "0000";
---        BluexS  <= "0000";
---      END IF;
---    END IF;
-
-  END PROCESS;
+  end process;
 
 end rtl;
 --=============================================================================

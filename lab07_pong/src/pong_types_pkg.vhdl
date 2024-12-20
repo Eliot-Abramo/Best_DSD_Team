@@ -1,30 +1,31 @@
 -- pong_types_pkg.vhd
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 use work.dsd_prj_pkg.all;
 
-PACKAGE pong_types_pkg IS
+package pong_types_pkg is
   
-  CONSTANT MAX_BALL_COUNT : natural := 3;
+  constant MAX_BALL_COUNT : natural := 3;
 
-  TYPE GameControl IS (Game1Ball, Game2Ball, Game3Ball, GameEnd);
+  type GameControl is (Game1Ball, Game2Ball, Game3Ball, GameEnd);
   
-  TYPE BallType IS RECORD
-    BallX     : unsigned(COORD_BW - 1 DOWNTO 0);
-    BallY     : unsigned(COORD_BW - 1 DOWNTO 0);
-    BallXSpeed: signed(2-1 DOWNTO 0);
-    BallYSpeed: signed(2-1 DOWNTO 0);
-    IsActive  : unsigned(2-1 DOWNTO 0);
-  END RECORD;
+  type BallType is record
+    BallX      : unsigned(COORD_BW - 1 downto 0);
+    BallY      : unsigned(COORD_BW - 1 downto 0);
+    BallXSpeed : signed(2-1 downto 0);
+    BallYSpeed : signed(2-1 downto 0);
+    IsActive   : unsigned(2-1 downto 0);
+  end record;
 
-  TYPE PlateBumpType IS RECORD
-    Left : signed(COORD_BW-1 downto 0);
+  type PlateBumpType is record
+    Left  : signed(COORD_BW-1 downto 0);
     Right : signed(COORD_BW-1 downto 0);  
-  END RECORD; 
+  end record; 
   
-  TYPE BallArrayType IS ARRAY (0 TO MAX_BALL_COUNT-1) OF BallType;
-  TYPE PlateBumpArrayType IS ARRAY (0 to MAX_BALL_COUNT-1) OF PlateBumpType;
+  type BallArrayType is array (0 to MAX_BALL_COUNT-1) of BallType;
+  type PlateBumpArrayType is array (0 to MAX_BALL_COUNT-1) of PlateBumpType;
 
-END PACKAGE;
+end package;
+

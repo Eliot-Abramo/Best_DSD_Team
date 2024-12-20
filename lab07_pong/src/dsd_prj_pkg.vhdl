@@ -60,5 +60,4 @@ package dsd_prj_pkg is
   constant PLATE_HEIGHT : natural := 10;
   constant PLATE_STEP_X : natural := 5;
 
-
 end package dsd_prj_pkg;

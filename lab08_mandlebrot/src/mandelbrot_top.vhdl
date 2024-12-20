@@ -80,9 +80,9 @@ architecture rtl of mandelbrot_top is
   signal VSEdgexS : std_logic; -- If 1, row counter resets (new frame). HIGH for 1 CC, when vertical sync starts)
 
   -- pong_fsm
-  signal BallsxD : BallArrayType;
-  signal PlateXxD : unsigned(COORD_BW - 1 downto 0);
-  signal FsmStatexD : GameControl;
+  signal BallsxD      : BallArrayType;
+  signal PlateXxD     : unsigned(COORD_BW - 1 downto 0);
+  signal FsmStatexD   : GameControl;
   signal PlateWidthxD : natural;
 
   -- mandelbrot
@@ -279,12 +279,12 @@ begin
   -- Port A
   ENAxS     <= MandelbrotWExS;
   WEAxS     <= (others => MandelbrotWExS);
-  WrAddrAxD <= std_logic_vector(resize(MandelbrotYxD / 4 * 256 + MandelbrotXxD / 4, 16));
+  WrAddrAxD <= std_logic_vector(resize(MandelbrotYxD / 4 * 256 + MandelbrotXxD / 4, MEM_ADDR_BW));
   DINAxD    <= std_logic_vector(MandelbrotITERxD);
 
   -- Port B
   ENBxS     <= '1';
-  RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, 16));
+  RdAddrBxD <= std_logic_vector(resize(YCoordxD / 4 * 256 + XCoordxD / 4, MEM_ADDR_BW));
 
   -- Color from Mandelbrot generator
   BGRedxS   <= DOUTBxD(3 * COLOR_BW - 1 DOWNTO 2 * COLOR_BW);
@@ -327,7 +327,7 @@ begin
       end if;
       
       -- Draw active balls
-      for i in 0 to 2 loop
+      for i in 0 to MAX_BALL_COUNT-2 loop -- Only draw active balls
         if (BallsxD(i).IsActive = 1) then
           if (XCoordxD > BallsxD(i).BallX - to_unsigned(BALL_WIDTH/2, BallsxD(i).BallX'length) and
               XCoordxD < BallsxD(i).BallX + to_unsigned(BALL_WIDTH/2, BallsxD(i).BallX'length) and
